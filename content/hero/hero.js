@@ -9,8 +9,7 @@ const Hero = () => {
         <h1 className={styles.title}>Love travel, hate planning?</h1>
         <p>Plan your next adventure in seconds through the power of AI </p>
       </div>
-      <SearchCard/>
-
+      <SearchCard />
     </div>
   );
 };

@@ -11,7 +11,6 @@ import styles from "./searchCard.module.css"
 const SearchCard = () => {
   const [destinationValue, setDestinationValue] = useState('');
   const [durationValue, setDurationValue] = useState('');
-  // const router = useRouter();
 
   const handleSubmit = (e) => {
     e.preventDefault();

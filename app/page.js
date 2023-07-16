@@ -9,13 +9,11 @@ const hideButton = false
 const Home = () => {
   return (
     <body>
-      <NavBar hideButton={hideButton}/>
       <main className={styles.main}>
         <Section>
           <Hero/>
         </Section>
       </main>
-
     </body>
   )
 }

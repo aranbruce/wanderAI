@@ -28,4 +28,28 @@
   align-items: flex-start;
   gap: 8px;
   align-self: stretch;
+  width: 100%;
+}
+
+@media only screen and (min-width: 768px) {
+  .card {
+    padding: 24px;
+  }
+
+  .title {
+    display: none;
+  }
+
+  .form {
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: end;
+    gap: 16px;
+  }
+
+  .inputGroup {
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: stretch;
+  }
 }

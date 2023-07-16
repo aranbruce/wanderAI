@@ -4,6 +4,7 @@
   align-items: flex-start;
   gap: 4px;
   align-self: stretch;
+  width: 100%;
 }
 
 .label {
@@ -25,4 +26,12 @@
   box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.04);
   font-size: 1rem;
   line-height: 1.5rem;
+}
+
+.input:focus-visible {
+  outline: 3px solid rgba(180, 87, 253, 0.30);
+}
+
+.input:active {
+  outline: 3px solid rgba(180, 87, 253, 0.30);
 }
