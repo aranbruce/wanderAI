@@ -1,0 +1,34 @@
+.heroContainer {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  gap: 32px;
+  padding: 2rem 1rem;
+  border-radius: 16px;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.24) 0%, rgba(33, 35, 44, 0.70) 100%), url(../../app/assets/lisbon.jpg) no-repeat;
+  background-size: cover;
+  box-shadow: 0px 4px 12px 0px rgba(0, 0, 0, 0.24);
+}
+
+.introText {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  gap: 16px;
+  padding: 8px;
+  color: #ffffff;
+  font-size: 1.125rem;
+  line-height: 1.5rem;
+}
+
+.title {
+  font-size: 2.5rem;
+  line-height: 3rem;
+}
+
+@media only screen and (min-width: 768px) {
+  .heroContainer {
+    padding: 4rem;
+  }
+}
