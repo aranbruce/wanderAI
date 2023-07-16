@@ -1,16 +1,15 @@
 'use client'
 
-import React from 'react'
-import { useState } from 'react';
+import React, { useState }  from 'react'
 // import { useRouter } from 'next/router';
 import Input from '../input/input';
 import Button from '../button/button';
+import SearchModal from '../searchModal/searchModal';
 
-import styles from "./searchCard.module.css"
+import styles from "./searchCard.module.css";
 
-const SearchCard = () => {
-  const [destinationValue, setDestinationValue] = useState('');
-  const [durationValue, setDurationValue] = useState('');
+const SearchCard = ({ setDestinationValue, setDurationValue, destinationValue, durationValue }) => {
+  const [openModal, setOpenModal] = useState('');
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -21,13 +20,13 @@ const SearchCard = () => {
     // router.push('/results');
   };
     
-    const handleDestinationChange = (e) => {
-      setDestinationValue(e.target.value);
-    };
+  const handleDestinationChange = (e) => {
+    setDestinationValue(e.target.value);
+  };
   
-    const handleDurationChange = (e) => {
-      setDurationValue(e.target.value);
-    };
+  const handleDurationChange = (e) => {
+    setDurationValue(e.target.value);
+  };
 
   return (
     <div className={styles.card}>
@@ -49,8 +48,17 @@ const SearchCard = () => {
             label="How many days is your trip?"
           />
         </div>
-        <Button type="submit">Start Planning</Button>
+        <Button onClick={() => setOpenModal(true)} type="submit">Start Planning</Button>
       </form>
+      {openModal ? 
+        <SearchModal
+          setDestinationValue={setDestinationValue}
+          destinationValue={destinationValue}
+          setDurationValue={setDurationValue}
+          durationValue={durationValue}
+          setOpenModal={setOpenModal}
+        /> 
+      : ""}
     </div>
   );
 };

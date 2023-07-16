@@ -1,6 +1,6 @@
+
 import './globals.css'
 import { Roboto_Flex } from 'next/font/google'
-
 import NavBar from "../components/navBar/navBar"
 
 const robotFlex = Roboto_Flex({ 
