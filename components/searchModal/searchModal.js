@@ -49,11 +49,12 @@ const SearchModal = ({setOpenModal, destinationValue, setDestinationValue, durat
                 <Checkbox label="Outdoors"/>
                 <Checkbox label="Indoors"/>
                 <Checkbox label="Active"/>
+                <Checkbox label="Relaxation"/>
                 <Checkbox label="Pet friendly"/>
                 <Checkbox label="Child friendly"/>
                 <Checkbox label="Vegetarian"/>
                 <Checkbox label="Vegan"/>
-                <Checkbox label="Vegan"/>
+                <Checkbox label="Nightlife"/>
               </div>
             </div>
         </div>
