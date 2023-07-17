@@ -48,7 +48,7 @@ const SearchCard = ({ setDestinationValue, setDurationValue, destinationValue, d
             label="How many days is your trip?"
           />
         </div>
-        <Button onClick={() => setOpenModal(true)} type="submit">Start Planning</Button>
+        <Button label="Start planning" onClick={() => setOpenModal(true)} type="submit"/>
       </form>
       {openModal ? 
         <SearchModal

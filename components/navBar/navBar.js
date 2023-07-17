@@ -15,7 +15,7 @@ const NavBar = ({hideButton}) => {
               height={48}
               priority
       />
-      {hideButton ? "" : <Button>Sign up</Button>}
+      {hideButton ? "" : <Button label="Sign up"/>}
     </nav>
   )
 }

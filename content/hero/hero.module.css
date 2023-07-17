@@ -6,7 +6,7 @@
   gap: 32px;
   padding: 32px 16px;
   border-radius: 16px;
-  background: linear-gradient(180deg, rgba(0, 0, 0, 0.24) 0%, rgba(33, 35, 44, 0.70) 100%), url(../../app/assets/lisbon.jpg) no-repeat;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.24) 0%, rgba(33, 35, 44, 0.70) 100%), url(../../assets/lisbon.jpg) no-repeat;
   background-size: cover;
   box-shadow: 0px 4px 12px 0px rgba(0, 0, 0, 0.24);
 }

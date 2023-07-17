@@ -5,23 +5,58 @@
   position: absolute;
   top: 0;
   left: 0;
+  z-index: 2;
 }
 
 .modal {
-  padding: 24px;
+  /* padding: 24px; */
   display: flex;
   width: 100%;
-  padding: 24px;
+  max-height: 100vh;
   flex-direction: column;
   align-items: flex-start;
-  gap: 48px;
+  gap: 32px;
   border-radius: 8px 8px 0px 0px;
   background: #FFF;
   box-shadow: 0px -4px 12px 0px rgba(0, 0, 0, 0.24);
   border: none;
-  position: absolute;
+  position: fixed;
   bottom: 0;
   left: 0;
+  z-index: 3;
+}
+
+.header {
+  position: sticky;
+  width: 100%;
+  padding-top: 24px;
+  padding-left: 24px;
+  padding-right: 24px;
+}
+
+.main {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  padding-left: 24px;
+  padding-right: 24px;
+  padding-bottom: 122px;
+  overflow-y: scroll;
+}
+
+.inputGroup {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.priorities {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
 .checkboxes {
@@ -29,4 +64,19 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 8px;
+}
+
+.footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  display: grid;
+  background-color: #FFF;
+  border-top:1px solid #E2E4ED;
+  padding: 16px 24px;
+  gap: 16px;
+  grid-template-columns: 0fr 1fr;
+  width: 100%;  
+
+
 }
