@@ -2,7 +2,7 @@ import SearchCard from "../../components/searchCard/searchCard"
 
 import styles from "./hero.module.css"
 
-const Hero = ({setDestinationValue, setDurationValue, destinationValue, durationValue}) => {
+const Hero = ({setDestinationValue, setDurationValue, destinationValue, durationValue, setSelectedPreferences, selectedPreferences, setResponse, response, setIsLoading, isLoading}) => {
   return (
     <div className={styles.heroContainer} >
       <div className={styles.introText}>
@@ -13,7 +13,14 @@ const Hero = ({setDestinationValue, setDurationValue, destinationValue, duration
         setDestinationValue={setDestinationValue} 
         destinationValue={destinationValue}
         setDurationValue={setDurationValue}
-        durationValue={durationValue}/>
+        durationValue={durationValue}
+        setSelectedPreferences={setSelectedPreferences}
+        selectedPreferences={selectedPreferences}
+        setResponse={setResponse}
+        response={response}
+        setIsLoading={setIsLoading}
+        isLoading={isLoading}
+        />
     </div>
   );
 };

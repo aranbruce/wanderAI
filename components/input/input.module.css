@@ -35,3 +35,11 @@
 .input:active {
   outline: 3px solid rgba(180, 87, 253, 0.30);
 }
+
+.input:-webkit-autofill,
+.input:autofill,
+.input:-webkit-autofill:hover, 
+.input:-webkit-autofill:focus {
+  background-color: #FFF !important;
+  -webkit-box-shadow: 0 0 0px 1000px #fff inset;
+}

@@ -2,16 +2,11 @@ import React, { useState } from 'react';
 
 import styles from "./checkbox.module.css"
 
-const Checkbox = ({label}) => {
-  const [checked, setChecked] = useState(false);
-
-  const handleChange = () => {
-    setChecked(!checked);
-  };
-
+const Checkbox = ({label, checked, onChange}) => {
+ 
   return (
     <label className={styles.checkbox}>
-      <input type="checkbox" checked={checked} onChange={handleChange} />
+      <input type="checkbox" checked={checked} onChange={onChange} />
       {label}
     </label>
   );

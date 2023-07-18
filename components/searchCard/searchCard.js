@@ -8,16 +8,11 @@ import SearchModal from '../searchModal/searchModal';
 
 import styles from "./searchCard.module.css";
 
-const SearchCard = ({ setDestinationValue, setDurationValue, destinationValue, durationValue }) => {
+const SearchCard = ({ setDestinationValue, setDurationValue, destinationValue, durationValue, setSelectedPreferences, selectedPreferences, setResponse, response, setIsLoading, isLoading }) => {
   const [openModal, setOpenModal] = useState('');
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log('Destination:', destinationValue);
-    console.log('Duration:', durationValue);
-    // Perform any necessary logic or data handling here
-    // Redirect to another page or perform additional actions
-    // router.push('/results');
   };
     
   const handleDestinationChange = (e) => {
@@ -56,7 +51,13 @@ const SearchCard = ({ setDestinationValue, setDurationValue, destinationValue, d
           destinationValue={destinationValue}
           setDurationValue={setDurationValue}
           durationValue={durationValue}
+          setSelectedPreferences={setSelectedPreferences}
+          selectedPreferences={selectedPreferences}
           setOpenModal={setOpenModal}
+          setResponse={setResponse}
+          response={response}
+          setIsLoading={setIsLoading}
+          isLoading={isLoading}
         /> 
       : ""}
     </div>
