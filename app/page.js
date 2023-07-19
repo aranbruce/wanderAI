@@ -17,10 +17,11 @@ const Home = () => {
   const renderLocations = () => {
     if (response) {
       console.log(response);
-      const days = Object.keys(response);
-      console.log(days);
+      const responseObject = JSON.parse(response);
+      console.log(responseObject);
+      const days = Object.keys(responseObject);
       return days.map((day) => {
-        const dayDetails = response[day];
+        const dayDetails = responseObject[day];
         return (
           <div key={day}>
             <h3>{day}</h3>

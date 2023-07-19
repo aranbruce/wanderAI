@@ -40,57 +40,15 @@ const SearchModal = ({setOpenModal, destinationValue, setDestinationValue, durat
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ prompt:
-          `Create an itinerary for a trip lasting ${durationValue} to ${destinationValue} using the present tense.
-          
-          Provide an activity for each part of the day of the trip, listing one activity for the morning, afternoon and evening.
-
-          Make sure to take into account include activities that match the following preferences: ${selectedPreferences.join(', ')}`
-
-          `Describe each itinerary item in detail using 4 to 5 sentences.
-          
-          Try to group locations that are located together on the same day.
-          
-          "Provide the itinerary as a valid JSON object.
-          
-          Format the text in the following JSON format:
-          {
-            "day1": {
-              "morning": {
-                "location: "location name",
-                "description": "Description of morning itinerary"
-              },
-              "afternoon":{
-                "location: "location name",
-                "description": "Description of afternoon itinerary"
-              },
-              "evening": {
-                "location: "location name",
-                "description": Description of evening itinerary"}
-              } 
-            },
-            "day2": {
-              "morning": {
-                "location: "location name",
-                "description": "Description of morning itinerary"
-              },
-              "afternoon":{
-                "location: "location name",
-                "description": "Description of afternoon itinerary"
-              },
-              "evening": {
-                "location: "location name",
-                "description": Description of evening itinerary"}
-              } 
-            }
-          }`
+        body: JSON.stringify({ 
+          prompt: `Plan me a trip to ${destinationValue} for ${durationValue}. 
+          Make sure to include activities that match the following preferences: ${selectedPreferences.join(', ')}`
         }),
       });
       const data = await response.json();
+      console.log(data)
       setIsLoading(false);
-      console.log(data.text);
-      console.log(data);
-      setResponse(JSON.parse(data.text));
+      setResponse(data);
     } else { console.log("No itinerary details provided") }
   };
 
