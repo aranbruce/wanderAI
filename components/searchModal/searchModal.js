@@ -44,8 +44,14 @@ const SearchModal = ({setOpenModal, destinationValue, setDestinationValue, durat
           `Create an itinerary for a trip lasting ${durationValue} to ${destinationValue} using the present tense.
           
           Provide an activity for each part of the day of the trip, listing one activity for the morning, afternoon and evening.
+
+          Make sure to take into account include activities that match the following preferences: ${selectedPreferences.join(', ')}`
+
+          `Describe each itinerary item in detail using 4 to 5 sentences.
           
-          Provide the itinerary as a valid JSON object.
+          Try to group locations that are located together on the same day.
+          
+          "Provide the itinerary as a valid JSON object.
           
           Format the text in the following JSON format:
           {
@@ -77,12 +83,7 @@ const SearchModal = ({setOpenModal, destinationValue, setDestinationValue, durat
                 "description": Description of evening itinerary"}
               } 
             }
-          }
-          
-          Describe each itinerary item in detail using 4 to 5 sentences.
-          
-          Try to group locations that are located together on the same day.
-          ${selectedPreferences.length > 0 ? `Make sure to take into account include activities that match the following preferences: ${selectedPreferences.join(', ')}` : ""}`
+          }`
         }),
       });
       const data = await response.json();
