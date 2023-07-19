@@ -12,6 +12,7 @@ export default async function POST(req, res) {
       model: "text-davinci-003",
       prompt: `${req.body.prompt}`,
       max_tokens: 1000,
+      temperature: 0.1,
     });
 
     res.status(200).json({ text: `${completion.data.choices[0].text}` });

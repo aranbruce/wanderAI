@@ -43,7 +43,11 @@ const SearchModal = ({setOpenModal, destinationValue, setDestinationValue, durat
         body: JSON.stringify({ prompt:
           `Create an itinerary for a trip lasting ${durationValue} to ${destinationValue} using the present tense.
           
-          Provide an activity for each part of the day of the trip, listing one activity for the morning, afternoon and evening. List the itinerary out as a JSON object in following format:
+          Provide an activity for each part of the day of the trip, listing one activity for the morning, afternoon and evening.
+          
+          Provide the itinerary as a valid JSON object.
+          
+          Format the text in the following JSON format:
           {
             "day1": {
               "morning": {
@@ -78,8 +82,7 @@ const SearchModal = ({setOpenModal, destinationValue, setDestinationValue, durat
           Describe each itinerary item in detail using 4 to 5 sentences.
           
           Try to group locations that are located together on the same day.
-          ${selectedPreferences.length > 0 ? `Make sure to take into account include activities that match the following preferences: ${selectedPreferences.join(', ')}` : ""}
-          The itinerary for the first 2 days is as follows:`
+          ${selectedPreferences.length > 0 ? `Make sure to take into account include activities that match the following preferences: ${selectedPreferences.join(', ')}` : ""}`
         }),
       });
       const data = await response.json();
