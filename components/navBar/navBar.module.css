@@ -1,11 +1,10 @@
 .nav {
   display: flex;
   width: 100%;
-  position: fixed;
+  position: absolute;
   top: 0;
   padding: 16px 16px;
   justify-content: space-between;
   align-items: left;
-  background: #ffffff;
 
 }

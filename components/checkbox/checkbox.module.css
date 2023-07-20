@@ -10,4 +10,7 @@
   .input {
     width: 120px
   }
+  .input:focus-visible {
+    outline: 3px solid rgba(180, 87, 253, 0.30);
+  }
 }

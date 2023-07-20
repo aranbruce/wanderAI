@@ -54,7 +54,7 @@
 
 .buttonSecondary:focus-visible{
   outline: 3px solid rgba(180, 87, 253, 0.30);
-  background: #383838;
+  background: #F4F4F4;
 }
 
 .buttonSecondary:active {

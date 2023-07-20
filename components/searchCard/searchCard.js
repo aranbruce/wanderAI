@@ -9,7 +9,7 @@ import SearchModal from '../searchModal/searchModal';
 import styles from "./searchCard.module.css";
 
 const SearchCard = ({ setDestinationValue, setDurationValue, destinationValue, durationValue, setSelectedPreferences, selectedPreferences, setResponse, response, setIsLoading, isLoading }) => {
-  const [openModal, setOpenModal] = useState('');
+  const [openModal, setOpenModal] = useState(false);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -23,6 +23,12 @@ const SearchCard = ({ setDestinationValue, setDurationValue, destinationValue, d
     setDurationValue(e.target.value);
   };
 
+  const checkFormValues = () => {
+    if (destinationValue && durationValue) {
+      setOpenModal(true);
+    }
+  };
+
   return (
     <div className={styles.card}>
       <h4 className={styles.title}>Plan your trip</h4>
@@ -34,6 +40,7 @@ const SearchCard = ({ setDestinationValue, setDurationValue, destinationValue, d
             onChange={handleDestinationChange}
             placeholder="Enter your destination"
             label="Where do you want to go?"
+            required
           />
           <Input
             type="text"
@@ -41,9 +48,10 @@ const SearchCard = ({ setDestinationValue, setDurationValue, destinationValue, d
             onChange={handleDurationChange}
             placeholder="Enter your trip duration"
             label="How many days is your trip?"
+            required
           />
         </div>
-        <Button label="Start planning" onClick={() => setOpenModal(true)} type="submit"/>
+        <Button label="Start planning" onClick={checkFormValues} type="submit"/>
       </form>
       {openModal ? 
         <SearchModal

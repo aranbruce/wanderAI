@@ -38,6 +38,10 @@
   }
 }
 
+.form {
+  width: 100%;
+}
+
 .header {
   position: sticky;
   width: 100%;
