@@ -8,6 +8,8 @@ import styles from './page.module.css'
 import Itinerary from '@/components/itinerary/itinerary'
 import Loading from '@/components/loading/loading'
 
+// import Map from '@/components/map/map'
+
 
 const Home = () => {
   const [destinationValue, setDestinationValue] = useState('');
@@ -16,8 +18,6 @@ const Home = () => {
   const [response, setResponse] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [showItinerary, setShowItinerary] = useState(true);
-
-  console.log("showItinerary:", showItinerary)
 
   useEffect(() => {
     if (response) {

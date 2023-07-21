@@ -28,8 +28,6 @@ const SearchModal = ({setOpenModal, destinationValue, setDestinationValue, durat
 
   const checkFormValues = () => {
     preventDefault();
-    console.log('Destination:', destinationValue);
-    console.log('Duration:', durationValue);
     if (destinationValue && durationValue) {
       setOpenModal(false);
     }
@@ -59,12 +57,11 @@ const SearchModal = ({setOpenModal, destinationValue, setDestinationValue, durat
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ 
-          prompt: `Plan me a trip to ${destinationValue} for ${durationValue}. 
-          Make sure to include activities that match the following preferences: ${selectedPreferences.join(', ')}`
+          prompt: `Plan me a trip to ${destinationValue} for ${durationValue} days. 
+          Include activities that match the following preferences: ${selectedPreferences.join(', ')}`
         }),
       });
       const data = await response.json();
-      console.log(data)
       setIsLoading(false);
       setResponse(data);
     } else { console.log("No itinerary details provided") }
@@ -77,7 +74,7 @@ const SearchModal = ({setOpenModal, destinationValue, setDestinationValue, durat
         <header className={styles.header}>
           <h3>Your trip details</h3>
         </header>
-        <form className={styles.form} onSubmit={handleSubmit}>
+        <form id="modalForm" className={styles.form} onSubmit={handleSubmit}>
           <div className={styles.main}>
             <div className={styles.inputGroup}>
               <Input
@@ -89,7 +86,7 @@ const SearchModal = ({setOpenModal, destinationValue, setDestinationValue, durat
                   required
                 />
                 <Input
-                  type="text"
+                  type="number"
                   value={durationValue}
                   onChange={handleDurationChange}
                   placeholder="Enter your trip duration"

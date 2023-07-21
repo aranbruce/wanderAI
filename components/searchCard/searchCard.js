@@ -32,7 +32,7 @@ const SearchCard = ({ setDestinationValue, setDurationValue, destinationValue, d
   return (
     <div className={styles.card}>
       <h4 className={styles.title}>Plan your trip</h4>
-      <form className={styles.form} onSubmit={handleSubmit}>
+      <form id="cardForm"className={styles.form} onSubmit={handleSubmit}>
         <div className={styles.inputGroup}>
           <Input
             type="text"
@@ -43,7 +43,7 @@ const SearchCard = ({ setDestinationValue, setDurationValue, destinationValue, d
             required
           />
           <Input
-            type="text"
+            type="number"
             value={durationValue}
             onChange={handleDurationChange}
             placeholder="Enter your trip duration"

@@ -6,7 +6,7 @@ const Loading = () => {
   return (
     <div className={styles.container}>
       <div className={styles.pin}></div>
-      <div class={styles.pulse}></div>
+      <div className={styles.pulse}></div>
     </div>
   )
 }
