@@ -6,6 +6,7 @@ import Hero from '../content/hero/hero'
 
 import styles from './page.module.css'
 import Itinerary from '@/components/itinerary/itinerary'
+import Loading from '@/components/loading/loading'
 
 
 const Home = () => {
@@ -27,9 +28,8 @@ const Home = () => {
   return (
     <body>
       <main className={styles.main}>
-
           {isLoading ? 
-          <Section><h1>Loading...</h1></Section>
+          <Loading/>
           :
             showItinerary ?
               <Itinerary response={response} showItinerary={showItinerary} setShowItinerary={setShowItinerary} isLoading={isLoading}/>
