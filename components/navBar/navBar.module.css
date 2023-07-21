@@ -1,10 +1,21 @@
 .nav {
   display: flex;
   width: 100%;
-  position: absolute;
+  position: fixed;
   top: 0;
   padding: 16px 16px;
   justify-content: space-between;
-  align-items: left;
+  align-content: left;
+  transition: background-color 0.15s ease-in-out;
+}
 
+.navScrolled {
+  display: flex;
+  width: 100%;
+  position: fixed;
+  top: 0;
+  padding: 16px 16px;
+  justify-content: space-between;
+  align-content: left;
+  background-color: #fff;
 }
