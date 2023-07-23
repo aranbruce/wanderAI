@@ -51,7 +51,7 @@ const SearchModal = ({
   }
   return (
     <>
-      <div className={styles.background} onClick={() => handleModalClose()}>    </div>
+      <div className={styles.background} onClick={() => handleModalClose()}></div>
       <div className={styles.modal} >
         <header className={styles.header}>
           <h3>Your trip details</h3>
@@ -139,7 +139,7 @@ const SearchModal = ({
           </div>
           <div className={styles.footer}>
             <Button variant="secondary" onClick={handleModalClose} imageSrc="/icons/back.svg" type="button"/>
-            <Button onClick={handleSubmit} label="Plan" type="submit"/>
+            <Button label="Plan" type="submit"/>
           </div>
         </form>
       </div>

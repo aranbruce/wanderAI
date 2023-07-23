@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect }  from 'react'
+import React, { useState }  from 'react'
 import Section from '@/components/section/section'
 import Input from '@/components/input/input'
 import Button from '@/components/button/button'
@@ -9,6 +9,7 @@ import Loading from '@/components/loading/loading'
 
 import styles from './page.module.css'
 import Itinerary from '@/components/itinerary/itinerary'
+import SignUpModal from '@/components/signUpModal/signUpModal'
 
 
 // import Map from '@/components/map/map'
@@ -19,6 +20,7 @@ const Home = () => {
   const [durationValue, setDurationValue] = useState('');
   const [selectedPreferences, setSelectedPreferences] = useState([]);
   const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
+  const [isSignUpModalOpen, setIsSignUpModalOpen] = useState(false);
   const [response, setResponse] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -28,7 +30,7 @@ const Home = () => {
   console.log("durationValue:", durationValue);
   console.log("isSearchModalOpen:", isSearchModalOpen);
   console.log("isLoading:", isLoading);
-    
+
   const handleDestinationChange = (e) => {
     setDestinationValue(e.target.value);
   };
@@ -41,7 +43,6 @@ const Home = () => {
     if (destinationValue && durationValue) {
       e.preventDefault();
       setIsSearchModalOpen(true);
-      console.log("card form submitted")
     }
   };
 
@@ -74,7 +75,13 @@ const Home = () => {
       <main className={styles.main}>
           {
           isLoading? <Loading /> : 
-          response ?  <Itinerary response={response} setResponse={setResponse}/> :
+          response ?  
+          <Itinerary 
+            response={response} 
+            setResponse={setResponse} 
+            isSignUpModalOpen={isSignUpModalOpen}
+            setIsSignUpModalOpen={setIsSignUpModalOpen}
+          /> :
           <Section>
             <div className={styles.heroContainer} >
               <div className={styles.introText}>
@@ -83,7 +90,7 @@ const Home = () => {
               </div>
               <div className={styles.card}>
                 <h4 className={styles.cardTitle}>Plan your trip</h4>
-                <form id="cardForm"className={styles.form} onSubmit={handleSubmit} >
+                <form id="cardForm" className={styles.form} onSubmit={handleSubmit} >
                   <div className={styles.inputGroup}>
                     <Input
                       type="text"
@@ -102,7 +109,7 @@ const Home = () => {
                       required
                     />
                     </div>
-                  <Button label="Start planning" onClick={handleSubmit} type="submit"/>
+                  <Button label="Start planning" type="submit"/>
                   </form>
               </div>
             </div> 
@@ -120,6 +127,11 @@ const Home = () => {
         setSelectedPreferences={setSelectedPreferences}
         makeApiCall={makeApiCall}
       />
+      : isSignUpModalOpen && !isLoading ? 
+      <SignUpModal 
+      isSignUpModalOpen={isSignUpModalOpen}
+      setIsSignUpModalOpen={setIsSignUpModalOpen}
+      /> 
       : null}
     </main>
   )

@@ -36,7 +36,7 @@ const NavBar = ({hideButton}) => {
           priority
         />
       </Link>
-      {hideButton ? "" : <Link href="/signup"><Button label="Sign up"/></Link>}
+      {hideButton ? "" : <Link href="/sign-up"><Button label="Sign up"/></Link>}
     </nav>
   )
 }

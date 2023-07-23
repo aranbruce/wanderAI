@@ -6,13 +6,13 @@ import Map from '../map/map'
 
 import styles from './itinerary.module.css'
 
-const Itinerary = ({response, setResponse}) => {
+const Itinerary = ({response, setResponse, setIsSignUpModalOpen, isSignUpModalOpen}) => {
   const [timeOfDay, setTimeOfDay] = useState("morning");
   const [day, setDay] = useState(0);
 
     const increaseTimeOfDay = () => {
       if (timeOfDay === "evening" && day === 1) {
-        alert("Sign up")
+        setIsSignUpModalOpen(!isSignUpModalOpen);
       } else if (timeOfDay === "morning") {
         setTimeOfDay("afternoon");
       } else if (timeOfDay === "afternoon") {
