@@ -71,7 +71,6 @@ const Home = () => {
   };
 
   return (
-    <body>
       <main className={styles.main}>
           {
           isLoading? <Loading /> : 
@@ -109,7 +108,6 @@ const Home = () => {
             </div> 
           </Section>
           }
-      </main>
       {isSearchModalOpen && !isLoading ?
       <SearchModal 
         isSearchModalOpen={isSearchModalOpen}
@@ -123,7 +121,7 @@ const Home = () => {
         makeApiCall={makeApiCall}
       />
       : null}
-    </body>
+    </main>
   )
 }
 

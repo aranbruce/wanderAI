@@ -27,7 +27,7 @@ const NavBar = ({hideButton}) => {
 
   return (
     <nav className={`${styles.nav} ${scrolled ? styles.navScrolled : ''}`}>
-      <Link href={{ pathname: "/", query: { name: 'test' }}}>
+      <Link href="/">
         <Image
           src="./logo.svg"
           alt="WanderAI Logo"
