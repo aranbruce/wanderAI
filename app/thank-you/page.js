@@ -18,8 +18,8 @@ const ThankYou = () => {
           priority
         />
         <div className={styles.text}>
-          <h1 className={styles.title}>Youre on the waitlist</h1>
-          <p className={styles.description}>Not long now! We'll send an email to jane.doe@gmail.com as soon as you have access to a WanderAI account</p>
+          <h1 className={styles.title}>You`&apos;`re on the waitlistz</h1>
+          <p className={styles.description}>Not long now! We`&apos;`ll send an email to jane.doe@gmail.com as soon as you have access to a WanderAI account</p>
         </div>
         <Link href="/"><Button label="Back to home"/></Link>
       </div>
