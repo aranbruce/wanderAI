@@ -6,6 +6,7 @@ import Input from '@/components/input/input'
 import Button from '@/components/button/button'
 import SearchModal from '@/components/searchModal/searchModal'
 import Loading from '@/components/loading/loading'
+import { Analytics } from '@vercel/analytics/react';
 
 import styles from './page.module.css'
 import Itinerary from '@/components/itinerary/itinerary'
@@ -133,7 +134,9 @@ const Home = () => {
       setIsSignUpModalOpen={setIsSignUpModalOpen}
       /> 
       : null}
+    <Analytics />
     </main>
+    
   )
 }
 

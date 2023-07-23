@@ -2,6 +2,7 @@
 import './globals.css'
 import { Roboto_Flex } from 'next/font/google'
 import NavBar from "../components/navBar/navBar"
+import { Analytics } from '@vercel/analytics/react';
 
 const robotFlex = Roboto_Flex({ 
   weight: ['400', '500', '600'],
@@ -24,6 +25,7 @@ export default function RootLayout({ children }) {
       <body className={robotFlex.className}>
         <NavBar hideButton={hideButton}/>
         {children}
+        <Analytics/>
       </body>
     </html>
   )
