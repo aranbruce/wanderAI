@@ -20,7 +20,6 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <head>
         <link rel='icon' href='/favicon.ico'/>
-
       </head>
       <body className={robotFlex.className}>
         <NavBar hideButton={hideButton}/>

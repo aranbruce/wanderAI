@@ -7,7 +7,17 @@ import Input from '../input/input'
 import Checkbox from '../checkbox/checkbox'
 import Button from '../button/button'
 
-const SearchModal = ({setOpenModal, destinationValue, setDestinationValue, durationValue, setDurationValue, setSelectedPreferences, selectedPreferences, setResponse, response, setIsLoading, isLoading}) => {  
+const SearchModal = ({ 
+    setIsSearchModalOpen,
+    isSearchModalOpen,
+    destinationValue,
+    setDestinationValue,
+    durationValue,
+    setDurationValue,
+    selectedPreferences,
+    setSelectedPreferences,
+    makeApiCall
+  }) => {  
   const handleDestinationChange = (e) => {
     setDestinationValue(e.target.value);
   };
@@ -16,7 +26,7 @@ const SearchModal = ({setOpenModal, destinationValue, setDestinationValue, durat
     setDurationValue(e.target.value);
   };
 
-  const handleCheckboxChange = (label) => {
+  const handlePreferenceChange = (label) => {
     if (selectedPreferences.includes(label)) {
       setSelectedPreferences((prevPreferences) =>
         prevPreferences.filter((checkbox) => checkbox !== label)
@@ -26,50 +36,22 @@ const SearchModal = ({setOpenModal, destinationValue, setDestinationValue, durat
     }
   };
 
-  const checkFormValues = () => {
-    preventDefault();
+  // could abstract as is shared across pages.js and searchModal.js
+  const handleSubmit = (e) => {
     if (destinationValue && durationValue) {
-      setOpenModal(false);
+      e.preventDefault();
+      setIsSearchModalOpen(!isSearchModalOpen);
+      console.log("modal form submitted")
+      makeApiCall();
     }
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-  };
-
-  const handleSubmitAndGetResonseFromAPI = (e) => {
-    handleSubmit(e);
-    getResponseFromOpenAI();
+  const handleModalClose = (e) => {
+    setIsSearchModalOpen(!isSearchModalOpen);
   }
-
-  const getResponseFromOpenAI = async () => {
-    console.log('Destination:', destinationValue);
-    console.log('Duration:', durationValue);
-    console.log(selectedPreferences.length > 0 ? `Preferences: ${selectedPreferences.join(', ')}` : 'No preferences selected');
-    if (destinationValue && durationValue) {
-      setResponse("");
-      setOpenModal(false);
-      console.log("Getting response from OpenAI...");
-      setIsLoading(true);
-      const response = await fetch("/api/openai", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ 
-          prompt: `Plan me a trip to ${destinationValue} for ${durationValue} days. 
-          Include activities that match the following preferences: ${selectedPreferences.join(', ')}`
-        }),
-      });
-      const data = await response.json();
-      setIsLoading(false);
-      setResponse(data);
-    } else { console.log("No itinerary details provided") }
-  };
-
   return (
     <>
-      <div className={styles.background} onClick={() => setOpenModal(false)}>    </div>
+      <div className={styles.background} onClick={() => handleModalClose()}>    </div>
       <div className={styles.modal} >
         <header className={styles.header}>
           <h3>Your trip details</h3>
@@ -100,64 +82,64 @@ const SearchModal = ({setOpenModal, destinationValue, setDestinationValue, durat
                   <Checkbox 
                     label="Food"
                     checked={selectedPreferences.includes('Food')}
-                    onChange={() => handleCheckboxChange('Food')}
+                    onChange={() => handlePreferenceChange('Food')}
                   />
                   <Checkbox
                     label="Culture"
                     checked={selectedPreferences.includes('Culture')}
-                    onChange={() => handleCheckboxChange('Culture')}
+                    onChange={() => handlePreferenceChange('Culture')}
                   />
                   <Checkbox 
                     label="Outdoors"
                     checked={selectedPreferences.includes('Outdoors')}
-                    onChange={() => handleCheckboxChange('Outdoors')}
+                    onChange={() => handlePreferenceChange('Outdoors')}
                   />
                   <Checkbox 
                     label="Indoors"
                     checked={selectedPreferences.includes('Indoors')}
-                    onChange={() => handleCheckboxChange('Indoors')}
+                    onChange={() => handlePreferenceChange('Indoors')}
                   />
                   <Checkbox 
                     label="Active"
                     checked={selectedPreferences.includes('Active')}
-                    onChange={() => handleCheckboxChange('Active')}
+                    onChange={() => handlePreferenceChange('Active')}
                   />
                   <Checkbox 
                     label="Relaxation"
                     checked={selectedPreferences.includes('Relaxation')}
-                    onChange={() => handleCheckboxChange('Relaxation')}
+                    onChange={() => handlePreferenceChange('Relaxation')}
                   />
                   <Checkbox 
                     label="Pet friendly"
                     checked={selectedPreferences.includes('Pet friendly')}
-                    onChange={() => handleCheckboxChange('Pet friendly')}
+                    onChange={() => handlePreferenceChange('Pet friendly')}
                   />
                   <Checkbox 
                     label="Child friendly"
                     checked={selectedPreferences.includes('Child friendly')}
-                    onChange={() => handleCheckboxChange('Child friendly')}
+                    onChange={() => handlePreferenceChange('Child friendly')}
                   />
                   <Checkbox 
                     label="Vegetarian"
                     checked={selectedPreferences.includes('Vegetarian')}
-                    onChange={() => handleCheckboxChange('Vegetarian')}
+                    onChange={() => handlePreferenceChange('Vegetarian')}
                   />
                   <Checkbox 
                     label="Vegan"
                     checked={selectedPreferences.includes('Vegan')}
-                    onChange={() => handleCheckboxChange('Vegan')}
+                    onChange={() => handlePreferenceChange('Vegan')}
                   />
                   <Checkbox 
                     label="Nightlife"
                     checked={selectedPreferences.includes('Nightlife')}
-                    onChange={() => handleCheckboxChange('Nightlife')}
+                    onChange={() => handlePreferenceChange('Nightlife')}
                   />
                 </div>
               </div>
           </div>
           <div className={styles.footer}>
-            <Button type="secondary" onClick={checkFormValues} imageSrc="/icons/back.svg"/>
-            <Button onClick={handleSubmitAndGetResonseFromAPI} label="Plan" type="submit"/>
+            <Button variant="secondary" onClick={handleModalClose} imageSrc="/icons/back.svg" type="button"/>
+            <Button onClick={handleSubmit} label="Plan" type="submit"/>
           </div>
         </form>
       </div>

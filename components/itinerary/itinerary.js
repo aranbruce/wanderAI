@@ -6,18 +6,9 @@ import Map from '../map/map'
 
 import styles from './itinerary.module.css'
 
-const Itinerary = ({response, isLoading, showItinerary, setShowItinerary}) => {
+const Itinerary = ({response, setResponse}) => {
   const [timeOfDay, setTimeOfDay] = useState("morning");
   const [day, setDay] = useState(0);
-  console.log("showItinerary:", showItinerary)
-  
-  useEffect(() => {
-    if (response !== null && isLoading === false) {
-      setShowItinerary(true);
-    } else {
-      setShowItinerary(false);
-    }
-  }, []);
 
     const increaseTimeOfDay = () => {
       if (timeOfDay === "evening" && day === 1) {
@@ -34,7 +25,7 @@ const Itinerary = ({response, isLoading, showItinerary, setShowItinerary}) => {
 
     const decreaseTimeOfDay = () => {
       if (timeOfDay === "morning" && day === 0) {
-        setShowItinerary(false);
+        setResponse(null);
       } else if (timeOfDay === "evening") {
         setTimeOfDay("afternoon");
       } else if (timeOfDay === "afternoon") {
@@ -47,29 +38,47 @@ const Itinerary = ({response, isLoading, showItinerary, setShowItinerary}) => {
 
   return (
     <div>
-    {response !== null && isLoading === false ? 
-    <>
-      {console.log(response)}
       <div className={styles.container}>
         <div className={styles.mapContainer}>
-          <Map initialLng={response[day][timeOfDay].longitude} initialLat={response[day][timeOfDay].latitude}/>
+          <Map 
+            response={response}
+            day={day}
+            timeOfDay={timeOfDay}
+          />
         </div>
         <div className={styles.dayCard}>
-          <div className={styles.content}>
-            <div className={styles.titles}>
-              <h2 className={styles.day}>Day {day + 1} - {timeOfDay.charAt(0).toUpperCase() + timeOfDay.slice(1)}</h2>
-              <h3 className={styles.location}>{response ? response[day][timeOfDay].location : null}</h3>
+          {timeOfDay === "morning" ? 
+            <div className={styles.content}>
+              <div className={styles.titles}>
+                <h2 className={styles.day}>Day {day + 1} - {timeOfDay.charAt(0).toUpperCase() + timeOfDay.slice(1)}</h2>
+                <h3 className={styles.location}>{response[day].morning.location}</h3>
               </div>
-              <p>{response ? response[day][timeOfDay].description: null}</p>
+              <p>{response[day].morning.description}</p>
             </div>
+            : 
+          timeOfDay === "afternoon" ? 
+            <div className={styles.content}>
+              <div className={styles.titles}>
+                <h2 className={styles.day}>Day {day + 1} - {timeOfDay.charAt(0).toUpperCase() + timeOfDay.slice(1)}</h2>
+                <h3 className={styles.location}>{response[day].afternoon.location}</h3>
+              </div>
+              <p>{response[day].afternoon.description}</p>
+            </div>
+          :
+          timeOfDay === "evening" ? 
+            <div className={styles.content}>
+              <div className={styles.titles}>
+                <h2 className={styles.day}>Day {day + 1} - {timeOfDay.charAt(0).toUpperCase() + timeOfDay.slice(1)}</h2>
+                <h3 className={styles.location}>{response[day].evening.location}</h3>
+              </div>
+              <p>{response[day].evening.description}</p>
+            </div> : null}
             <footer className={styles.footer}>
-              <Button type="secondary" onClick={decreaseTimeOfDay} imageSrc="/icons/back.svg"/>
+              <Button variant="secondary" onClick={decreaseTimeOfDay} imageSrc="/icons/back.svg"/>
               <Button onClick={increaseTimeOfDay} label="Next" type="submit"/>
             </footer>
-          </div>
+        </div>
       </div>
-      </> : 
-      null}
   </div>
   );
 }

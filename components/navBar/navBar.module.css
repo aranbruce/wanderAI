@@ -5,8 +5,8 @@
   top: 0;
   padding: 16px 16px;
   justify-content: space-between;
-  align-content: left;
   transition: background-color 0.15s ease-in-out;
+  z-index: 3;
 }
 
 .navScrolled {

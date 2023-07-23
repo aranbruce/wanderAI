@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
+import Link from 'next/link'
 import Button from "../button/button"
 import Image from 'next/image'
 import styles from "./navBar.module.css"
@@ -26,14 +27,16 @@ const NavBar = ({hideButton}) => {
 
   return (
     <nav className={`${styles.nav} ${scrolled ? styles.navScrolled : ''}`}>
-      <Image
-        src="./logo.svg"
-        alt="WanderAI Logo"
-        width={200}
-        height={48}
-        priority
-      />
-      {hideButton ? "" : <Button label="Sign up"/>}
+      <Link href={{ pathname: "/", query: { name: 'test' }}}>
+        <Image
+          src="./logo.svg"
+          alt="WanderAI Logo"
+          width={200}
+          height={48}
+          priority
+        />
+      </Link>
+      {hideButton ? "" : <Link href="/signup"><Button label="Sign up"/></Link>}
     </nav>
   )
 }
