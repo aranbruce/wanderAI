@@ -49,7 +49,7 @@ const SignUp = () => {
       <div className={styles.container}>
         <div className={styles.text}>
           <h1 className={styles.title}>Create an account and join our waitlist</h1>
-          <p className={styles.description}>Sign up now and access to create a full itinerary that you can use to plan your next great adventure</p>
+          <p className={styles.description}>Sign up now to get access to your full itinerary and plan your next great adventure in seconds</p>
         </div>
         {/* <form id="signUpForm" className={styles.form} onSubmit={handleSubmit}> */}
         <form id="signUpForm" className={styles.form} action="https://formsubmit.co/34c673adc32695cc897b037f1e8e02e6" method="POST">
