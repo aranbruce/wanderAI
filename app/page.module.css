@@ -128,7 +128,12 @@
   display: flex;
   gap: 16px;
   flex-direction: column;
+}
 
+.signUpCardTitle {
+  font-size: 2rem;
+  line-height: 2.4rem;
+  font-weight: 600;
 }
 
 
@@ -176,6 +181,10 @@
   }
   .signUpCard {
     padding: 64px;
+  }
+  .signUpCardTitle {
+    font-size: 3rem;
+    line-height: 3.6rem;
   }
 }
 

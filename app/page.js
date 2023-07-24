@@ -148,7 +148,7 @@ const Home = () => {
             <Section>
               <div className={styles.signUpCard}>
                 <div className={styles.signUpCardText}>
-                  <h2>Sign up and start planning your next adventure</h2>
+                  <h2 className={styles.signUpCardTitle}>Sign up and start planning your next adventure</h2>
                   <p>Start using WanderAI today and take the pain out of holiday planning</p>
               </div>
               <Link href="/sign-up">
