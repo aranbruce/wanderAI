@@ -52,7 +52,7 @@
 }
 
 .cardTitle {
-  font: 600;
+  font-weight: 600;
 }
 
 .form {
@@ -104,7 +104,7 @@
   text-align: center;
 }
 
-.howItWorksText, .howItWorksStepReverse {
+.howItWorksText {
   display: flex;
   flex-direction: column;
   gap: 12px;
