@@ -8,9 +8,10 @@
   line-height: 1.5rem;
 
   .input {
-    width: 120px
+    border-radius: 4px;
   }
   .input:focus-visible {
-    outline: 3px solid rgba(180, 87, 253, 0.30);
+    outline: 3px solid #B4E2D6;;
+    border-radius: 4px;
   }
 }

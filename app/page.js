@@ -6,11 +6,12 @@ import Input from '@/components/input/input'
 import Button from '@/components/button/button'
 import SearchModal from '@/components/searchModal/searchModal'
 import Loading from '@/components/loading/loading'
-import { Analytics } from '@vercel/analytics/react';
+import Image from 'next/image'
 
 import styles from './page.module.css'
 import Itinerary from '@/components/itinerary/itinerary'
 import SignUpModal from '@/components/signUpModal/signUpModal'
+import Link from 'next/link'
 
 
 // import Map from '@/components/map/map'
@@ -83,38 +84,79 @@ const Home = () => {
             isSignUpModalOpen={isSignUpModalOpen}
             setIsSignUpModalOpen={setIsSignUpModalOpen}
           /> :
-          <Section>
-            <div className={styles.heroContainer} >
-              <div className={styles.introText}>
-                <h1 className={styles.title}>Love travel, hate planning?</h1>
-                <p>Plan your next adventure in seconds through the power of AI </p>
+          <>
+            <Section>
+              <div className={styles.heroContainer} >
+                <div className={styles.introText}>
+                  <h1 className={styles.title}>Love travel, hate planning?</h1>
+                  <p>Plan your next adventure in seconds through the power of AI </p>
+                </div>
+                <div className={styles.card}>
+                  <h4 className={styles.cardTitle}>Plan your trip</h4>
+                  <form id="cardForm" className={styles.form} onSubmit={handleSubmit} >
+                    <div className={styles.inputGroup}>
+                      <Input
+                        type="text"
+                        value={destinationValue}
+                        inputmode="text"
+                        onChange={handleDestinationChange}
+                        placeholder="Enter your destination"
+                        label="Where do you want to go?"
+                        required
+                      />
+                      <Input
+                        type="number"
+                        inputmode="numeric"
+                        value={durationValue}
+                        onChange={handleDurationChange}
+                        placeholder="Enter your trip duration"
+                        label="How many days is your trip?"
+                        required
+                      />
+                      </div>
+                    <Button label="Start planning" type="submit"/>
+                    </form>
+                </div>
+              </div> 
+            </Section>
+            <Section>
+              <div className={styles.howItWorksSectionContent}>
+                <div className={styles.howItWorksTitles}>
+                  <h5>How it works</h5>
+                  <h2>Adventure awaits</h2>
+                </div>
+                <div className={styles.howItWorksStep}>
+                  <div className={styles.howItWorksImage}>
+                    <Image src="/howItWorks1.svg" alt="Hero image" fill={true}/>
+                  </div>
+                  <div className={styles.howItWorksText}>
+                    <h3>Enter your destination and get an itinerary in seconds</h3>
+                    <p>Simply fill in the details of where you looking to go, how long for and your personal preferences and WanderAI will generate a full itinerary for your trip in seconds</p>
+                  </div>
+                </div>
+                <div className={styles.howItWorksStepReverse}>
+                  <div className={styles.howItWorksImage}>
+                    <Image src="/howItWorks2.svg" alt="Hero image" fill={true}/>
+                  </div>
+                  <div className={styles.howItWorksText}>
+                    <h3>Read and refine</h3>
+                    <p>Read through your planned itinerary, suggest changes and our AI powered trip planner will instantly create amendments so you can be sure to have a trip that suits your interests</p>
+                  </div>
+                </div>
               </div>
-              <div className={styles.card}>
-                <h4 className={styles.cardTitle}>Plan your trip</h4>
-                <form id="cardForm" className={styles.form} onSubmit={handleSubmit} >
-                  <div className={styles.inputGroup}>
-                    <Input
-                      type="text"
-                      value={destinationValue}
-                      onChange={handleDestinationChange}
-                      placeholder="Enter your destination"
-                      label="Where do you want to go?"
-                      required
-                    />
-                    <Input
-                      type="number"
-                      value={durationValue}
-                      onChange={handleDurationChange}
-                      placeholder="Enter your trip duration"
-                      label="How many days is your trip?"
-                      required
-                    />
-                    </div>
-                  <Button label="Start planning" type="submit"/>
-                  </form>
+            </Section>
+            <Section>
+              <div className={styles.signUpCard}>
+                <div className={styles.signUpCardText}>
+                  <h2>Sign up and start planning your next adventure</h2>
+                  <p>Start using WanderAI today and take the pain out of holiday planning</p>
               </div>
-            </div> 
-          </Section>
+              <Link href="/sign-up">
+                  <Button variant="secondary" label="Sign up" />
+              </Link>
+            </div>
+            </Section>
+          </>
           }
       {isSearchModalOpen && !isLoading ?
       <SearchModal 
@@ -134,9 +176,7 @@ const Home = () => {
       setIsSignUpModalOpen={setIsSignUpModalOpen}
       /> 
       : null}
-    <Analytics />
     </main>
-    
   )
 }
 

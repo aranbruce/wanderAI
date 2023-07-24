@@ -1,10 +1,10 @@
 
 import './globals.css'
-import { Roboto_Flex } from 'next/font/google'
+import { Raleway } from 'next/font/google'
 import NavBar from "../components/navBar/navBar"
 import { Analytics } from '@vercel/analytics/react';
 
-const robotFlex = Roboto_Flex({ 
+const raleway = Raleway({ 
   weight: ['400', '500', '600'],
   subsets: ['latin']
 })
@@ -22,7 +22,7 @@ export default function RootLayout({ children }) {
       <head>
         <link rel='icon' href='/favicon.ico'/>
       </head>
-      <body className={robotFlex.className}>
+      <body className={raleway.className}>
         <NavBar hideButton={hideButton}/>
         {children}
         <Analytics/>

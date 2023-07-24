@@ -56,6 +56,7 @@ const SignUp = () => {
           <div className={styles.inputGroup}>
           <Input
             type="text"
+            inputmode="text"
             value={fullname}
             onChange={handleFullNameChange}
             placeholder="Enter your full name"
@@ -64,6 +65,7 @@ const SignUp = () => {
           />
           <Input
             type="email"
+            inputmode="email"
             value={email}
             onChange={handleEmailChange}
             placeholder="Enter your email"
@@ -71,7 +73,7 @@ const SignUp = () => {
             required
           />
           <input type="hidden" name="_captcha" value="false"/>
-          <input type="hidden" name="_next" value="https://wander-ai.vercel.app/thank-you"/>
+          <input type="hidden" name="_next" value="https://wanderai.co.uk/thank-you"/>
           </div>
           <Button label="Sign Up" type="submit"/>
         </form>
