@@ -10,7 +10,7 @@
   width: 30px;
   height: 30px;
   border-radius: 50% 50% 50% 0;
-  background: #F19127;
+  background: #35977D;
   position: absolute;
   transform: rotate(-45deg);
   left: 50%;
@@ -48,7 +48,7 @@
   animation: pulsate 1s ease-out;
   animation-iteration-count: infinite;
   opacity: 0;
-  box-shadow: 0 0 1px 2px #F19127;
+  box-shadow: 0 0 1px 2px #35977D;
 }
 
 @keyframes pulsate {
