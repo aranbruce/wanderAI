@@ -12,6 +12,5 @@
   }
   .input:focus-visible {
     outline: 3px solid #B4E2D6;;
-    border-radius: 4px;
   }
 }

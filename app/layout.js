@@ -5,7 +5,7 @@ import NavBar from "../components/navBar/navBar"
 import { Analytics } from '@vercel/analytics/react';
 
 const raleway = Raleway({ 
-  weight: ['400', '500', '600'],
+  weight: ['400', '500', '600', '700'],
   subsets: ['latin']
 })
 
