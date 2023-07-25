@@ -1,24 +1,25 @@
-.nav {
+.nav, .navScrolled {
   display: flex;
   width: 100%;
   position: fixed;
   top: 0;
   padding: 12px 16px;
-  justify-content: space-between;
+  justify-content: center;
   transition: background-color, box-shadow 0.15s ease-in-out;
   z-index: 3;
 }
 
 .navScrolled {
-  display: flex;
-  width: 100%;
-  position: fixed;
-  top: 0;
-  padding: 16px 16px;
-  justify-content: space-between;
-  align-content: left;
   background-color: #fff;
   box-shadow: 0px 2px 12px 0px rgba(0, 0, 0, 0.08);
+}
+
+.content {
+  display: flex;
+  justify-content: space-between;
+  align-content: left;
+  width: 100%;
+  max-width: 1440px;
 }
 
 .logoLink {

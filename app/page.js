@@ -6,12 +6,11 @@ import Input from '@/components/input/input'
 import Button from '@/components/button/button'
 import SearchModal from '@/components/searchModal/searchModal'
 import Loading from '@/components/loading/loading'
-import Image from 'next/image'
-
 import styles from './page.module.css'
 import Itinerary from '@/components/itinerary/itinerary'
 import SignUpModal from '@/components/signUpModal/signUpModal'
-import Link from 'next/link'
+import TextAndImage from '@/components/textAndImage/textAndImage'
+import SignUpCard from '@/components/signUpCard/signUpCard'
 
 
 // import Map from '@/components/map/map'
@@ -85,9 +84,9 @@ const Home = () => {
             setIsSignUpModalOpen={setIsSignUpModalOpen}
           /> :
           <>
-            <Section>
+            <Section hero>
               <div className={styles.heroContainer} >
-                <div className={styles.introText}>
+                <div className={styles.heroText}>
                   <h1 className={styles.title}>Love travel, hate planning?</h1>
                   <p>Plan your next adventure in seconds through the power of AI </p>
                 </div>
@@ -98,7 +97,7 @@ const Home = () => {
                       <Input
                         type="text"
                         value={destinationValue}
-                        inputmode="text"
+                        inputMode="text"
                         onChange={handleDestinationChange}
                         placeholder="Enter your destination"
                         label="Where do you want to go?"
@@ -106,7 +105,7 @@ const Home = () => {
                       />
                       <Input
                         type="number"
-                        inputmode="numeric"
+                        inputMode="numeric"
                         value={durationValue}
                         onChange={handleDurationChange}
                         placeholder="Enter your trip duration"
@@ -120,41 +119,28 @@ const Home = () => {
               </div> 
             </Section>
             <Section>
-              <div className={styles.howItWorksSectionContent}>
-                <div className={styles.howItWorksTitles}>
-                  <h5>How it works</h5>
-                  <h2>Adventure awaits</h2>
-                </div>
-                <div className={styles.howItWorksStep}>
-                  <div className={styles.howItWorksImage}>
-                    <Image src="/howItWorks1.svg" alt="Hero image" fill={true}/>
-                  </div>
-                  <div className={styles.howItWorksText}>
-                    <h3>Enter your destination and get an itinerary in seconds</h3>
-                    <p>Simply fill in the details of where you looking to go, how long for and your personal preferences and WanderAI will generate a full itinerary for your trip in seconds</p>
-                  </div>
-                </div>
-                <div className={styles.howItWorksStepReverse}>
-                  <div className={styles.howItWorksImage}>
-                    <Image src="/howItWorks2.svg" alt="Hero image" fill={true}/>
-                  </div>
-                  <div className={styles.howItWorksText}>
-                    <h3>Read and refine</h3>
-                    <p>Read through your planned itinerary, suggest changes and our AI powered trip planner will instantly create amendments so you can be sure to have a trip that suits your interests</p>
-                  </div>
-                </div>
+              <div className={styles.howItWorksText}>
+                <h5 className={styles.howItWorksSubtitle}>How it works</h5>
+                <h2 className={styles.howItWorksTitle}>Adventure awaits</h2>
+              </div>
+              <div className={styles.howItWorksContent}>
+                <TextAndImage
+                  title="Enter your destination and get an itinerary in seconds"
+                  description="Simply fill in the details of where you looking to go, how long for and your personal preferences and WanderAI will generate a full itinerary for your trip in seconds"
+                  imgSrc="/howItWorks1.svg"
+                  imgAlt="Card showing the destination and duration input fields"
+                />
+                <TextAndImage
+                  title="Read your itinerary and refine your trip"
+                  description="Read through your planned itinerary, suggest changes and our AI powered trip planner will instantly create amendments so you can be sure to have a trip that suits your interests"
+                  imgSrc="/howItWorks2.svg"
+                  imgAlt="Card showing itinerary to for a morning in New York"
+                  reverse
+                />
               </div>
             </Section>
             <Section>
-              <div className={styles.signUpCard}>
-                <div className={styles.signUpCardText}>
-                  <h2 className={styles.signUpCardTitle}>Sign up and start planning your next adventure</h2>
-                  <p>Start using WanderAI today and take the pain out of holiday planning</p>
-              </div>
-              <Link href="/sign-up">
-                  <Button variant="secondary" label="Sign up" />
-              </Link>
-            </div>
+              <SignUpCard />
             </Section>
           </>
           }

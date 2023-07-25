@@ -1,7 +1,7 @@
 
 import './globals.css'
 import { Raleway } from 'next/font/google'
-import NavBar from "../components/navBar/navBar"
+import NavBar from "../components/navigation/navigation"
 import { Analytics } from '@vercel/analytics/react';
 
 const raleway = Raleway({ 

@@ -2,10 +2,10 @@ import React from 'react'
 
 import styles from "./section.module.css"
 
-const Section = ({children}) => {
+const Section = ({children, hero}) => {
   return (
     <section className={styles.section}>
-      <div className={styles.sectionContent}>{children}</div>
+      <div className={!hero ? styles.content : styles.contentHero}>{children}</div>
     </section>
   )
 }

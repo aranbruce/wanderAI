@@ -16,7 +16,7 @@ const SignUpModal = ({setIsSignUpModalOpen, isSignUpModalOpen}) => {
       <div className={styles.modal} >
         <h3 className={styles.title}>Create an account to read more and refine</h3>
         <p className={styles.description}>Sign up now to read the full itinerary or refine it further</p>
-        <Link className={styles.link} href="/sign-up"><Button label="Sign up"/></Link>
+        <Button className={styles.button} href="/sign-up" label="Sign up"/>
       </div>
     </>
   )

@@ -56,7 +56,7 @@ const SignUp = () => {
           <div className={styles.inputGroup}>
           <Input
             type="text"
-            inputmode="text"
+            inputMode="text"
             value={fullname}
             onChange={handleFullNameChange}
             placeholder="Enter your full name"

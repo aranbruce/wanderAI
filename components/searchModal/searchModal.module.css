@@ -11,7 +11,8 @@
 
 .modal {
   display: flex;
-  animation: slide-up 300ms ease-in-out;
+  /* @keyframes duration | easing-function | delay | iteration-count | direction | fill-mode | play-state | name */
+  animation: 200ms ease-in-out 100ms 1 normal both running slide-up;
   width: 100%;
   max-height: 100vh;
   flex-direction: column;

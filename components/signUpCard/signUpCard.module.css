@@ -1,0 +1,40 @@
+.card {
+  padding: 32px;
+  border-radius: 16px;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.30) 0%, rgba(33, 35, 44, 0.50) 100%), url(/signUpBackground.png), lightgray 50% / cover no-repeat;
+  background-size: cover;
+  width: 100%;
+  max-width: 960px;
+  color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.text {
+  display: flex;
+  gap: 16px;
+  flex-direction: column;
+}
+
+.title {
+  font-size: 2rem;
+  line-height: 2.4rem;
+  font-weight: 600;
+}
+
+@media only screen and (min-width: 768px) {
+  .card {
+    padding: 64px;
+  }
+  .title {
+    font-size: 3rem;
+    line-height: 3.6rem;
+  }
+}
+
+@media only screen and (min-width: 1024px) {
+  .card {
+    padding: 96px;
+  }
+}

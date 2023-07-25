@@ -61,7 +61,7 @@ const SearchModal = ({
             <div className={styles.inputGroup}>
               <Input
                   type="text"
-                  inputmode="text"
+                  inputMode="text"
                   value={destinationValue}
                   onChange={handleDestinationChange}
                   placeholder="Enter your destination"
@@ -70,7 +70,7 @@ const SearchModal = ({
                 />
                 <Input
                   type="number"
-                  inputmode="numeric"
+                  inputMode="numeric"
                   value={durationValue}
                   onChange={handleDurationChange}
                   placeholder="Enter your trip duration"

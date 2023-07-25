@@ -15,9 +15,10 @@
   background-size: cover;
   box-shadow: 0px 4px 12px 0px rgba(0, 0, 0, 0.24);
   align-items: center;
+  max-width: 1440px;
 }
 
-.introText {
+.heroText {
   display: flex;
   flex-direction: column;
   flex-wrap: nowrap;
@@ -71,32 +72,7 @@
   width: 100%;
 }
 
-.howItWorksSectionContent {
-  display: flex;
-  flex-direction: column;
-  gap: 64px;
-  max-width: 960px;
-  align-items: center;
-}
-
-.howItWorksStep, .howItWorksStepReverse {
-  display: flex;
-  flex-direction: column;
-  gap: 32px;
-  align-items: center;
-}
-
-.howItWorksImage {
-  position: relative;
-  height: 320px;
-  width: 100%;
-  border-radius: 16px;
-  overflow: hidden;
-  background: url(/map.png) no-repeat;
-  background-size: cover;
-}
-
-.howItWorksTitles {
+.howItWorksText {
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -104,46 +80,33 @@
   text-align: center;
 }
 
-.howItWorksText {
+.howItWorksSubtitle {
+  color: #35977D;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 20px;
+}
+
+.howItWorksTitle {
+  text-align: center;
+  font-size: 3rem;
+  font-weight: 700;
+  line-height: 3.5rem;
+}
+
+.howItWorksContent {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  width: 100%;
+  gap: 64px;
+  align-items: center;
 }
-
-.signUpCard {
-  padding: 32px;
-  border-radius: 16px;
-  background: linear-gradient(180deg, rgba(0, 0, 0, 0.10) 0%, rgba(33, 35, 44, 0.20) 100%), url(../assets/mountains.jpg), lightgray 50% / cover no-repeat;
-  background-size: cover;
-  width: 100%;
-  max-width: 960px;
-  color: #ffffff;
-  display: flex;
-  flex-direction: column;
-  gap: 32px;
-}
-
-.signUpCardText {
-  display: flex;
-  gap: 16px;
-  flex-direction: column;
-}
-
-.signUpCardTitle {
-  font-size: 2rem;
-  line-height: 2.4rem;
-  font-weight: 600;
-}
-
-
 
 @media only screen and (min-width: 768px) {
   .heroContainer {
     padding: 120px 32px;
   }
 
-  .introText {
+  .heroText {
     text-align: center;
   }
   .title {
@@ -170,22 +133,6 @@
     flex-wrap: nowrap;
     align-items: stretch;
   }
-
-  .howItWorksStep, .howItWorksStepReverse {
-    flex-direction: row;
-    gap: 32px;
-  }
-
-  .howItWorksStepReverse {
-    flex-direction: row-reverse;
-  }
-  .signUpCard {
-    padding: 64px;
-  }
-  .signUpCardTitle {
-    font-size: 3rem;
-    line-height: 3.6rem;
-  }
 }
 
 @media only screen and (min-width: 1024px) {
@@ -196,9 +143,5 @@
   .title {
     font-size: 5rem;
     line-height: 6rem;
-  }
-
-  .signUpCard {
-    padding: 96px;
   }
 }
