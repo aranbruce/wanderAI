@@ -1,6 +1,6 @@
 'use client'
 
-import React, {useState} from 'react'
+import {useRouter, usePathname } from 'next/navigation'
 
 import styles from "./searchModal.module.css"
 import Input from '../input/input'
@@ -16,8 +16,10 @@ const SearchModal = ({
     setDurationValue,
     selectedPreferences,
     setSelectedPreferences,
-    makeApiCall
   }) => {  
+
+  const router = useRouter()
+  
   const handleDestinationChange = (e) => {
     setDestinationValue(e.target.value);
   };
@@ -41,13 +43,14 @@ const SearchModal = ({
     if (destinationValue && durationValue) {
       e.preventDefault();
       setIsSearchModalOpen(!isSearchModalOpen);
-      console.log("modal form submitted")
-      makeApiCall();
+      console.log("modal form submitted");
+      router.push(`/trip?destination=${destinationValue}&duration=${durationValue}&preferences=${selectedPreferences}`)
     }
   };
 
   const handleModalClose = (e) => {
-    setIsSearchModalOpen(!isSearchModalOpen);
+    setIsSearchModalOpen(!isSearchModalOpen)
+    
   }
   return (
     <>
