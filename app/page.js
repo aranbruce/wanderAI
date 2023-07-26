@@ -11,21 +11,22 @@ import TextAndImage from '@/components/textAndImage/textAndImage'
 import SignUpCard from '@/components/signUpCard/signUpCard'
 
 const Home = () => {
-  const [destinationValue, setDestinationValue] = useState('');
-  const [durationValue, setDurationValue] = useState('');
-  const [selectedPreferences, setSelectedPreferences] = useState([]);
+  const [destination, setDestination] = useState(localStorage.getItem('destination') || '');
+  const [duration, setDuration] = useState(localStorage.getItem('duration') || '');
+  const [preferences, setPreferences] = useState(JSON.parse(localStorage.getItem('preferences')) || []);
   const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
 
+  console.log("preferences:", preferences)
   const handleDestinationChange = (e) => {
-    setDestinationValue(e.target.value);
+    setDestination(e.target.value);
   };
   
   const handleDurationChange = (e) => {
-    setDurationValue(e.target.value);
+    setDuration(e.target.value);
   };
 
   const handleSubmit = (e) => {
-    if (destinationValue && durationValue) {
+    if (destination && duration) {
       e.preventDefault();
       setIsSearchModalOpen(true);
     }
@@ -45,7 +46,7 @@ const Home = () => {
               <div className={styles.inputGroup}>
                 <Input
                   type="text"
-                  value={destinationValue}
+                  value={destination}
                   inputMode="text"
                   onChange={handleDestinationChange}
                   placeholder="Enter your destination"
@@ -55,7 +56,7 @@ const Home = () => {
                 <Input
                   type="number"
                   inputMode="numeric"
-                  value={durationValue}
+                  value={duration}
                   onChange={handleDurationChange}
                   placeholder="Enter your trip duration"
                   label="How many days is your trip?"
@@ -95,12 +96,12 @@ const Home = () => {
       <SearchModal 
         isSearchModalOpen={isSearchModalOpen}
         setIsSearchModalOpen={setIsSearchModalOpen}
-        destinationValue={destinationValue}
-        setDestinationValue={setDestinationValue}
-        durationValue={durationValue}
-        setDurationValue={setDurationValue}
-        selectedPreferences={selectedPreferences}
-        setSelectedPreferences={setSelectedPreferences}
+        destination={destination}
+        setDestination={setDestination}
+        duration={duration}
+        setDuration={setDuration}
+        preferences={preferences}
+        setPreferences={setPreferences}
       /> : null}
     </main>
   )

@@ -17,22 +17,28 @@ const Itinerary = () => {
   const [isSignUpModalOpen, setIsSignUpModalOpen] = useState(false);
   const [day, setDay] = useState(0);
   console.log("response:", response);
-
-  const searchParams = useSearchParams();
-  const destinationValue = searchParams.get("duration");
-  const durationValue = searchParams.get("destination");
-  const selectedPreferences = searchParams.getAll("preferences");
+  
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   useEffect(() => {
-    makeApiCall(destinationValue, durationValue, selectedPreferences);
+    const destination = searchParams.get("destination");
+    const duration = searchParams.get("duration");
+    const preferences = searchParams.getAll("preferences");
+    const previousDestination = localStorage.getItem('destination');
+    const previousDuration = localStorage.getItem('duration');
+    const previousPreferences = JSON.parse(localStorage.getItem('preferences'));
+    const previousResponse = localStorage.getItem('response');
+    if (destination !== previousDestination || duration !== previousDuration || JSON.stringify(preferences.sort().join(',')) !== JSON.stringify(previousPreferences.sort().join(','))) {
+      makeApiCall({destination, duration, preferences});
+    } else {
+        setIsLoading(false);
+        setResponse(JSON.parse(previousResponse));
+    }
   }, []);
 
-  const makeApiCall = async () => {
-    console.log('Destination:', destinationValue);
-    console.log('Duration:', durationValue);
-    console.log(selectedPreferences.length > 0 ? `Preferences: ${selectedPreferences.join(', ')}` : 'No preferences selected');
-    if (destinationValue && durationValue) {
+  const makeApiCall = async ({destination, duration, preferences}) => {
+    if (destination && duration) {
       setResponse("");
       console.log("Getting response from OpenAI...");
       setIsLoading(true);
@@ -46,7 +52,7 @@ const Itinerary = () => {
         controller.abort();
         setIsLoading(false);
         console.log("Request timed out");
-      }, 20000);
+      }, 30000);
 
       // Add an error modal here
 
@@ -57,18 +63,25 @@ const Itinerary = () => {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({ 
-            prompt: `Plan me a trip to ${destinationValue} for ${durationValue} days. 
-            Include activities that match the following preferences: ${selectedPreferences.join(', ')}`
+            prompt: `Plan me a trip to ${destination} for ${duration} days. 
+            Include activities that match the following preferences: ${preferences.join(', ')}`
           }),
           signal: signal, // Pass the signal to the fetch call
         });
         const data = await response.json();
         setIsLoading(false);
         setResponse(data);
+        localStorage.setItem('response', JSON.stringify(data));
+        localStorage.setItem('destination', destination);
+        localStorage.setItem('duration', duration);
+        localStorage.setItem('preferences', JSON.stringify(preferences));
         console.log("Response from OpenAI:", data);
       } catch (error) {
         setIsLoading(false);
+        
         console.log("Error:", error.message);
+        console.log("isLoading:", isLoading)
+        // throw new Error("API call failed!");
       } finally {
         clearTimeout(timeoutId);
       }

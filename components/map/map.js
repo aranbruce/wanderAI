@@ -11,9 +11,6 @@ mapboxgl.accessToken = "pk.eyJ1IjoiYXJhbmJjIiwiYSI6ImNsa2RydW9tMjE1M2IzcnFveDY3c
 const Map = ({ response, day, timeOfDay }) => {
   const initialLng = response[day][timeOfDay].longitude;
   const initialLat = response[day][timeOfDay].latitude;
-  // console.log("initialLng:", initialLng);
-  // console.log("initialLat:", initialLat);
-  // console.log("response:", JSON.stringify(response));
 
   const mapContainer = useRef(null);
   const map = useRef(null);
@@ -23,7 +20,6 @@ const Map = ({ response, day, timeOfDay }) => {
    
   useEffect(() => {
     if (map.current) return; // initialize map only once
-    console.log("map loaded")
     map.current = new mapboxgl.Map({
       container: mapContainer.current,
       style: 'mapbox://styles/mapbox/streets-v12',
@@ -39,7 +35,6 @@ const Map = ({ response, day, timeOfDay }) => {
           { longitude: day.evening.longitude, latitude: day.evening.latitude }
         ];
       });
-      console.log("longitudesAndLatitudes:", longitudesAndLatitudes);
       // Loop through the longitudesAndLatitudes array and add a marker for each object
         longitudesAndLatitudes.forEach(obj => {
           // Create a new marker for the current object

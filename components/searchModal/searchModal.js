@@ -10,41 +10,42 @@ import Button from '../button/button'
 const SearchModal = ({ 
     setIsSearchModalOpen,
     isSearchModalOpen,
-    destinationValue,
-    setDestinationValue,
-    durationValue,
-    setDurationValue,
-    selectedPreferences,
-    setSelectedPreferences,
+    destination,
+    setDestination,
+    duration,
+    setDuration,
+    preferences,
+    setPreferences,
   }) => {  
 
   const router = useRouter()
   
   const handleDestinationChange = (e) => {
-    setDestinationValue(e.target.value);
+    setDestination(e.target.value);
   };
   
   const handleDurationChange = (e) => {
-    setDurationValue(e.target.value);
+    setDuration(e.target.value);
   };
 
   const handlePreferenceChange = (label) => {
-    if (selectedPreferences.includes(label)) {
-      setSelectedPreferences((prevPreferences) =>
+    if (preferences.includes(label)) {
+      setPreferences((prevPreferences) =>
         prevPreferences.filter((checkbox) => checkbox !== label)
       );
     } else {
-      setSelectedPreferences((prevPreferences) => [...prevPreferences, label]);
+      setPreferences((prevPreferences) => [...prevPreferences, label]);
     }
   };
 
   // could abstract as is shared across pages.js and searchModal.js
   const handleSubmit = (e) => {
-    if (destinationValue && durationValue) {
+    if (destination && duration) {
       e.preventDefault();
       setIsSearchModalOpen(!isSearchModalOpen);
-      console.log("modal form submitted");
-      router.push(`/trip?destination=${destinationValue}&duration=${durationValue}&preferences=${selectedPreferences}`)
+      const preferenceString = preferences.map(preference => `preferences=${preference}`).join('&');
+      const url = `/trip?destination=${destination}&duration=${duration}&${preferenceString}`;
+      router.push(url)
     }
   };
 
@@ -65,7 +66,7 @@ const SearchModal = ({
               <Input
                   type="text"
                   inputMode="text"
-                  value={destinationValue}
+                  value={destination}
                   onChange={handleDestinationChange}
                   placeholder="Enter your destination"
                   label="Where do you want to go?"
@@ -74,7 +75,7 @@ const SearchModal = ({
                 <Input
                   type="number"
                   inputMode="numeric"
-                  value={durationValue}
+                  value={duration}
                   onChange={handleDurationChange}
                   placeholder="Enter your trip duration"
                   label="How many days is your trip?"
@@ -86,57 +87,57 @@ const SearchModal = ({
                 <div className={styles.checkboxes}>
                   <Checkbox 
                     label="Food"
-                    checked={selectedPreferences.includes('Food')}
+                    checked={preferences.includes('Food')}
                     onChange={() => handlePreferenceChange('Food')}
                   />
                   <Checkbox
                     label="Culture"
-                    checked={selectedPreferences.includes('Culture')}
+                    checked={preferences.includes('Culture')}
                     onChange={() => handlePreferenceChange('Culture')}
                   />
                   <Checkbox 
                     label="Outdoors"
-                    checked={selectedPreferences.includes('Outdoors')}
+                    checked={preferences.includes('Outdoors')}
                     onChange={() => handlePreferenceChange('Outdoors')}
                   />
                   <Checkbox 
                     label="Indoors"
-                    checked={selectedPreferences.includes('Indoors')}
+                    checked={preferences.includes('Indoors')}
                     onChange={() => handlePreferenceChange('Indoors')}
                   />
                   <Checkbox 
                     label="Active"
-                    checked={selectedPreferences.includes('Active')}
+                    checked={preferences.includes('Active')}
                     onChange={() => handlePreferenceChange('Active')}
                   />
                   <Checkbox 
                     label="Relaxation"
-                    checked={selectedPreferences.includes('Relaxation')}
+                    checked={preferences.includes('Relaxation')}
                     onChange={() => handlePreferenceChange('Relaxation')}
                   />
                   <Checkbox 
                     label="Pet friendly"
-                    checked={selectedPreferences.includes('Pet friendly')}
+                    checked={preferences.includes('Pet friendly')}
                     onChange={() => handlePreferenceChange('Pet friendly')}
                   />
                   <Checkbox 
                     label="Child friendly"
-                    checked={selectedPreferences.includes('Child friendly')}
+                    checked={preferences.includes('Child friendly')}
                     onChange={() => handlePreferenceChange('Child friendly')}
                   />
                   <Checkbox 
                     label="Vegetarian"
-                    checked={selectedPreferences.includes('Vegetarian')}
+                    checked={preferences.includes('Vegetarian')}
                     onChange={() => handlePreferenceChange('Vegetarian')}
                   />
                   <Checkbox 
                     label="Vegan"
-                    checked={selectedPreferences.includes('Vegan')}
+                    checked={preferences.includes('Vegan')}
                     onChange={() => handlePreferenceChange('Vegan')}
                   />
                   <Checkbox 
                     label="Nightlife"
-                    checked={selectedPreferences.includes('Nightlife')}
+                    checked={preferences.includes('Nightlife')}
                     onChange={() => handlePreferenceChange('Nightlife')}
                   />
                 </div>
