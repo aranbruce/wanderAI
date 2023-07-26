@@ -25,10 +25,10 @@ const Itinerary = () => {
     const destination = searchParams.get("destination");
     const duration = searchParams.get("duration");
     const preferences = searchParams.getAll("preferences");
-    const previousDestination = localStorage.getItem('destination');
-    const previousDuration = localStorage.getItem('duration');
-    const previousPreferences = JSON.parse(localStorage.getItem('preferences'));
-    const previousResponse = localStorage.getItem('response');
+    const previousDestination = typeof window !== "undefined" ? localStorage.getItem('destination') : null;
+    const previousDuration = typeof window !== "undefined" ? localStorage.getItem('duration') : null;
+    const previousPreferences = typeof window !== "undefined" ? JSON.parse(localStorage.getItem('preferences')): null;
+    const previousResponse = typeof window !== "undefined" ? localStorage.getItem('response') : null;
     if (destination !== previousDestination || duration !== previousDuration || JSON.stringify(preferences.sort().join(',')) !== JSON.stringify(previousPreferences.sort().join(','))) {
       makeApiCall({destination, duration, preferences});
     } else {
