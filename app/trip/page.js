@@ -22,7 +22,7 @@ const Itinerary = () => {
   const destinationValue = searchParams.get("duration");
   const durationValue = searchParams.get("destination");
   const selectedPreferences = searchParams.getAll("preferences");
-  const router = useRouter
+  const router = useRouter();
 
   useEffect(() => {
     makeApiCall(destinationValue, durationValue, selectedPreferences);
