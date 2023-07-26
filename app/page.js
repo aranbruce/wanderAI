@@ -11,9 +11,9 @@ import TextAndImage from '@/components/textAndImage/textAndImage'
 import SignUpCard from '@/components/signUpCard/signUpCard'
 
 const Home = () => {
-  const [destination, setDestination] = useState(typeof window !== "undefined" ? localStorage.getItem('destination') : '');
-  const [duration, setDuration] = useState(typeof window !== "undefined" ? localStorage.getItem('duration') : '');
-  const [preferences, setPreferences] = useState(typeof window !== "undefined" ? JSON.parse(localStorage.getItem('preferences')) : []);
+  const [destination, setDestination] = useState(typeof window !== "undefined" ? localStorage.getItem('destination') ? localStorage.getItem('destination') : '' : '');
+  const [duration, setDuration] = useState(typeof window !== "undefined" ? localStorage.getItem('duration') ? localStorage.getItem('duration') : '' : '');
+  const [preferences, setPreferences] = useState(typeof window !== "undefined" ? localStorage.getItem('preferences') ? JSON.parse(localStorage.getItem('preferences')) : [] : []);
   const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
 
   console.log("preferences:", preferences)
