@@ -147,7 +147,7 @@ const Itinerary = () => {
           </div>
         </div>
       : <Loading/>}
-      {isSignUpModalOpen ? <SignUpModal/> : null}
+      {isSignUpModalOpen ? <SignUpModal isSignUpModalOpen={isSignUpModalOpen} setIsSignUpModalOpen={setIsSignUpModalOpen}/> : null}
     </div>
   );
 }
