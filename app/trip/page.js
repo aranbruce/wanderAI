@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useEffect, useState }  from 'react'
-import {useSearchParams} from 'next/navigation'
+import {useRouter, useSearchParams} from 'next/navigation'
 import Button from '@/components/button/button'
 import Map from '@/components/map/map'
 import Loading from '@/components/loading/loading'
@@ -21,7 +21,8 @@ const Itinerary = () => {
   const searchParams = useSearchParams();
   const destinationValue = searchParams.get("duration");
   const durationValue = searchParams.get("destination");
-  const selectedPreferences= searchParams.getAll("preferences");
+  const selectedPreferences = searchParams.getAll("preferences");
+  const router = useRouter
 
   useEffect(() => {
     makeApiCall(destinationValue, durationValue, selectedPreferences);
