@@ -70,9 +70,9 @@ const Home = () => {
         </div> 
       </Section>
       <Section>
-        <div className={styles.howItWorksText}>
-          <h5 className={styles.howItWorksSubtitle}>How it works</h5>
-          <h2 className={styles.howItWorksTitle}>Adventure awaits</h2>
+        <div className={styles.sectionIntro}>
+          <h5 className={styles.sectionSubtitle}>How it works</h5>
+          <h2 className={styles.sectionTitle}>Adventure awaits</h2>
         </div>
         <div className={styles.howItWorksContent}>
           <TextAndImage
@@ -91,9 +91,9 @@ const Home = () => {
         </div>
       </Section>
       <Section>
-        <div className={styles.howItWorksText}>
-          <h5 className={styles.howItWorksSubtitle}>Example trips</h5>
-          <h2 className={styles.howItWorksTitle}>Get inspired</h2>
+        <div className={styles.sectionIntro}>
+          <h5 className={styles.sectionSubtitle}>Example trips</h5>
+          <h2 className={styles.sectionTitle}>Get inspired</h2>
         </div>
         <div className={styles.tripContainer}>
           <TripCard location="New York" imgSrc="/newYork.png"/>

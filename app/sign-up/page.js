@@ -23,7 +23,7 @@ const SignUp = () => {
   };
 
   return (
-    <Section>
+    <Section hero>
       <div className={styles.container}>
         <div className={styles.text}>
           <h1 className={styles.title}>Create an account and join our waitlist</h1>

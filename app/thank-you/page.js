@@ -8,7 +8,7 @@ import styles from "./page.module.css"
 
 const ThankYou = () => {
   return (
-    <Section>
+    <Section hero>
       <div className={styles.container}>
       <Image
           src="./brandmark.svg"
