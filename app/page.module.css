@@ -11,8 +11,9 @@
   flex-wrap: nowrap;
   gap: 32px;
   border-radius: 16px;
-  background: linear-gradient(180deg, rgba(0, 0, 0, 0.24) 0%, rgba(33, 35, 44, 0.70) 100%), url(../assets/mountains.jpg) no-repeat;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.10) 0%, rgba(33, 35, 44, 0.70) 100%), url(../assets/mountains.jpg) no-repeat;
   background-size: cover;
+  background-position-y: bottom;
   box-shadow: 0px 4px 12px 0px rgba(0, 0, 0, 0.24);
   align-items: center;
   max-width: 1440px;
@@ -101,6 +102,13 @@
   align-items: center;
 }
 
+.tripContainer {
+  display: grid;
+  width: 100%;
+  grid-template-columns: 1fr;
+  gap: 48px;
+}
+
 @media only screen and (min-width: 768px) {
   .heroContainer {
     padding: 120px 32px;
@@ -133,6 +141,10 @@
     flex-wrap: nowrap;
     align-items: stretch;
   }
+  .tripContainer {
+    grid-template-columns: 1fr 1fr;
+  }
+  
 }
 
 @media only screen and (min-width: 1024px) {

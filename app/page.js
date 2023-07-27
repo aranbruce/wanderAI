@@ -9,6 +9,7 @@ import SearchModal from '@/components/searchModal/searchModal'
 import styles from './page.module.css'
 import TextAndImage from '@/components/textAndImage/textAndImage'
 import SignUpCard from '@/components/signUpCard/signUpCard'
+import TripCard from '@/components/tripCard/tripCard'
 
 const Home = () => {
   const [destination, setDestination] = useState(typeof window !== "undefined" ? localStorage.getItem('destination') ? localStorage.getItem('destination') : '' : '');
@@ -87,6 +88,18 @@ const Home = () => {
             imgAlt="Card showing itinerary to for a morning in New York"
             reverse
           />
+        </div>
+      </Section>
+      <Section>
+        <div className={styles.howItWorksText}>
+          <h5 className={styles.howItWorksSubtitle}>Example trips</h5>
+          <h2 className={styles.howItWorksTitle}>Get inspired</h2>
+        </div>
+        <div className={styles.tripContainer}>
+          <TripCard location="New York" imgSrc="/newYork.png"/>
+          <TripCard location="London" imgSrc="/london.png"/>
+          <TripCard location="Dubai" imgSrc="/dubai.png"/>
+          <TripCard location="Santorini" imgSrc="/santorini.png"/>
         </div>
       </Section>
       <Section>

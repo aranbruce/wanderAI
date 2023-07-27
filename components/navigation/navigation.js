@@ -32,8 +32,8 @@ const NavBar = ({hideButton}) => {
           <Image
             src="./logo.svg"
             alt="WanderAI Logo"
-            width={200}
-            height={48}
+            width={156}
+            height={32}
             priority
           />
         </Link>
