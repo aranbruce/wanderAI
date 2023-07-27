@@ -38,6 +38,16 @@ export default function RootLayout({ children }) {
             gtag('config', 'AW-941301227');
           `}
         </Script>
+        <Script src="https://www.googletagmanager.com/gtag/js?id=G-YNJJ4F6JVQ" />
+        <Script id="google-analytics">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+  
+            gtag('config', 'G-YNJJ4F6JVQ');
+          `}
+        </Script>
       </body>
     </html>
   )
