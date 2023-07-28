@@ -10,6 +10,7 @@ import styles from './page.module.css'
 import TextAndImage from '@/components/textAndImage/textAndImage'
 import SignUpCard from '@/components/signUpCard/signUpCard'
 import TripCard from '@/components/tripCard/tripCard'
+import TestimonialCard from '@/components/testimonialCard/testimonialCard'
 
 const Home = () => {
   const [destination, setDestination] = useState(typeof window !== "undefined" ? localStorage.getItem('destination') ? localStorage.getItem('destination') : '' : '');
@@ -42,7 +43,6 @@ const Home = () => {
             <p>Plan your next adventure in seconds through the power of AI </p>
           </div>
           <div className={styles.card}>
-            <h4 className={styles.cardTitle}>Plan your trip</h4>
             <form id="cardForm" className={styles.form} onSubmit={handleSubmit} >
               <div className={styles.inputGroup}>
                 <Input
@@ -100,6 +100,24 @@ const Home = () => {
           <TripCard location="London" imgSrc="/london.png"/>
           <TripCard location="Dubai" imgSrc="/dubai.png"/>
           <TripCard location="Santorini" imgSrc="/santorini.png"/>
+        </div>
+      </Section>
+      <Section>
+        <div className={styles.sectionIntro}>
+          <h5 className={styles.sectionSubtitle}>Reviews</h5>
+          <h2 className={styles.sectionTitle}>Read what our users are saying</h2>
+        </div>
+        <div className={styles.testimonialContainer}>
+          <TestimonialCard 
+            imgSrc="/testimonial1.png"
+            testimonial="“Fast, seamless and effortlessly intuitive. WanderAI makes holiday inspiration a breeze”"
+            author="Phil - WanderAI User"
+          />
+          <TestimonialCard
+            imgSrc="/testimonial2.png"
+            testimonial="“Using WanderAI made planning my holiday a lot easier. I&apos;d never visited Naxos before, but now I&apos;ve got lots of ideas of places to go - and things to eat”"
+            author="Will - WanderAI User"
+          />
         </div>
       </Section>
       <Section>

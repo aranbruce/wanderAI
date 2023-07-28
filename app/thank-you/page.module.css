@@ -26,3 +26,10 @@
 .description {
   color: #5F5F5F;
 }
+
+@media only screen and (min-width: 768px) {
+  .title {
+    font-size: 3rem;
+    line-height: 3.5rem; /* 120% */
+  }
+}

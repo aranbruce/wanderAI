@@ -1,11 +1,11 @@
 
 import './globals.css'
-import { Raleway } from 'next/font/google'
+import { Poppins } from 'next/font/google'
 import NavBar from "../components/navigation/navigation"
 import { Analytics } from '@vercel/analytics/react';
 import Script from 'next/script'
 
-const raleway = Raleway({ 
+const poppins = Poppins({ 
   weight: ['400', '500', '600', '700'],
   subsets: ['latin']
 })
@@ -24,7 +24,7 @@ export default function RootLayout({ children }) {
         <link rel='icon' href='/favicon.ico'/>
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
       </head>
-      <body className={raleway.className}>
+      <body className={poppins.className}>
         <NavBar hideButton={hideButton}/>
         {children}
         <Analytics/>
