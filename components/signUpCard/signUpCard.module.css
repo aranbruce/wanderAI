@@ -16,6 +16,7 @@
 .content {
   display: flex;
   flex-direction: column;
+  align-items: stretch;
   gap: 32px;
   width: 100%;
   z-index: 1;
@@ -38,6 +39,11 @@
   .card {
     padding: 64px;
   }
+
+  .content {
+    align-items: flex-start;
+  }
+
   .title {
     font-size: 3rem;
     line-height: 3.6rem;
