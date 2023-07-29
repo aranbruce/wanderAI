@@ -38,8 +38,9 @@ const Map = ({ response, day, timeOfDay }) => {
       // Loop through the longitudesAndLatitudes array and add a marker for each object
         longitudesAndLatitudes.forEach(obj => {
           // Create a new marker for the current object
-          const marker = new mapboxgl.Marker()
-            .setLngLat([obj.longitude, obj.latitude])
+          const marker = new mapboxgl.Marker({
+            color: "#35977D",
+          }).setLngLat([obj.longitude, obj.latitude])
             .addTo(map.current);
         });
       

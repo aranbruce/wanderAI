@@ -11,7 +11,7 @@ const ThankYou = () => {
     <Section hero>
       <div className={styles.container}>
       <Image
-          src="./brandmark.svg"
+          src="/assets/brandmark.svg"
           alt="WanderAI Logo"
           width={96}
           height={96}

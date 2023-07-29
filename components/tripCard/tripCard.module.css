@@ -8,12 +8,20 @@
   align-content: flex-end;
   justify-content: flex-start;
   padding: 24px;
+  position: relative;
+  overflow: hidden;
 }
 
 .location {
   align-self: end;
   color: #ffffff;
   font-size: 1.75rem;
-  font-weight: 500;
+  font-weight: 600;
   line-height: 2rem;
+  z-index: 1;
+}
+
+.img {
+  z-index: 0;
+  object-fit: cover;
 }

@@ -18,7 +18,6 @@ const Home = () => {
   const [preferences, setPreferences] = useState(typeof window !== "undefined" ? localStorage.getItem('preferences') ? JSON.parse(localStorage.getItem('preferences')) : [] : []);
   const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
 
-  console.log("preferences:", preferences)
   const handleDestinationChange = (e) => {
     setDestination(e.target.value);
   };
@@ -78,13 +77,13 @@ const Home = () => {
           <TextAndImage
             title="Enter your destination and get an itinerary in seconds"
             description="Simply fill in the details of where you looking to go, how long for and your personal preferences and WanderAI will generate a full itinerary for your trip in seconds"
-            imgSrc="/howItWorks1.svg"
+            imgSrc="/assets/howItWorks1.svg"
             imgAlt="Card showing the destination and duration input fields"
           />
           <TextAndImage
             title="Read your itinerary and refine your trip"
             description="Read through your planned itinerary, suggest changes and our AI powered trip planner will instantly create amendments so you can be sure to have a trip that suits your interests"
-            imgSrc="/howItWorks2.svg"
+            imgSrc="/assets/howItWorks2.svg"
             imgAlt="Card showing itinerary to for a morning in New York"
             reverse
           />
@@ -96,10 +95,10 @@ const Home = () => {
           <h2 className={styles.sectionTitle}>Get inspired</h2>
         </div>
         <div className={styles.tripContainer}>
-          <TripCard location="New York" imgSrc="/newYork.png"/>
-          <TripCard location="London" imgSrc="/london.png"/>
-          <TripCard location="Dubai" imgSrc="/dubai.png"/>
-          <TripCard location="Santorini" imgSrc="/santorini.png"/>
+          <TripCard location="New York" imgSrc="/assets/newYork.png"/>
+          <TripCard location="London" imgSrc="/assets/london.png"/>
+          <TripCard location="Dubai" imgSrc="/assets/dubai.png"/>
+          <TripCard location="Santorini" imgSrc="/assets/santorini.png"/>
         </div>
       </Section>
       <Section>
@@ -109,12 +108,12 @@ const Home = () => {
         </div>
         <div className={styles.testimonialContainer}>
           <TestimonialCard 
-            imgSrc="/testimonial1.png"
+            imgSrc="/assets/testimonial1.png"
             testimonial="“Fast, seamless and effortlessly intuitive. WanderAI makes holiday inspiration a breeze”"
             author="Phil - WanderAI User"
           />
           <TestimonialCard
-            imgSrc="/testimonial2.png"
+            imgSrc="/assets/testimonial2.png"
             testimonial="“Using WanderAI made planning my holiday a lot easier. I&apos;d never visited Naxos before, but now I&apos;ve got lots of ideas of places to go - and things to eat”"
             author="Will - WanderAI User"
           />

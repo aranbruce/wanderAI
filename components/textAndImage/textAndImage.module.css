@@ -12,7 +12,7 @@
   width: 100%;
   border-radius: 16px;
   overflow: hidden;
-  background: url(/map.png) no-repeat;
+  background: url(/assets/map.png) no-repeat;
   background-size: cover;
 }
 
