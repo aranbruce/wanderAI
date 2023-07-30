@@ -24,7 +24,7 @@
   position: absolute;
   bottom: 0;
   width: 100%;
-  box-shadow: 0px -4px 12px 0px rgba(0, 0, 0, 0.24);
+  box-shadow: 0px -4px 12px 0px rgba(0, 0, 0, 0.16);
 }
 
 .content {
@@ -86,7 +86,7 @@
     padding: 124px 48px 32px 48px;
     height: 100svh;
     justify-content: space-between;
-    box-shadow: 0px -4px 12px 0px rgba(0, 0, 0, 0.24), 0px -4px 12px 0px rgba(0, 0, 0, 0.24);
+    box-shadow: 0px -4px 12px 0px rgba(0, 0, 0, 0.16);
   }
   .mapContainer {
     position: absolute;
