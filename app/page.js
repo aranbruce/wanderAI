@@ -76,7 +76,7 @@ const Home = () => {
         <div className={styles.howItWorksContent}>
           <TextAndImage
             title="Enter your destination and get an itinerary in seconds"
-            description="Simply fill in the details of where you looking to go, how long for and your personal preferences and WanderAI will generate a full itinerary for your trip in seconds"
+            description="Simply fill in where you are looking to go, how long for and your personal preferences. WanderAI will then generate a full itinerary for your trip in seconds"
             imgSrc="/assets/howItWorks1.svg"
             imgAlt="Card showing the destination and duration input fields"
           />
@@ -95,10 +95,10 @@ const Home = () => {
           <h2 className={styles.sectionTitle}>Get inspired</h2>
         </div>
         <div className={styles.tripContainer}>
-          <TripCard location="New York" imgSrc="/assets/newYork.png"/>
-          <TripCard location="London" imgSrc="/assets/london.png"/>
-          <TripCard location="Dubai" imgSrc="/assets/dubai.png"/>
-          <TripCard location="Santorini" imgSrc="/assets/santorini.png"/>
+          <TripCard location="New York" imgSrc="/assets/newYork.png" imgAlt="New York skyscrappers"/>
+          <TripCard location="London" imgSrc="/assets/london.png" imgAlt="London and the River Thames"/>
+          <TripCard location="Dubai" imgSrc="/assets/dubai.png"imgAlt="Dubai"/>
+          <TripCard location="Santorini" imgSrc="/assets/santorini.png" imgAlt="Cliffs of Santorini"/>
         </div>
       </Section>
       <Section>

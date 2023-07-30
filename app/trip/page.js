@@ -134,7 +134,7 @@ const Itinerary = () => {
                   <h2 className={styles.day}>Day {day + 1} - {timeOfDay.charAt(0).toUpperCase() + timeOfDay.slice(1)}</h2>
                   <h3 className={styles.location}>{response[day].morning.location}</h3>
                 </div>
-                <p>{response[day].morning.description}</p>
+                <p className={styles.description}>{response[day].morning.description}</p>
               </div>
               : 
             timeOfDay === "afternoon" ? 
