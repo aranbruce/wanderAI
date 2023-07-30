@@ -143,7 +143,7 @@ const Itinerary = () => {
                   <h2 className={styles.day}>Day {day + 1} - {timeOfDay.charAt(0).toUpperCase() + timeOfDay.slice(1)}</h2>
                   <h3 className={styles.location}>{response[day].afternoon.location}</h3>
                 </div>
-                <p>{response[day].afternoon.description}</p>
+                <p className={styles.description}>{response[day].afternoon.description}</p>
               </div>
             :
             timeOfDay === "evening" ? 
@@ -152,7 +152,7 @@ const Itinerary = () => {
                   <h2 className={styles.day}>Day {day + 1} - {timeOfDay.charAt(0).toUpperCase() + timeOfDay.slice(1)}</h2>
                   <h3 className={styles.location}>{response[day].evening.location}</h3>
                 </div>
-                <p>{response[day].evening.description}</p>
+                <p className={styles.description}>{response[day].evening.description}</p>
               </div> : null}
               <footer className={styles.footer}>
                 <Button variant="secondary" onClick={decreaseTimeOfDay} imageSrc="/icons/back.svg"/>
