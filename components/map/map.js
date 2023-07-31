@@ -4,9 +4,7 @@ import styles from "./map.module.css"
 
 import 'mapbox-gl/dist/mapbox-gl.css';
 
-// mapboxgl.accessToken = process.env.MAPBOX_API_KEY;
-mapboxgl.accessToken = "pk.eyJ1IjoiYXJhbmJjIiwiYSI6ImNsa2RydW9tMjE1M2IzcnFveDY3c3BidHAifQ.GjM2DibHRhD7drV_tFqRdw";
-
+mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_API_KEY;
 
 const Map = ({ response, day, timeOfDay }) => {
   const initialLng = response[day][timeOfDay].longitude;
