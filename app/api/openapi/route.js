@@ -30,37 +30,43 @@ export async function POST(req) {
                   "description": "Description of morning itinerary"
                   "longitude": "longitude coordinate",
                   "latitude": "longitude latitude",
+                  "rating": "rating",
                 },
                 "afternoon":{
                   "location: "location name",
                   "description": "Description of afternoon itinerary",
                   "longitude": -97.7431,
-                  "latitude": 30.2672
+                  "latitude": 30.2672.
+                  "rating": "rating"
                 },
                 "evening": {
                   "location: "location name",
                   "description": Description of evening itinerary",
                   "longitude": -97.7431,
-                  "latitude": 30.2672
+                  "latitude": 30.2672,
+                  "rating": "rating"
                 },
                 {
                   "morning": {
                     "location: "location name",
                     "description": "Description of morning itinerary",
                     "longitude": -97.7431,
-                  "latitude": 30.2672
+                    "latitude": 30.2672,
+                    "rating": "rating"
                   },
                   "afternoon":{
                     "location: "location name",
                     "description": "Description of afternoon itinerary",
                     "longitude": -97.7431,
-                  "latitude": 30.2672
+                    "latitude": 30.2672,
+                    "rating": "rating"
                   },
                   "evening": {
                     "location: "location name",
                     "description": Description of evening itinerary",
                     "longitude": -97.7431,
-                  "latitude": 30.2672
+                    "latitude": 30.2672,
+                    "rating": "rating"
                   } 
                 }
               }

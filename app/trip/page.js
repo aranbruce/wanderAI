@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useEffect, useState }  from 'react'
+import Image from 'next/image'
 import {useRouter, useSearchParams} from 'next/navigation'
 import Button from '@/components/button/button'
 import Map from '@/components/map/map'
@@ -30,14 +31,14 @@ const Itinerary = () => {
     const previousPreferences = typeof window !== "undefined" ? JSON.parse(localStorage.getItem('preferences')): null;
     const previousResponse = typeof window !== "undefined" ? localStorage.getItem('response') : null;
     if (destination !== previousDestination || duration !== previousDuration || JSON.stringify(preferences.sort().join(',')) !== JSON.stringify(previousPreferences.sort().join(','))) {
-      makeApiCall({destination, duration, preferences});
+      makeOpenAIApiCall({destination, duration, preferences});
     } else {
         setIsLoading(false);
         setResponse(JSON.parse(previousResponse));
     }
   }, []);
 
-  const makeApiCall = async ({destination, duration, preferences}) => {
+  const makeOpenAIApiCall = async ({destination, duration, preferences}) => {
     if (destination && duration) {
       setResponse("");
       console.log("Getting response from OpenAI...");
@@ -57,18 +58,33 @@ const Itinerary = () => {
       // Add an error modal here
 
       try {
-        const response = await fetch("/api/openapi", {
+        const googlePlacesResponse = await fetch("/api/googleplaces", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({ 
-            prompt: `Plan me a trip to ${destination} for ${duration} days. 
+            textQuery: `${preferences.join(', ')} places in ${destination}`,
+          }),
+        });
+
+        const googlePlacesData = await googlePlacesResponse.json();
+        const googlePlacesDataString = JSON.stringify(googlePlacesData);
+
+        const openAIResponse = await fetch("/api/openapi", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ 
+            prompt: `Plan me a trip to ${destination} for ${duration} days using the following information:
+            ${googlePlacesDataString}
+            . 
             Include activities that match the following preferences: ${preferences.join(', ')}`
           }),
           signal: signal, // Pass the signal to the fetch call
         });
-        const data = await response.json();
+        const data = await openAIResponse.json();
         setIsLoading(false);
         setResponse(data);
         localStorage.setItem('response', JSON.stringify(data));
@@ -131,8 +147,16 @@ const Itinerary = () => {
             {timeOfDay === "morning" ? 
               <div className={styles.content}>
                 <div className={styles.titles}>
-                  <h2 className={styles.day}>Day {day + 1} - {timeOfDay.charAt(0).toUpperCase() + timeOfDay.slice(1)}</h2>
-                  <h3 className={styles.location}>{response[day].morning.location}</h3>
+                  <h3 className={styles.day}>Day {day + 1} - {timeOfDay.charAt(0).toUpperCase() + timeOfDay.slice(1)}</h3>
+                  <div className={styles.header}>
+                    <h2 className={styles.location}>{response[day].morning.location}</h2>
+                    {response[day].morning.rating ? 
+                      <div className={styles.ratingContainer}>
+                        <h3 className={styles.rating}>{response[day].morning.rating}</h3>
+                        <Image src="/assets/star.svg" alt="Star Icon" width={24} height={24} priority/>
+                      </div> : 
+                    null}
+                  </div>
                 </div>
                 <p className={styles.description}>{response[day].morning.description}</p>
               </div>
@@ -140,8 +164,16 @@ const Itinerary = () => {
             timeOfDay === "afternoon" ? 
               <div className={styles.content}>
                 <div className={styles.titles}>
-                  <h2 className={styles.day}>Day {day + 1} - {timeOfDay.charAt(0).toUpperCase() + timeOfDay.slice(1)}</h2>
-                  <h3 className={styles.location}>{response[day].afternoon.location}</h3>
+                <h3 className={styles.day}>Day {day + 1} - {timeOfDay.charAt(0).toUpperCase() + timeOfDay.slice(1)}</h3>
+                  <div className={styles.header}>
+                    <h2 className={styles.location}>{response[day].afternoon.location}</h2>
+                    {response[day].afternoon.rating ? 
+                      <div className={styles.ratingContainer}>
+                        <h3 className={styles.rating}>{response[day].afternoon.rating}</h3>
+                        <Image src="/assets/star.svg" alt="Star Icon" width={24} height={24} priority/>
+                      </div> : 
+                    null}
+                  </div>
                 </div>
                 <p className={styles.description}>{response[day].afternoon.description}</p>
               </div>
@@ -149,8 +181,16 @@ const Itinerary = () => {
             timeOfDay === "evening" ? 
               <div className={styles.content}>
                 <div className={styles.titles}>
-                  <h2 className={styles.day}>Day {day + 1} - {timeOfDay.charAt(0).toUpperCase() + timeOfDay.slice(1)}</h2>
-                  <h3 className={styles.location}>{response[day].evening.location}</h3>
+                <h3 className={styles.day}>Day {day + 1} - {timeOfDay.charAt(0).toUpperCase() + timeOfDay.slice(1)}</h3>
+                  <div className={styles.header}>
+                    <h2 className={styles.location}>{response[day].evening.location}</h2>
+                    {response[day].evening.rating ? 
+                      <div className={styles.ratingContainer}>
+                        <h3 className={styles.rating}>{response[day].evening.rating}</h3>
+                        <Image src="/assets/star.svg" alt="Star Icon" width={24} height={24} priority/>
+                      </div> : 
+                    null}
+                  </div>
                 </div>
                 <p className={styles.description}>{response[day].evening.description}</p>
               </div> : null}

@@ -43,6 +43,28 @@
   align-self: stretch;
 }
 
+.header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  align-self: stretch;
+  flex-direction: row;
+}
+
+.ratingContainer {
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-end;
+  gap: 4px;
+}
+
+.rating {
+  color: #35977D;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 20px;
+}
+
 .day {
   color: #5f5f5f;
   font-size: 0.875rem;
@@ -54,6 +76,7 @@
   font-size: 1.25rem;
   font-weight: 600;
   line-height: 1.75rem;
+  width: 100%;
 }
 
 .description {
