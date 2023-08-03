@@ -16,6 +16,7 @@ export async function POST(req) {
   if (body.destination !== undefined && body.duration !== undefined) {
     const completion = await openai.createChatCompletion({
       model: "gpt-3.5-turbo-16k",
+      temperature: 0.2,
       messages: [
         {
           role: 'system',
@@ -25,55 +26,55 @@ export async function POST(req) {
             Select appropriate locations by matching the types to the preferences.
             Describe each itinerary item in detail using 3 sentences.
             Group locations that are located closely together on the same day.
-            Format the text in the following JSON format:
-            [
+            Provide the itinerary in the following JSON format:
+            """[
               {
                 "morning": {
                   "location: "location name",
                   "description": "Description of morning itinerary"
+                  "latitude": "latitude coordinate",
                   "longitude": "longitude coordinate",
-                  "latitude": "longitude latitude",
                   "rating": "rating",
                 },
                 "afternoon":{
                   "location: "location name",
                   "description": "Description of afternoon itinerary",
-                  "longitude": -97.7431,
-                  "latitude": 30.2672.
+                  "latitude": "latitude coordinate",
+                  "longitude": "longitude coordinate",
                   "rating": "rating"
                 },
                 "evening": {
                   "location: "location name",
                   "description": Description of evening itinerary",
-                  "longitude": -97.7431,
-                  "latitude": 30.2672,
+                  "latitude": "longitude latitude",
+                  "longitude": "longitude coordinate",
                   "rating": "rating"
                 },
                 {
                   "morning": {
                     "location: "location name",
                     "description": "Description of morning itinerary",
-                    "longitude": -97.7431,
-                    "latitude": 30.2672,
+                    "latitude": "latitude coordinate",
+                    "longitude": "longitude coordinate",
                     "rating": "rating"
                   },
                   "afternoon":{
                     "location: "location name",
                     "description": "Description of afternoon itinerary",
-                    "longitude": -97.7431,
-                    "latitude": 30.2672,
+                    "latitude": "latitude coordinate",
+                    "longitude": "longitude coordinate",
                     "rating": "rating"
                   },
                   "evening": {
                     "location: "location name",
                     "description": Description of evening itinerary",
-                    "longitude": -97.7431,
-                    "latitude": 30.2672,
+                    "latitude": "latitude coordinate",
+                    "longitude": "longitude coordinate",
                     "rating": "rating"
                   } 
                 }
               }
-            ]`
+            ]"""`
         },
         // {
         //   role: 'user',
