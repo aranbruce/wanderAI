@@ -7,6 +7,7 @@ import Button from '@/components/button/button'
 import Map from '@/components/map/map'
 import Loading from '@/components/loading/loading'
 import SignUpModal from '@/components/signUpModal/signUpModal'
+import Error from '@/components/error/error'
 
 import styles from './page.module.css'
 
