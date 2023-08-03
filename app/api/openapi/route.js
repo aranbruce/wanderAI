@@ -7,9 +7,11 @@ const configuration = new Configuration({
 
 const openai = new OpenAIApi(configuration);
 
-export const config = {
-  runtime: 'edge'
-};
+export const dynamic = 'auto'
+export const fetchCache = 'auto'
+export const runtime = 'edge'
+export const preferredRegion = 'auto'
+export const maxDuration = 30
 
 export async function POST(req) {
   const body = await req.json();
