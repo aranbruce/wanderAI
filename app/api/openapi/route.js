@@ -9,7 +9,6 @@ const openai = new OpenAIApi(configuration);
 
 export const dynamic = 'auto'
 export const fetchCache = 'auto'
-export const runtime = 'edge'
 export const preferredRegion = 'auto'
 export const maxDuration = 30
 
