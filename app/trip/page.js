@@ -15,9 +15,9 @@ const Itinerary = () => {
   const [timeOfDay, setTimeOfDay] = useState("morning");
   const [response, setResponse] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isError, setIsError] = useState(false);
   const [isSignUpModalOpen, setIsSignUpModalOpen] = useState(false);
   const [day, setDay] = useState(0);
-  console.log("response:", response);
   
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -41,48 +41,41 @@ const Itinerary = () => {
   const makeOpenAIApiCall = async ({destination, duration, preferences}) => {
     if (destination && duration) {
       setResponse("");
-      console.log("Getting response from OpenAI...");
       setIsLoading(true);
-
-      // Create an AbortController instance
-      const controller = new AbortController();
-      const signal = controller.signal;
-
-      // Set a timeout of 20 seconds
-      const timeoutId = setTimeout(() => {
-        controller.abort();
-        setIsLoading(false);
-        console.log("Request timed out");
-      }, 30000);
 
       // Add an error modal here
 
       try {
-        const googlePlacesResponse = await fetch("/api/googleplaces", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ 
-            textQuery: `${preferences.join(', ')} places in ${destination}`,
-          }),
-        });
+        let allPlacesData = [];
+        for (const preference of preferences) {
+          console.log("Getting places from Google Places...");
+          const googlePlacesResponse = await fetch("/api/googleplaces", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ 
+              textQuery: `${preference} places in ${destination}`,
+            }),
+          });
 
-        const googlePlacesData = await googlePlacesResponse.json();
-        const googlePlacesDataString = JSON.stringify(googlePlacesData);
+          const googlePlacesData = await googlePlacesResponse.json();
+          allPlacesData.push(...googlePlacesData.places);
+        }
+        const allPlacesDataString = JSON.stringify(allPlacesData);
 
+        console.log("Getting response from OpenAI...");
         const openAIResponse = await fetch("/api/openapi", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({ 
-            prompt: `Plan me a trip to ${destination} for ${duration} days using the following information:
-            ${googlePlacesDataString}
-            . 
-            Include activities that match the following preferences: ${preferences.join(', ')}`
+            destination: destination,
+            duration: duration,
+            preferences: preferences,
+            allPlacesDataString: allPlacesDataString,
           }),
-          signal: signal, // Pass the signal to the fetch call
         });
         const data = await openAIResponse.json();
         setIsLoading(false);
@@ -91,15 +84,12 @@ const Itinerary = () => {
         localStorage.setItem('destination', destination);
         localStorage.setItem('duration', duration);
         localStorage.setItem('preferences', JSON.stringify(preferences));
-        console.log("Response from OpenAI:", data);
       } catch (error) {
         setIsLoading(false);
-        
         console.log("Error:", error.message);
-        console.log("isLoading:", isLoading)
+        setIsError(true);
+        console.log("isError:", isError);
         // throw new Error("API call failed!");
-      } finally {
-        clearTimeout(timeoutId);
       }
     } else { console.log("No itinerary details provided") }
   };
@@ -133,9 +123,9 @@ const Itinerary = () => {
 
   return (
     <div>
-      {response && !isLoading ?
+      {isError ? <Error/> : 
+      response && !isLoading ?
         <div className={styles.container}>
-
           <div className={styles.mapContainer}>
             <Map 
               response={response}

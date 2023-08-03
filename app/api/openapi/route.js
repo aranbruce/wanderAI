@@ -9,19 +9,22 @@ const openai = new OpenAIApi(configuration);
 
 export async function POST(req) {
   const body = await req.json();
-  if (body.prompt !== undefined) {
+  const destination = body.destination;
+  const duration = body.duration;
+  const preferences = body.preferences;
+  const allPlacesDataString = body.allPlacesDataString;
+  if (body.destination !== undefined && body.duration !== undefined) {
     const completion = await openai.createChatCompletion({
-      model: "gpt-3.5-turbo",
+      model: "gpt-3.5-turbo-16k",
       messages: [
         {
           role: 'system',
           content: 
-            `You are an assistant that creates trip itineraries to users using the present tense.
-            Provide an activity for the morning, afternoon and evening of each day of the trip.
+            `Plan a max 2 day trip to ${destination} for ${duration} days using the following data:
+            ${allPlacesDataString}. Include a variety of activities that match the following preferences: ${preferences.join(', ')}
+            Select appropriate locations by matching the types to the preferences.
             Describe each itinerary item in detail using 3 sentences.
-            When mentioning places to eat or drink use specific locations where you can.
-            Try to group locations that are located closely together on the same day.
-            Only provide the itinerary as a valid JSON object for the first 2 days.
+            Group locations that are located closely together on the same day.
             Format the text in the following JSON format:
             [
               {
@@ -72,16 +75,17 @@ export async function POST(req) {
               }
             ]`
         },
-        {
-          role: 'user',
-          content: `${body.prompt}`
-        }
+        // {
+        //   role: 'user',
+        //   content: `Plan me a trip to ${destination} for ${duration} days using the following information:
+        //   Include activities that match the following preferences: ${preferences.join(', ')}
+        //   Use the following${googlePlacesDataString} data in your response.`
+        // }
       ],
-      max_tokens: 700,
+      max_tokens: 800,
       temperature: 0.3,
     });
   const responseText = completion.data.choices[0].message.content;
-  console.log(responseText)
   return new Response(responseText, {status: 200});
   } 
   else {
