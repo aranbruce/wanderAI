@@ -43,9 +43,7 @@ const Map = ({ response, day, timeOfDay }) => {
         });
       
     }
-
- 
-  });
+  }), [];
    
   useEffect(() => {
     if (!map.current) return; // wait for map to initialize

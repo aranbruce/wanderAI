@@ -8,7 +8,7 @@ const TripCard = ({location, imgSrc, imgAlt }) => {
   return (
     <Link href={`/trip?destination=${location}&duration=2&preferences=Food`}>
       <div className={styles.card}>
-        <Image className={styles.img} src={imgSrc} alt={imgAlt} fill="true"/>
+        <Image className={styles.img} src={imgSrc} alt={imgAlt} fill="true" sizes="(max-width: 768px) 100vw"/>
         <h3 className={styles.location}>{location}</h3>
       </div>
     </Link>
