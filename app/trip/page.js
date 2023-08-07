@@ -45,30 +45,10 @@ const Itinerary = () => {
     if (destination && duration) {
       setResponse("");
       setIsLoading(true);
-
       // Add an error modal here
-
       try {
-        let allPlacesData = [];
-        for (const preference of preferences) {
-          console.log("Getting places from Google Places...");
-          const googlePlacesResponse = await fetch("/api/googleplaces", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ 
-              textQuery: `${preference} places in ${destination}`,
-            }),
-          });
-
-          const googlePlacesData = await googlePlacesResponse.json();
-          allPlacesData.push(...googlePlacesData.places);
-        }
-        const allPlacesDataString = JSON.stringify(allPlacesData);
-
-        console.log("Getting response from OpenAI...");
-        const openAIResponse = await fetch("/api/openapi", {
+        console.log("Creating trip...");
+        const tripResponse = await fetch("/api/trip", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -77,28 +57,27 @@ const Itinerary = () => {
             destination: destination,
             duration: duration,
             preferences: preferences,
-            allPlacesDataString: allPlacesDataString,
-          }),
-        });
-        const data = await openAIResponse.json();
-        setIsLoading(false);
-        setResponse(data);
-        localStorage.setItem('response', JSON.stringify(data));
-        localStorage.setItem('destination', destination);
-        localStorage.setItem('duration', duration);
-        localStorage.setItem('preferences', JSON.stringify(preferences));
-      } catch (error) {
-        setIsLoading(false);
+            }),
+          });
+          const response = await tripResponse.json();
+          setIsLoading(false);
+          setResponse(response);
+          setIsError(false);
+          localStorage.setItem('response', JSON.stringify(response));
+          localStorage.setItem('destination', destination);
+          localStorage.setItem('duration', duration);
+          localStorage.setItem('preferences', JSON.stringify(preferences));
+        } catch (error) {
         console.log("Error:", error.message);
-        setIsError(true);
         console.log("isError:", isError);
-        // throw new Error("API call failed!");
+        setIsLoading(false);
+        setIsError(true);
       }
     } else { console.log("No itinerary details provided") }
   };
 
   const increaseTimeOfDay = () => {
-    if (timeOfDay === "evening" && day === 1) {
+    if (timeOfDay === "evening" && day === localStorage.getItem('duration') - 1) {
       setIsSignUpModalOpen(!isSignUpModalOpen);
     } else if (timeOfDay === "morning") {
       setTimeOfDay("afternoon");
