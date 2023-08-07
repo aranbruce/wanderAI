@@ -1,11 +1,14 @@
 'use client'
 
 import {useRouter } from 'next/navigation'
+import { motion } from "framer-motion"
+import { useMediaQuery } from 'react-responsive'
 
 import styles from "./searchModal.module.css"
 import Input from '../input/input'
 import Checkbox from '../checkbox/checkbox'
 import Button from '../button/button'
+import Backdrop from '../backdrop/backdrop'
 
 const SearchModal = ({ 
     setIsSearchModalOpen,
@@ -17,9 +20,9 @@ const SearchModal = ({
     preferences,
     setPreferences,
   }) => {  
-
-  const router = useRouter()
   
+  const router = useRouter()
+
   const handleDestinationChange = (e) => {
     setDestination(e.target.value);
   };
@@ -43,6 +46,8 @@ const SearchModal = ({
     if (destination && duration) {
       e.preventDefault();
       setIsSearchModalOpen(!isSearchModalOpen);
+      document.body.style.overflow = 'auto';
+      document.body.style.height = 'auto';
       const preferenceString = preferences.map(preference => `preferences=${preference}`).join('&');
       const url = `/trip?destination=${destination}&duration=${duration}&${preferenceString}`;
       router.push(url)
@@ -50,13 +55,46 @@ const SearchModal = ({
   };
 
   const handleModalClose = (e) => {
-    setIsSearchModalOpen(!isSearchModalOpen)
-    
+    setIsSearchModalOpen(false)
+    document.body.style.overflow = 'auto';
+    document.body.style.height = 'auto';
+
   }
+
+  const isLargeScreen = useMediaQuery({ query: '(min-width: 768px)' })
+
+  const animation = isLargeScreen ? {
+      opacity: 1,
+      top: "50%",
+      left: "50%",
+      transform: "translate(-50%, -50%)",
+    } : 
+    {
+      opacity: 1,
+      bottom: "0",
+      left: "50%",
+      transform: "translate(-50%, -100%)",
+    }
+
   return (
-    <>
-      <div className={styles.background} onClick={() => handleModalClose()}></div>
-      <div className={styles.modal} >
+    <Backdrop onClick={handleModalClose}>
+      <motion.div
+        initial={{ 
+          opacity: 0,
+          left: "50%",
+          top: "100%",
+          transform: "translate(-50%, 0%)"
+        }}
+        animate={animation}
+        exit={{ 
+          opacity: 0, 
+          left: "50%",
+          top: "100%",
+          transform: "translate(-50%, -0%)",
+        }}
+        transition={{ duration: 0.2 }}
+        onClick={(e) => e.stopPropagation()}  // Prevent click from closing modal
+        className={styles.modal} >
         <header className={styles.header}>
           <h3>Your trip details</h3>
         </header>
@@ -148,8 +186,8 @@ const SearchModal = ({
             <Button label="Plan" type="submit"/>
           </div>
         </form>
-      </div>
-    </>
+      </motion.div>
+    </Backdrop>
   )
 }
 

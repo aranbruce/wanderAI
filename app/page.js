@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState }  from 'react'
+import React, { useState, useEffect }  from 'react'
 
 import Section from '@/components/section/section'
 import Input from '@/components/input/input'
@@ -12,11 +12,18 @@ import SignUpCard from '@/components/signUpCard/signUpCard'
 import TripCard from '@/components/tripCard/tripCard'
 import TestimonialCard from '@/components/testimonialCard/testimonialCard'
 
+import { AnimatePresence } from "framer-motion"
+
 const Home = () => {
   const [destination, setDestination] = useState(typeof window !== "undefined" ? localStorage.getItem('destination') ? localStorage.getItem('destination') : '' : '');
   const [duration, setDuration] = useState(typeof window !== "undefined" ? localStorage.getItem('duration') ? localStorage.getItem('duration') : '' : '');
   const [preferences, setPreferences] = useState(typeof window !== "undefined" ? localStorage.getItem('preferences') ? JSON.parse(localStorage.getItem('preferences')) : [] : []);
   const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
+
+  useEffect(() => {
+    document.body.style.overflow = 'auto';
+    document.body.style.height = 'auto';
+  }, []);
 
   const handleDestinationChange = (e) => {
     setDestination(e.target.value);
@@ -30,6 +37,8 @@ const Home = () => {
     if (destination && duration) {
       e.preventDefault();
       setIsSearchModalOpen(true);
+      document.body.style.overflow = 'hidden';
+      document.body.style.height = '100vh';
     }
   };
 
@@ -122,17 +131,19 @@ const Home = () => {
       <Section>
         <SignUpCard />
       </Section>
-      {isSearchModalOpen ?
-      <SearchModal 
-        isSearchModalOpen={isSearchModalOpen}
-        setIsSearchModalOpen={setIsSearchModalOpen}
-        destination={destination}
-        setDestination={setDestination}
-        duration={duration}
-        setDuration={setDuration}
-        preferences={preferences}
-        setPreferences={setPreferences}
-      /> : null}
+      <AnimatePresence>
+      {isSearchModalOpen && (
+        <SearchModal 
+          isSearchModalOpen={isSearchModalOpen}
+          setIsSearchModalOpen={setIsSearchModalOpen}
+          destination={destination}
+          setDestination={setDestination}
+          duration={duration}
+          setDuration={setDuration}
+          preferences={preferences}
+          setPreferences={setPreferences}
+        />)}
+      </AnimatePresence>
     </main>
   )
 }

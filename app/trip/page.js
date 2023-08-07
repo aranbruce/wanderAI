@@ -9,6 +9,8 @@ import Loading from '@/components/loading/loading'
 import SignUpModal from '@/components/signUpModal/signUpModal'
 import Error from '@/components/error/error'
 
+import { AnimatePresence } from "framer-motion"
+
 import styles from './page.module.css'
 
 const Itinerary = () => {
@@ -192,7 +194,14 @@ const Itinerary = () => {
           </div>
         </div>
       : <Loading/>}
-      {isSignUpModalOpen ? <SignUpModal isSignUpModalOpen={isSignUpModalOpen} setIsSignUpModalOpen={setIsSignUpModalOpen}/> : null}
+      <AnimatePresence>
+      {isSignUpModalOpen && ( 
+        <SignUpModal 
+          isSignUpModalOpen={isSignUpModalOpen} 
+          setIsSignUpModalOpen={setIsSignUpModalOpen}
+        /> 
+      )}
+      </AnimatePresence>
     </div>
   );
 }
