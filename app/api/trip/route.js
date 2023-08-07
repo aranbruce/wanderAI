@@ -1,7 +1,7 @@
 export const dynamic = 'auto'
 export const fetchCache = 'auto'
 export const preferredRegion = 'auto'
-export const maxDuration = 30
+export const maxDuration = 60
 
 import { OpenAIApi, Configuration } from "openai";
 

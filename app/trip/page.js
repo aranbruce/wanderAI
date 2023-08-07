@@ -67,6 +67,8 @@ const Itinerary = () => {
           localStorage.setItem('destination', destination);
           localStorage.setItem('duration', duration);
           localStorage.setItem('preferences', JSON.stringify(preferences));
+          console.log("Trip created")
+          console.log("Response:", response)
         } catch (error) {
         console.log("Error:", error.message);
         console.log("isError:", isError);
