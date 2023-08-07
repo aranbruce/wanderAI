@@ -34,14 +34,14 @@ const Itinerary = () => {
     const previousPreferences = typeof window !== "undefined" ? JSON.parse(localStorage.getItem('preferences')): null;
     const previousResponse = typeof window !== "undefined" ? localStorage.getItem('response') : null;
     if (destination !== previousDestination || duration !== previousDuration || JSON.stringify(preferences.sort().join(',')) !== JSON.stringify(previousPreferences.sort().join(','))) {
-      makeOpenAIApiCall({destination, duration, preferences});
+      makeTripApiCall({destination, duration, preferences});
     } else {
         setIsLoading(false);
         setResponse(JSON.parse(previousResponse));
     }
-  }, []);
+  }, [searchParams]);
 
-  const makeOpenAIApiCall = async ({destination, duration, preferences}) => {
+  const makeTripApiCall = async ({destination, duration, preferences}) => {
     if (destination && duration) {
       setResponse("");
       setIsLoading(true);
@@ -99,7 +99,7 @@ const Itinerary = () => {
       setTimeOfDay("afternoon");
     } else if (timeOfDay === "afternoon") {
       setTimeOfDay("morning");
-    } else if (timeOfDay === "morning" && day === 1) {
+    } else if (timeOfDay === "morning" && day !== 0) {
       setTimeOfDay("evening");
       setDay(day - 1);
     } else { console.log("Error")}
