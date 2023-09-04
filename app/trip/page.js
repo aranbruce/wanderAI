@@ -91,8 +91,8 @@ const Itinerary = () => {
       {
         "location": "Location Name",
         "description": "Description of the location",
-        "longitude": "Longitude",
         "latitude": "Latitude",
+        "longitude": "Longitude",
       }
       """`
     }
