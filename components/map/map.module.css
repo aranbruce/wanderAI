@@ -8,5 +8,13 @@
 @media only screen and (min-width: 1024px) {
   .container {
     height: 100vh;
+    width: calc(100% - 420px);
+    margin-left: auto;
+  }
+}
+
+@media only screen and (min-width: 1280px) {
+  .container {
+    width: calc(100% - 520px);
   }
 }
