@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect, useState, use } from 'react';
 import mapboxgl from '!mapbox-gl'; // eslint-disable-line import/no-webpack-loader-syntax
 import styles from "./map.module.css"
 
@@ -6,44 +6,50 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 
 mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_API_KEY;
 
-const Map = ({ response, day, timeOfDay }) => {
-  const initialLng = response[day][timeOfDay].longitude;
-  const initialLat = response[day][timeOfDay].latitude;
+const Map = ({ tripItinerary, currentItineraryItemIndex }) => {
+
+  const initialLng = tripItinerary[currentItineraryItemIndex].longitude;
+  const initialLat = tripItinerary[currentItineraryItemIndex].latitude;
 
   const mapContainer = useRef(null);
   const map = useRef(null);
   const [lng, setLng] = useState(initialLng);
   const [lat, setLat] = useState(initialLat);
   const [zoom, setZoom] = useState(15);
+
+  useEffect(() => {
+    const initialLng = tripItinerary[currentItineraryItemIndex].longitude;
+    const initialLat = tripItinerary[currentItineraryItemIndex].latitude;
+    setLng(initialLng);
+    setLat(initialLat);
+  }, [currentItineraryItemIndex, tripItinerary]);
    
   useEffect(() => {
     if (map.current) return; // initialize map only once
     map.current = new mapboxgl.Map({
       container: mapContainer.current,
       style: 'mapbox://styles/mapbox/streets-v12',
-      center: [lng, lat],
+      center: [lat, lng],
       zoom: zoom
     });
-    
-    if (initialLng && initialLat) {
-      const longitudesAndLatitudes = response.flatMap(day => {
-        return [
-          { longitude: day.morning.longitude, latitude: day.morning.latitude },
-          { longitude: day.afternoon.longitude, latitude: day.afternoon.latitude },
-          { longitude: day.evening.longitude, latitude: day.evening.latitude }
-        ];
-      });
-      // Loop through the longitudesAndLatitudes array and add a marker for each object
-        longitudesAndLatitudes.forEach(obj => {
-          // Create a new marker for the current object
-          const marker = new mapboxgl.Marker({
-            color: "#35977D",
-          }).setLngLat([obj.longitude, obj.latitude])
-            .addTo(map.current);
-        });
-      
-    }
   }), [];
+
+  useEffect(() => {
+    let locations = [];
+    tripItinerary.forEach(location => {
+      if (location.isLoading === false) {
+        locations.push({longitude: location.longitude, latitude: location.latitude});
+      }
+    });
+    // Loop through the locations array and add a marker for each object
+    locations.forEach(obj => {
+      // Create a new marker for the current object
+      const marker = new mapboxgl.Marker({
+        color: "#35977D",
+      }).setLngLat([obj.latitude, obj.longitude])
+        .addTo(map.current);
+    });
+  }, [tripItinerary]);    
    
   useEffect(() => {
     if (!map.current) return; // wait for map to initialize
@@ -56,12 +62,14 @@ const Map = ({ response, day, timeOfDay }) => {
 
   // Update the map center whenever initialLng or initialLat change
   function updateMapCenter() {
-    map.current.flyTo({
-      center: [initialLng, initialLat],
-      zoom: map.current.getZoom(),
-      speed: 1, // Adjust this value to control the animation speed
-      curve: 1 // Adjust this value to control the animation curve
-    });
+    if (initialLat && initialLng) {
+      map.current.flyTo({
+        center: [initialLat, initialLng],
+        zoom: map.current.getZoom(),
+        speed: 1, // Adjust this value to control the animation speed
+        curve: 1 // Adjust this value to control the animation curve
+      });
+    }
   }
   
   useEffect(() => {

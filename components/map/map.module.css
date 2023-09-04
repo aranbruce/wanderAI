@@ -1,5 +1,6 @@
 .container {
   color: #000;
   width: 100%;
-  height: 100%;
+  height: calc(100vh - 240px);
+  height: calc(100svh - 240px);
 }

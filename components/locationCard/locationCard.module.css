@@ -1,19 +1,5 @@
-.container {
-  max-height: 100svh;
-  background-color: #AFAFAF;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-}
-
-.mapContainer {
-  position: relative;
-  width: 100%;
-  height: calc(100svh - 200px);
-}
-
 .dayCard {
-  padding: 16px;
+  padding: 24px 16px;
   border-radius: 16px 16px 0 0;
   background-color: #fff;
   display: flex;
@@ -38,17 +24,12 @@
 .titles {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
   gap: 8px;
   align-self: stretch;
 }
 
-.header {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  align-self: stretch;
-  flex-direction: row;
+.main {
+  width: 100%;
 }
 
 .ratingContainer {
@@ -90,6 +71,10 @@
   gap: 16px;
   grid-template-columns: 0fr 1fr;
   width: 100%;  
+}
+
+.skeleton {
+  flex: 1;
 }
 
 @media only screen and (min-width: 768px) {
