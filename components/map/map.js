@@ -29,7 +29,7 @@ const Map = ({ tripItinerary, currentItineraryItemIndex }) => {
     map.current = new mapboxgl.Map({
       container: mapContainer.current,
       style: 'mapbox://styles/mapbox/streets-v12',
-      center: [lat, lng],
+      center: [lng, lat],
       zoom: zoom
     });
   }), [];
@@ -46,7 +46,7 @@ const Map = ({ tripItinerary, currentItineraryItemIndex }) => {
       // Create a new marker for the current object
       const marker = new mapboxgl.Marker({
         color: "#35977D",
-      }).setLngLat([obj.latitude, obj.longitude])
+      }).setLngLat([obj.longitude, obj.latitude])
         .addTo(map.current);
     });
   }, [tripItinerary]);    
@@ -64,7 +64,7 @@ const Map = ({ tripItinerary, currentItineraryItemIndex }) => {
   function updateMapCenter() {
     if (initialLat && initialLng) {
       map.current.flyTo({
-        center: [initialLat, initialLng],
+        center: [initialLng, initialLat],
         zoom: map.current.getZoom(),
         speed: 1, // Adjust this value to control the animation speed
         curve: 1 // Adjust this value to control the animation curve

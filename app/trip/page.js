@@ -166,7 +166,6 @@ const Itinerary = () => {
     }
     else {
       setCurrentItineraryItemIndex(currentItineraryItemIndex + 1);
-      console.log("currentItineraryItemIndex: ", currentItineraryItemIndex);
     }
   } 
 
@@ -175,7 +174,6 @@ const Itinerary = () => {
       router.push('/')
     } else {
       setCurrentItineraryItemIndex(currentItineraryItemIndex - 1);
-      console.log("currentItineraryItemIndex: ", currentItineraryItemIndex);
     }
   }
 
