@@ -5,7 +5,6 @@ import {useRouter, useSearchParams} from 'next/navigation'
 import Map from '@/components/map/map'
 import Loading from '@/components/loading/loading'
 import SignUpModal from '@/components/signUpModal/signUpModal'
-import Error from '@/components/error/error'
 import LocationCard from '@/components/locationCard/locationCard'
 import { AnimatePresence } from "framer-motion"
 
@@ -65,7 +64,7 @@ const Itinerary = () => {
 
     if (previousTripItinerary.length < 1 || destination !== previousDestination || duration !== previousDuration || JSON.stringify(sortedPreferences) !== JSON.stringify(sortedPreviousPreferences)) {
       console.log("Search params have changed");
-      createLocations({messages, duration});
+      createLocations({});
     } else {
       console.log("Search params have not changed");
       setTripItinerary(previousTripItinerary);
@@ -77,26 +76,6 @@ const Itinerary = () => {
   const {destination, duration, preferences} = getNewSearchParams();
 
   const timesOfDay = ["morning", "lunch", "afternoon", "evening"];
-
-  const messages = [
-    {
-      role: 'system',
-      content: 
-      `Plan a trip to ${destination} for ${duration} days. Include a variety of activities that match the following preferences: ${preferences.join(', ')}
-      Select appropriate locations by matching the types to the preferences.
-      Describe each itinerary item in detail using 2 sentences.
-      Group locations that are located closely together on the same day.
-      Provide the itinerary in the following format as valid JSON:
-      """
-      {
-        "location": "Location Name",
-        "description": "Description of the location",
-        "latitude": "Latitude",
-        "longitude": "Longitude",
-      }
-      """`
-    }
-  ];
 
   const createLocations = () => {
     console.log("Creating locations");
@@ -116,15 +95,51 @@ const Itinerary = () => {
   }
 
   const fetchItineraryDetails = async () => {
-    const updatedItinerary = [...tripItinerary];
+    // Fetch google places data
+    console.log("Getting places from Google Places...");
+    const googlePlacesResponse = await fetch('/api/places', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        "destination": destination,
+        "preferences": preferences,
+      }),
+    });
+    const googlePlacesResponseString = await googlePlacesResponse.text();
+
+    const messages = [
+      {
+        role: 'system',
+        content: 
+        `Plan a trip to ${destination} for ${duration} days. Include a variety of locations that match the following preferences: ${preferences.join(', ')}
+        Select appropriate locations by matching the types to the preferences.
+        You can use some of the following locations from Google: ${googlePlacesResponseString}
+        Describe each location in detail using 2 sentences.
+        Do not include the rating in the desciption.
+        Do not include the location in the desciption.
+        Group locations that are located closely together on the same day.
+        Provide the itinerary in the following format as valid JSON:
+        """
+        {
+          "id": "id from Google",
+          "location": "Location Name",
+          "description": "Description of the location",
+        }
+        """`
+      }
+    ];
+
     for (let i = 0; i < tripItinerary.length; i++) {
       const itineraryItem = tripItinerary[i];
       const userMessage = {
         role: 'user',
-        content: `Provide me a location and description for the ${itineraryItem.timeOfDay} of day ${itineraryItem.day} as valid JSON matching the previously described format`
+        content: `Provide me a location and description for the ${itineraryItem.timeOfDay} of day ${itineraryItem.day} as valid JSON matching the previously described format.`
       };
+
       messages.push(userMessage);
-      const response = await fetch("/api/trip", {
+      const chatGPTResponse = await fetch("/api/trip", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -133,30 +148,59 @@ const Itinerary = () => {
           messages: messages,
         }),
       });
-      const responseText = await response.text();
-      const responseJson = await JSON.parse(responseText);
-      const location = responseJson.location;
-      const description = responseJson.description;
-      const longitude = responseJson.longitude;
-      const latitude = responseJson.latitude;
+      const chatGPTResponseText = await chatGPTResponse.text();
+      const chatGPTResponseJson = await JSON.parse(chatGPTResponseText);
+      const location = chatGPTResponseJson.location;
+      const description = chatGPTResponseJson.description;
+      const id = chatGPTResponseJson.id;
+
+      const assistantMessage = {
+        role: 'assistant',
+        content: `${JSON.stringify(chatGPTResponseJson)}`
+      };
+      
+      // Fetch place details from Google
+      console.log("Getting details from Google Places...");
+      const placeDetailsResponse = await fetch("/api/place-details", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          id: id,
+        }),
+      });
+
+      const placeDetailsResponseText = await placeDetailsResponse.text();
+      const placeDetailsResponseJson = await JSON.parse(placeDetailsResponseText);
+
+      const longitude = placeDetailsResponseJson.result.geometry.location.lng;
+      const latitude = placeDetailsResponseJson.result.geometry.location.lat;
+      const rating = placeDetailsResponseJson.result.rating;
+      const photos = placeDetailsResponseJson.result.photos;
+      const photoReferences = photos.map(photo => photo.photo_reference);
 
       // Update the location value of the current itineraryItem
+      const updatedItinerary = [...tripItinerary];
       updatedItinerary[i].location = location;
       updatedItinerary[i].description = description;
       updatedItinerary[i].longitude = longitude;
       updatedItinerary[i].latitude = latitude;
+      updatedItinerary[i].rating = rating;
+      updatedItinerary[i].photoReferences = photoReferences;
       updatedItinerary[i].isLoading = false;
+
+      // console.log("updatedItinerary: ", updatedItinerary);
+
+      messages.push(assistantMessage);
+      setTripItinerary(updatedItinerary);
+      
       if (i > 0) {
         setIsLoading(false);
       }
-      const assistantMessage = {
-        role: 'assistant',
-        content: `${JSON.stringify(responseJson)}`
-      };
-      messages.push(assistantMessage);
     }
+    
     // Update the trip itinerary with the new itinerary
-    setTripItinerary(updatedItinerary);
     setIsFinishedAPICall(true);
   }
 
@@ -186,7 +230,6 @@ const Itinerary = () => {
     };
   };
 
-
   return (
     <>
       {!isLoading ?
@@ -200,6 +243,8 @@ const Itinerary = () => {
               day={tripItinerary[currentItineraryItemIndex].day}
               timeOfDay={tripItinerary[currentItineraryItemIndex].timeOfDay}
               description={tripItinerary[currentItineraryItemIndex].description}
+              rating={tripItinerary[currentItineraryItemIndex].rating}
+              photoReferences={tripItinerary[currentItineraryItemIndex].photoReferences}
               isLoading={tripItinerary[currentItineraryItemIndex].isLoading}
               increaseTimeOfDay={increaseTimeOfDay}
               decreaseTimeOfDay={decreaseTimeOfDay}

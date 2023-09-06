@@ -6,4 +6,5 @@
   height: calc(100svh - 72px);
   align-items: center;
   justify-content: center;
+  text-align: center;
 }

@@ -21,15 +21,28 @@
   align-self: stretch;
 }
 
+.header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  justify-content: space-between;
+}
+
 .titles {
   display: flex;
   flex-direction: column;
   gap: 8px;
   align-self: stretch;
+  width: 100%;
 }
 
 .main {
   width: 100%;
+  gap: 16px;
+  display: flex;
+  flex-direction: column;
 }
 
 .ratingContainer {
@@ -73,6 +86,23 @@
   width: 100%;  
 }
 
+.imagesContainer {
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+  align-items: center;
+  justify-content: flex-start;
+  overflow-x: scroll;
+  width: 100%;
+}
+
+.image {
+  height: 120px;
+  width: 120px;
+  border-radius: 12px;
+  object-fit: cover;
+}
+
 .skeleton {
   flex: 1;
 }
@@ -88,6 +118,32 @@
     flex-direction: row;
     align-items: flex-start;
   }
+
+  .content {
+    height: calc(100% - 82px);
+    overflow-y: scroll;
+  }
+
+  .content::-webkit-scrollbar {
+    display: none;
+  }
+
+  .imagesContainer {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 16px;
+    align-items: center;
+    justify-content: flex-start;
+    overflow-x: scroll;
+    width: 100%;
+  }
+
+  .image {
+    height: 160px;
+    width: 100%;
+  }
+
+
   .dayCard {
     width: 440px;
     border-radius: 0px;

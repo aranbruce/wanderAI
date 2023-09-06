@@ -77,6 +77,7 @@ const Map = ({ tripItinerary, currentItineraryItemIndex }) => {
   }, [initialLng, initialLat]);
 
   return (
+    
     <div ref={mapContainer} className={styles.container} />
   );
 };
