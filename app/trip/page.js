@@ -116,6 +116,7 @@ const Itinerary = () => {
         `Plan a trip to ${destination} for ${duration} days. Include a variety of locations that match the following preferences: ${preferences.join(', ')}
         Select appropriate locations by matching the types to the preferences.
         You can use some of the following locations from Google: ${googlePlacesResponseString}
+        Use the id from Google for each location.
         Describe each location in detail using 2 sentences.
         Do not include the rating in the desciption.
         Do not include the location in the desciption.
