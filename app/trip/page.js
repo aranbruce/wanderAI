@@ -120,6 +120,7 @@ const Itinerary = () => {
         Describe each location in detail using 2 sentences.
         Do not include the rating in the desciption.
         Do not include the location in the desciption.
+        Do not repeat locations.
         Group locations that are located closely together on the same day.
         Provide the itinerary in the following format as valid JSON:
         """
