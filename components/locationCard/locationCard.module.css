@@ -93,6 +93,7 @@
   align-items: center;
   justify-content: flex-start;
   overflow-x: scroll;
+  overflow-y: hidden;
   width: 100%;
 }
 
@@ -101,6 +102,7 @@
   width: 120px;
   border-radius: 12px;
   object-fit: cover;
+  min-width: 120px;
 }
 
 .skeleton {

@@ -35,22 +35,29 @@ const LocationCard = ({ day, timeOfDay, location, description, rating, increaseT
         }
         </div>
         <div className={styles.main}>
-        {description ?
-        <p className={styles.description}>{description}</p>
-        : <Skeleton count={3} height={20} width={"100%"} containerClassName={styles.skeleton}/>
-        }
-          <div className={styles.imagesContainer}>
-            {photoReferences &&
-              photoReferences.map((photoRef) => (
+          {description ?
+          <p className={styles.description}>{description}</p>
+          : <Skeleton count={3} height={20} width={"100%"} containerClassName={styles.skeleton}/>
+          }
+          {photoReferences ?
+            <div className={styles.imagesContainer}>
+              {photoReferences.map((photoRef) => (
                 <img 
                   key={photoRef}
                   src={`https://maps.googleapis.com/maps/api/place/photo?photo_reference=${photoRef}&maxheight=1600&key=${apiKey}`} 
                   alt="Location image"
                   className={styles.image}
                 />
-              ))
-            }
-          </div>
+              ))}
+            </div>
+            :
+            <div className={styles.imagesContainer}>
+              <Skeleton count={1} height={"100%"} containerClassName={styles.image}/>
+              <Skeleton count={1} height={"100%"} containerClassName={styles.image}/>
+              <Skeleton count={1} height={"100%"} containerClassName={styles.image}/>
+              <Skeleton count={1} height={"100%"} containerClassName={styles.image}/>
+            </div>
+        }
         </div>
       </div>
       <footer className={styles.footer}>
