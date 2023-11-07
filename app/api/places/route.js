@@ -1,7 +1,7 @@
 export const dynamic = 'auto'
 export const fetchCache = 'auto'
 export const preferredRegion = 'auto'
-export const maxDuration = 60
+export const maxDuration = 10
 
 export async function POST(req) {
   const body = await req.json();
