@@ -14,7 +14,7 @@ const Itinerary = () => {
   const [currentItineraryItemIndex, setCurrentItineraryItemIndex] = useState(0);
   const [haveLocations, setHaveLocations] = useState(false);
   const [isFinishedAPICall, setIsFinishedAPICall] = useState(false);
-  const[isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
   const [isSignUpModalOpen, setIsSignUpModalOpen] = useState(false);
   
   const searchParams = useSearchParams();
@@ -141,7 +141,7 @@ const Itinerary = () => {
       };
 
       messages.push(userMessage);
-      const chatGPTResponse = await fetch("/api/trip", {
+      const response = await fetch("/api/trip", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -150,15 +150,15 @@ const Itinerary = () => {
           messages: messages,
         }),
       });
-      const chatGPTResponseText = await chatGPTResponse.text();
-      const chatGPTResponseJson = await JSON.parse(chatGPTResponseText);
-      const location = chatGPTResponseJson.location;
-      const description = chatGPTResponseJson.description;
-      const id = chatGPTResponseJson.id;
+      const responseText = await response.text();
+      const responseJson = JSON.parse(responseText);
+      const location = responseJson.location;
+      const description = responseJson.description;
+      const id = responseJson.id;
 
       const assistantMessage = {
         role: 'assistant',
-        content: `${JSON.stringify(chatGPTResponseJson)}`
+        content: `${JSON.stringify(responseJson)}`
       };
       
       // Fetch place details from Google

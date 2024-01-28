@@ -12,7 +12,6 @@ import styles from './locationCard.module.css'
 const LocationCard = ({ day, timeOfDay, location, description, rating, increaseTimeOfDay, decreaseTimeOfDay, photoReferences}) => {
 
   const apiKey = process.env.NEXT_PUBLIC_GOOGLE_PLACES_API_KEY;
-  console.log("apiKey: ", apiKey);
 
   return (
     <div className={styles.dayCard}>

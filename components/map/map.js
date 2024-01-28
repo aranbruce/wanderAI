@@ -49,7 +49,7 @@ const Map = ({ tripItinerary, currentItineraryItemIndex }) => {
       }).setLngLat([obj.longitude, obj.latitude])
         .addTo(map.current);
     });
-  }, [tripItinerary]);    
+  }, [tripItinerary]);
    
   useEffect(() => {
     if (!map.current) return; // wait for map to initialize
@@ -77,7 +77,6 @@ const Map = ({ tripItinerary, currentItineraryItemIndex }) => {
   }, [initialLng, initialLat]);
 
   return (
-    
     <div ref={mapContainer} className={styles.container} />
   );
 };

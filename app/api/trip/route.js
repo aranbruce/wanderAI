@@ -1,28 +1,32 @@
-export const dynamic = 'auto'
-export const fetchCache = 'auto'
-export const preferredRegion = 'auto'
-export const maxDuration = 10
+// export const dynamic = 'auto'
+// export const fetchCache = 'auto'
+// export const preferredRegion = 'auto'
+// export const maxDuration = 20
 
-import { OpenAIApi, Configuration } from "openai";
+// use edge runtime
+export const runtime = 'edge'
 
-const configuration = new Configuration({
+// OpenAI imports
+import OpenAI from 'openai';
+
+// Create an OpenAI API client (that's edge friendly!)
+const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
-
-const openai = new OpenAIApi(configuration);
 
 export async function POST(req) {
   const { messages } = await req.json()
   try {
-      const completion = await openai.createChatCompletion({
-        model: "gpt-3.5-turbo",
-        temperature: 0.2,
-        messages
-      });
-      const responseText = completion.data.choices[0].message.content;
-      return new Response(responseText, {status: 200});
+    const response = await openai.chat.completions.create({
+      model: "gpt-3.5-turbo-1106",
+      temperature: 0.2,
+      messages,
+      response_format: {"type": 'json_object'},
+    });
+    const responseObject = await response.choices[0].message.content;
+    return new Response(responseObject, {status: 200});
   } catch (error) {
-    console.log("Error:", error.message);
-    return new Response(responseObject, {status: 400}, {statusText: "API call failed."});
+  console.log("Error:", error.message);
+  return new Response(responseObject, {status: 400}, {statusText: "API call failed."});
   }
 }
