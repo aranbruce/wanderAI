@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect, useState, Suspense }  from 'react'
+import React, { useEffect, useState }  from 'react'
 
 import {useRouter, useSearchParams} from 'next/navigation'
 import Map from '@/components/map/map'
@@ -226,7 +226,7 @@ const Itinerary = () => {
   };
 
   return (
-    <Suspense>
+    <>
       {!isLoading ?
           <>
             <Map
@@ -253,7 +253,7 @@ const Itinerary = () => {
         <SignUpModal setIsSignUpModalOpen={setIsSignUpModalOpen} isSignUpModalOpen={isSignUpModalOpen} />
       }
       </AnimatePresence>          
-    </Suspense>
+    </>
   );
 }
 
