@@ -1,6 +1,7 @@
 'use client'
 
-import React, { use, useEffect, useState }  from 'react'
+import React, { useEffect, useState, Suspense }  from 'react'
+
 import {useRouter, useSearchParams} from 'next/navigation'
 import Map from '@/components/map/map'
 import Loading from '@/components/loading/loading'
@@ -13,7 +14,6 @@ const Itinerary = () => {
   const [tripItinerary, setTripItinerary] = useState([]);
   const [currentItineraryItemIndex, setCurrentItineraryItemIndex] = useState(0);
   const [haveLocations, setHaveLocations] = useState(false);
-  const [isFinishedAPICall, setIsFinishedAPICall] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isSignUpModalOpen, setIsSignUpModalOpen] = useState(false);
   
@@ -23,14 +23,7 @@ const Itinerary = () => {
   useEffect(() => {
     checkIfSearchParamsHaveChanged();
     console.log("Checking search params")
-  }, [searchParams]);
-
-  useEffect(() => {
-    if (isFinishedAPICall) {
-      console.log("Updating local storage")
-      updateLocalStorage();
-    }
-  }, [isFinishedAPICall]);
+  }, []);
 
   useEffect(() => {
     if (haveLocations) {
@@ -64,11 +57,10 @@ const Itinerary = () => {
 
     if (previousTripItinerary.length < 1 || destination !== previousDestination || duration !== previousDuration || JSON.stringify(sortedPreferences) !== JSON.stringify(sortedPreviousPreferences)) {
       console.log("Search params have changed");
-      createLocations({});
+      createLocations();
     } else {
       console.log("Search params have not changed");
       setTripItinerary(previousTripItinerary);
-      setIsFinishedAPICall(true);
       setIsLoading(false);
     }
   };
@@ -197,13 +189,14 @@ const Itinerary = () => {
       messages.push(assistantMessage);
       setTripItinerary(updatedItinerary);
       
-      if (i > 0) {
+      if (i >= 0) {
         setIsLoading(false);
       }
     }
     
     // Update the trip itinerary with the new itinerary
-    setIsFinishedAPICall(true);
+    updateLocalStorage();
+
   }
 
   const increaseTimeOfDay = () => {
@@ -233,7 +226,7 @@ const Itinerary = () => {
   };
 
   return (
-    <>
+    <Suspense>
       {!isLoading ?
           <>
             <Map
@@ -255,13 +248,12 @@ const Itinerary = () => {
         :
         <Loading/>    
       }
-    <AnimatePresence>
-    {isSignUpModalOpen && 
-      <SignUpModal setIsSignUpModalOpen={setIsSignUpModalOpen} isSignUpModalOpen={isSignUpModalOpen} />
-    }
-    </AnimatePresence>
-          
-    </>
+      <AnimatePresence>
+      {isSignUpModalOpen && 
+        <SignUpModal setIsSignUpModalOpen={setIsSignUpModalOpen} isSignUpModalOpen={isSignUpModalOpen} />
+      }
+      </AnimatePresence>          
+    </Suspense>
   );
 }
 

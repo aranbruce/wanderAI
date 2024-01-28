@@ -41,7 +41,9 @@ const LocationCard = ({ day, timeOfDay, location, description, rating, increaseT
           {photoReferences ?
             <div className={styles.imagesContainer}>
               {photoReferences.map((photoRef) => (
-                <img 
+                <Image 
+                  width={120}
+                  height={120}
                   key={photoRef}
                   src={`https://maps.googleapis.com/maps/api/place/photo?photo_reference=${photoRef}&maxheight=1600&key=${apiKey}`} 
                   alt="Location image"
