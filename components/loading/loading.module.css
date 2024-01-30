@@ -3,6 +3,22 @@
   height: 100dvh;
 }
 
+.content {
+  /* center the content vertically and horizontallin the parent */
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 100%;
+
+}
+
+.pin_container {
+  position: relative;
+  width: 100px;
+  height: 100px;
+}
+
 .pin {
   animation-name: pin;
   animation-duration: 1.2s;
@@ -51,6 +67,10 @@
   box-shadow: 0 0 1px 2px #35977D;
 }
 
+.text {
+  animation: fade 4s ease-in-out infinite alternate;
+}
+
 @keyframes pulsate {
   0% {
     -webkit-transform: scale(0.1, 0.1);
@@ -82,5 +102,20 @@
 }
 
 @keyframes pin{
-    100% {top:45%; bottom:60px;}
+    100% {top: 10px; bottom: 60px;}
+}
+
+@keyframes fade {
+  0% {
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  80% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
 }

@@ -48,6 +48,7 @@ const LocationCard = ({ day, timeOfDay, location, description, rating, increaseT
                   src={`https://maps.googleapis.com/maps/api/place/photo?photo_reference=${photoRef}&maxheight=1600&key=${apiKey}`} 
                   alt="Location image"
                   className={styles.image}
+                  style={{backgroundColor: "#D9D9D9"}}
                 />
               ))}
             </div>
@@ -70,3 +71,4 @@ const LocationCard = ({ day, timeOfDay, location, description, rating, increaseT
 }
 
 export default LocationCard
+
