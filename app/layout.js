@@ -1,5 +1,6 @@
 
 import './globals.css'
+import { SpeedInsights } from "@vercel/speed-insights/next"
 import { Poppins } from 'next/font/google'
 import NavBar from "../components/navigation/navigation"
 import { Analytics } from '@vercel/analytics/react';
@@ -39,6 +40,7 @@ export default function RootLayout({ children }) {
           gtag('config', 'AW-941301227');
         `}
         </Script>
+        <SpeedInsights />
       </body>
     </html>
   )

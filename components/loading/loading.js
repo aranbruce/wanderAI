@@ -11,7 +11,6 @@ const Loading = () => {
 
   const animationTime = 3.5
 
-  // update activeTextIndex every 2 seconds
   useEffect(() => {
     const interval = setInterval(() => {
       activeTextIndex === 2 ? setActiveTextIndex(0) : setActiveTextIndex(activeTextIndex + 1)
