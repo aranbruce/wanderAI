@@ -1,27 +1,32 @@
 "use client"
 
 import React, {useState, useEffect} from 'react'
+import { motion } from "framer-motion"
+
 
 import styles from './loading.module.css'
 
 const Loading = () => {
-  const [text, setText] = useState('Searching the internet for locations...')
+  const [activeTextIndex, setActiveTextIndex] = useState(0)
 
+  const animationTime = 3.5
+
+  // update activeTextIndex every 2 seconds
   useEffect(() => {
     const interval = setInterval(() => {
-      setText((prevText) => {
-        if (prevText === 'Searching the internet for locations...') {
-          return 'Checking them for suitability'
-        } else if (prevText === 'Checking them for suitability') {
-          return 'Creating your trip itinerary'
-        } else {
-          return 'Searching the internet for locations...'
-        }
-      })
-    }, 3500)
-
+      activeTextIndex === 2 ? setActiveTextIndex(0) : setActiveTextIndex(activeTextIndex + 1)
+    }, animationTime*1000)
     return () => clearInterval(interval)
-  }, [])
+  }, [activeTextIndex])
+
+  const animation = {
+    opacity: [0, 1, 0],
+    transition: {
+      duration: animationTime,
+      times: [0, 0.8, 1],
+      repeat: Infinity
+    }
+  }
 
 
   return (
@@ -31,7 +36,29 @@ const Loading = () => {
           <div className={styles.pin}></div>
           <div className={styles.pulse}></div>
         </div>
-        <h4 className={styles.text}>{text}</h4>
+        {activeTextIndex === 0 ? 
+          <motion.div
+            className={styles.text}
+            animate={animation}
+          >
+            <h4 >Searching the internet for locations</h4>
+          </motion.div>
+        : activeTextIndex === 1 ?
+          <motion.div
+            className={styles.text}
+            animate={animation}
+          >
+            <h4>Checking them for suitability</h4>
+          </motion.div>
+        : activeTextIndex === 2 ?
+          <motion.div
+            className={styles.text}
+            animate={animation}
+          >
+            <h4>Creating your trip itinerary</h4>
+          </motion.div>
+          : null
+        }
       </div>
     </div>
   )

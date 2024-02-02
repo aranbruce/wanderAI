@@ -68,7 +68,7 @@
 }
 
 .text {
-  animation: fade 4s ease-in-out infinite alternate;
+  opacity: 0;
 }
 
 @keyframes pulsate {
@@ -101,21 +101,6 @@
   }
 }
 
-@keyframes pin{
+@keyframes pin {
     100% {top: 10px; bottom: 60px;}
-}
-
-@keyframes fade {
-  0% {
-    opacity: 0;
-  }
-  20% {
-    opacity: 1;
-  }
-  80% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0;
-  }
 }
