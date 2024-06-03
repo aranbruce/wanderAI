@@ -18,7 +18,7 @@ export async function POST(req) {
   const { messages } = await req.json()
   try {
     const response = await openai.chat.completions.create({
-      model: "gpt-4-0125-preview",
+      model: "gpt-4o",
       temperature: 0.2,
       messages,
       response_format: {"type": 'json_object'},
