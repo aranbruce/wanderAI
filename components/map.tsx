@@ -1,7 +1,5 @@
 import { useRef, useEffect, useState } from "react";
 import mapboxgl from "mapbox-gl"; // eslint-disable-line import/no-webpack-loader-syntax
-import styles from "./map.module.css";
-
 import "mapbox-gl/dist/mapbox-gl.css";
 
 mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_API_KEY;
@@ -21,6 +19,7 @@ const Map = ({ tripItinerary, currentItineraryItemIndex }: MapProps) => {
 
   const mapContainer = useRef(null);
   const map = useRef(null);
+  const markersRef = useRef([]);
   const [lng, setLng] = useState(initialLng);
   const [lat, setLat] = useState(initialLat);
   const [zoom, setZoom] = useState(15);
@@ -42,29 +41,63 @@ const Map = ({ tripItinerary, currentItineraryItemIndex }: MapProps) => {
       center: [lng, lat],
       zoom: zoom,
     });
-  }),
-    [];
+  }, []);
 
-  // useEffect(() => {
-  //   let locations = [];
-  //   tripItinerary.forEach((location) => {
-  //     if (location.coordinates?.longitude && location.coordinates?.latitude) {
-  //       locations.push({
-  //         longitude: location.coordinates?.longitude,
-  //         latitude: location.coordinates?.latitude,
-  //       });
-  //     }
-  //   });
-  //   // Loop through the locations array and add a marker for each object
-  //   locations.forEach((obj) => {
-  //     // Create a new marker for the current object
-  //     const marker = new mapboxgl.Marker({
-  //       color: "#35977D",
-  //     })
-  //       .setLngLat([obj.longitude, obj.latitude])
-  //       .addTo(map.current);
-  //   });
-  // }, [tripItinerary]);
+  useEffect(() => {
+    let locations = [];
+    tripItinerary.forEach((location) => {
+      if (location.coordinates?.longitude && location.coordinates?.latitude) {
+        locations.push({
+          longitude: location.coordinates.longitude,
+          latitude: location.coordinates.latitude,
+        });
+      }
+    });
+
+    // Remove markers that are no longer in the tripItinerary
+    markersRef.current.forEach((marker) => {
+      const markerLngLat = marker.getLngLat();
+      const isInTripItinerary = locations.some(
+        (loc) =>
+          loc.longitude === markerLngLat.lng &&
+          loc.latitude === markerLngLat.lat,
+      );
+      if (!isInTripItinerary) {
+        marker.remove();
+      }
+    });
+
+    // Filter out the markers that are still in the tripItinerary
+    markersRef.current = markersRef.current.filter((marker) => {
+      const markerLngLat = marker.getLngLat();
+      return locations.some(
+        (loc) =>
+          loc.longitude === markerLngLat.lng &&
+          loc.latitude === markerLngLat.lat,
+      );
+    });
+
+    // Add new markers for locations in the tripItinerary
+    locations.forEach((obj) => {
+      const isMarkerExists = markersRef.current.some((marker) => {
+        const markerLngLat = marker.getLngLat();
+        return (
+          markerLngLat.lng === obj.longitude &&
+          markerLngLat.lat === obj.latitude
+        );
+      });
+
+      if (!isMarkerExists) {
+        const marker = new mapboxgl.Marker({
+          color: "#35977D",
+        })
+          .setLngLat([obj.longitude, obj.latitude])
+          .addTo(map.current);
+
+        markersRef.current.push(marker);
+      }
+    });
+  }, [tripItinerary]);
 
   useEffect(() => {
     if (!map.current) return; // wait for map to initialize
@@ -91,7 +124,12 @@ const Map = ({ tripItinerary, currentItineraryItemIndex }: MapProps) => {
     updateMapCenter();
   }, [initialLng, initialLat]);
 
-  return <div ref={mapContainer} className={styles.container} />;
+  return (
+    <div
+      ref={mapContainer}
+      className="ml-auto h-[calc(100vh-320px)] w-full md:h-screen md:w-[calc(100%-384px)] lg:w-[calc(100%-420px)]"
+    />
+  );
 };
 
 export default Map;

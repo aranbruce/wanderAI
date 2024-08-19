@@ -1,9 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Image from "next/image";
 import { motion } from "framer-motion";
-
-import styles from "./loading.module.css";
 
 const Loading = () => {
   const [activeTextIndex, setActiveTextIndex] = useState(0);
@@ -29,22 +28,25 @@ const Loading = () => {
   };
 
   return (
-    <div className={styles.container}>
-      <div className={styles.content}>
-        <div className={styles.pin_container}>
-          <div className={styles.pin}></div>
-          <div className={styles.pulse}></div>
-        </div>
+    <div className="flex h-screen items-center justify-center">
+      <div className="flex w-full flex-col items-center gap-4">
+        <Image
+          src="/assets/brandMark.svg"
+          alt="WanderAI Logo"
+          width={96}
+          height={96}
+        />
+
         {activeTextIndex === 0 ? (
-          <motion.div className={styles.text} animate={animation}>
+          <motion.div className="opacity-0" animate={animation}>
             <h4>Searching the internet for locations</h4>
           </motion.div>
         ) : activeTextIndex === 1 ? (
-          <motion.div className={styles.text} animate={animation}>
+          <motion.div className="opacity-0" animate={animation}>
             <h4>Checking them for suitability</h4>
           </motion.div>
         ) : activeTextIndex === 2 ? (
-          <motion.div className={styles.text} animate={animation}>
+          <motion.div className="opacity-0" animate={animation}>
             <h4>Creating your trip itinerary</h4>
           </motion.div>
         ) : null}

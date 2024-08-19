@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 
 import va from "@vercel/analytics";
 import Section from "@/components/section";
-import Input from "@/components/input/input";
+import Input from "@/components/input";
 import Button from "@/components/button";
 
 const SignUp = () => {

@@ -37,7 +37,7 @@ async function getPlacesFromGoogle({ destination, preferences }) {
               languageCode: "en",
               minRating: 4,
             }),
-          }
+          },
         );
         const googlePlacesData = await googlePlacesResponse.json();
         allPlacesData.push(...googlePlacesData.places);
@@ -60,7 +60,7 @@ async function getPlacesFromGoogle({ destination, preferences }) {
             languageCode: "en",
             minRating: 4.5,
           }),
-        }
+        },
       );
       const googlePlacesData = await googlePlacesResponse.json();
       allPlacesData.push(...googlePlacesData.places);
@@ -84,7 +84,7 @@ async function getPlaceDetailsFromGoogle({ placeId }) {
           "Content-Type": "application/json",
           SameSite: "Strict",
         },
-      }
+      },
     );
     const googlePlacesDetails = await googlePlacesDetailsResponse.json();
     return googlePlacesDetails;
@@ -121,11 +121,13 @@ export async function generateTripItinerary({
 
   (async () => {
     const { partialObjectStream } = await streamObject({
-      model: openai("gpt-4o-2024-08-06", {
+      model: openai("gpt-4o-mini", {
         structuredOutputs: true,
       }),
+      mode: "json",
+      maxRetries: 0,
       system: `Plan a trip to ${destination} for ${duration} days. Include a variety of locations that match the following preferences: ${preferences.join(
-        ", "
+        ", ",
       )}
         Select appropriate locations by matching the types to the preferences.
         You can use some of the following locations from Google: ${googlePlacesResponseString}
@@ -159,13 +161,14 @@ export async function generateTripItinerary({
             rating: z
               .number()
               // .optional()
-              .describe("The rating of the location"),
+              .describe(
+                "The rating of the location, which is a number between 0 and 5",
+              ),
             description: z.string().describe("The description of the location"),
-
             // photoReferences: z
             //   .array(z.string())
             //   .describe("The photo references of the location"),
-          })
+          }),
         ),
       }),
     });

@@ -6,7 +6,7 @@ import useLocalStorage from "@/hooks/useLocalStorage";
 import { AnimatePresence } from "framer-motion";
 
 import Section from "@/components/section";
-import Input from "@/components/input/input";
+import Input from "@/components/input";
 import Button from "@/components/button";
 import SearchModal from "@/components/search-modal";
 import TextAndImage from "@/components/text-and-image";
@@ -56,8 +56,8 @@ const Home = () => {
     <main className="min-h-screen">
       <Section isHero>
         <div className="mt-12 flex w-full max-w-5xl flex-col items-center gap-8 rounded-3xl bg-[linear-gradient(180deg,rgba(0,0,0,0.10)0%,rgba(33,35,44,0.70)100%),url('/assets/mountains.jpg')] bg-cover bg-bottom px-8 py-12 shadow-lg sm:px-10 sm:py-16 md:px-12 md:py-32">
-          <div className="flex flex-col items-center gap-4 text-pretty text-center text-white">
-            <h1 className="text-4xl md:text-5xl">
+          <div className="flex flex-col items-center gap-6 text-pretty text-center text-white">
+            <h1 className="text-4xl md:text-6xl">
               Love travel, hate planning?
             </h1>
             <p className="text-lg">

@@ -2,8 +2,8 @@ import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { useMediaQuery } from "react-responsive";
 
-import Input from "@/components/input/input";
-import Checkbox from "@/components/checkbox/checkbox";
+import Input from "@/components/input";
+import Checkbox from "@/components/checkbox";
 import Button from "@/components/button";
 import Backdrop from "@/components/backdrop";
 import BackIcon from "@/images/icons/back-icon";

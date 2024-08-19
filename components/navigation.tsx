@@ -14,9 +14,9 @@ const Navigation = ({ hideButton }: NavigationProps) => {
 
   return (
     <nav
-      className={`fixed top-0 z-30 flex w-full justify-center px-3 py-2 transition-all duration-150 ease-in-out ${scrolled && "bg-white shadow-sm"}`}
+      className={`fixed top-0 z-30 flex w-full justify-center px-3 py-2 transition-all duration-150 ease-in-out md:px-6 ${scrolled && "bg-white shadow-sm"}`}
     >
-      <div className="flex w-full max-w-screen-xl items-center justify-between">
+      <div className="flex w-full items-center justify-between">
         <Link href="/" className="h-8">
           <Image
             src="./logo.svg"

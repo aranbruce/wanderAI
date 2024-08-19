@@ -22,7 +22,7 @@ const Button = ({
   const primaryClasses =
     "bg-green-400 text-white hover:bg-green-300 active:bg-green-500";
   const secondaryClasses =
-    "bg-white border border-gray-200 hover:bg-gray-100 active:bg-gray-200 text-black";
+    "bg-white text-black border border-gray-200 hover:bg-gray-100 active:bg-gray-200";
   const smallClasses = "text-sm px-4 py-3";
   const mediumClasses = "text-md px-6 py-3";
 

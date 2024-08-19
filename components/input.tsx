@@ -1,5 +1,4 @@
 import { InputHTMLAttributes } from "react";
-import styles from "./input.module.css";
 
 interface InputProps {
   type: string;
@@ -21,14 +20,14 @@ const Input = ({
   required,
 }: InputProps) => {
   return (
-    <div className={styles.inputContainer}>
+    <div className="flex w-full flex-col items-start gap-2">
       {label && (
-        <label className={styles.label} htmlFor={label}>
+        <label className="text-sm font-medium leading-5" htmlFor={label}>
           {label}
         </label>
       )}
       <input
-        className={styles.input}
+        className="flex w-full items-center justify-center gap-1 rounded-full border border-gray-200 bg-white px-4 py-3 font-normal outline-none focus-visible:border-gray-300 focus-visible:ring-[3px] focus-visible:ring-green-400/40 focus-visible:ring-offset-1 focus-visible:ring-offset-white"
         id={label}
         type={type}
         inputMode={inputMode}
