@@ -11,6 +11,11 @@ module.exports = {
       fontFamily: {
         sans: ["var(--font-geist-sans)"],
       },
+      boxShadow: {
+        light: "0 2px 4px 0px rgba(0, 0, 0, 0.04)",
+        medium: "0 4px 12px 0px rgba(0, 0, 0, 0.08)",
+        heavy: "0 4px 24px 0px rgba(0, 0, 0, 0.32)",
+      },
     },
     colors: {
       black: "#201D23",

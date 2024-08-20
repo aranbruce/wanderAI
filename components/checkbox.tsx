@@ -4,11 +4,11 @@ interface CheckboxProps {
   onChange: () => void;
 }
 
-const Checkbox = ({ label, checked, onChange }: CheckboxProps) => {
+export default function Checkbox({ label, checked, onChange }: CheckboxProps) {
   return (
-    <label className="flex cursor-pointer items-center gap-2 text-base font-normal leading-6">
+    <label className="flex cursor-pointer items-center gap-2 text-base font-medium leading-6">
       <input
-        className="h-4 w-4 rounded-lg border-gray-300 bg-gray-100 text-green-400 accent-green-400 transition focus-visible:ring-2 focus-visible:ring-green-200"
+        className="focus-visible:ring-green-200 h-4 w-4 rounded-lg border-gray-300 bg-gray-100 text-green-400 accent-green-400 transition focus-visible:ring-2"
         type="checkbox"
         checked={checked}
         onChange={onChange}
@@ -17,6 +17,4 @@ const Checkbox = ({ label, checked, onChange }: CheckboxProps) => {
       {label}
     </label>
   );
-};
-
-export default Checkbox;
+}

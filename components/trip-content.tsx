@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { generateTripItinerary } from "@/app/actions";
 import { readStreamableValue } from "ai/rsc";
 import { useRouter } from "next/navigation";
 import { experimental_useObject as useObject } from "ai/react";
@@ -27,14 +26,17 @@ export interface LocationProps {
     longitude?: number;
   };
   rating?: number;
-  photoReferences?: string[];
+  photoReferences?: PhotoReference[];
 }
 
-const TripContent = () => {
+type PhotoReference = {
+  photoRef?: string;
+};
+
+export default function TripContent() {
   const [tripItinerary, setTripItinerary] = useState<LocationProps[]>([]);
   const [currentItineraryItemIndex, setCurrentItineraryItemIndex] = useState(0);
   const [isSignUpModalOpen, setIsSignUpModalOpen] = useState(false);
-  // const [isLoading, setIsLoading] = useState(true);
 
   const getNewSearchParams = useGetNewSearchParams();
   const { destination, duration, preferences } = getNewSearchParams();
@@ -50,53 +52,29 @@ const TripContent = () => {
   });
 
   useEffect(() => {
-    // fetchItineraryDetails();
     stop();
     submit({ destination, duration, preferences });
     console.log("object: ", object);
   }, []);
 
-  const fetchItineraryDetails = async () => {
-    const { object } = await generateTripItinerary({
-      destination,
-      duration,
-      preferences,
-    });
-
-    for await (const partialObject of readStreamableValue(object)) {
-      if (partialObject) {
-        const locations = partialObject.locations;
-        if (locations) {
-          // console.log(locations);
-          // convert the locations to a json array
-          const locationsString = JSON.stringify(locations, null, 2);
-          const locationsArray = JSON.parse(locationsString);
-          setTripItinerary(locationsArray);
-
-          // setTripItinerary(JSON.stringify(locations, null, 2));
-        }
-      }
-    }
-  };
-
-  const increaseTimeOfDay = () => {
+  function increaseTimeOfDay() {
     if (currentItineraryItemIndex === tripItinerary.length - 1) {
       setIsSignUpModalOpen(true);
     } else {
       setCurrentItineraryItemIndex(currentItineraryItemIndex + 1);
     }
-  };
+  }
 
-  const decreaseTimeOfDay = () => {
+  function decreaseTimeOfDay() {
     if (currentItineraryItemIndex === 0) {
       router.push("/");
     } else {
       setCurrentItineraryItemIndex(currentItineraryItemIndex - 1);
     }
-  };
+  }
 
   return (
-    <div>
+    <div className="relative flex h-svh max-h-dvh w-full flex-col overflow-hidden">
       {!object?.locations && tripItinerary.length === 0 ? (
         <Loading />
       ) : (
@@ -107,19 +85,20 @@ const TripContent = () => {
             isLoading={isLoading}
           />
           {isLoading &&
-            object?.locations &&
-            object.locations[currentItineraryItemIndex] && (
-              <LocationCard
-                location={object.locations[currentItineraryItemIndex]}
-                increaseTimeOfDay={increaseTimeOfDay}
-                decreaseTimeOfDay={decreaseTimeOfDay}
-              />
-            )}
-          {!isLoading && (
+          object?.locations &&
+          object.locations[currentItineraryItemIndex] ? (
+            <LocationCard
+              location={object.locations[currentItineraryItemIndex]}
+              increaseTimeOfDay={increaseTimeOfDay}
+              decreaseTimeOfDay={decreaseTimeOfDay}
+              isLoading={isLoading}
+            />
+          ) : (
             <LocationCard
               location={tripItinerary[currentItineraryItemIndex]}
               increaseTimeOfDay={increaseTimeOfDay}
               decreaseTimeOfDay={decreaseTimeOfDay}
+              isLoading={isLoading}
             />
           )}
         </>
@@ -135,6 +114,4 @@ const TripContent = () => {
       </AnimatePresence>
     </div>
   );
-};
-
-export default TripContent;
+}

@@ -1,12 +1,12 @@
 import Image from "next/image";
 import Link from "next/link";
 
-const ExampleTripCard = ({ location, imgSrc, imgAlt }) => {
+export default function ExampleTripCard({ location, imgSrc, imgAlt }) {
   return (
     <Link href={`/trip?destination=${location}&duration=2&preferences=Food`}>
-      <div className="relative flex h-72 w-full items-end justify-start overflow-hidden rounded-lg bg-gray-300 p-6">
+      <div className="relative flex h-72 w-full items-end justify-start overflow-hidden rounded-lg bg-gray-300 p-6 shadow-light">
         <Image
-          className="absolute inset-0 z-0 object-cover"
+          className="absolute inset-0 z-0 object-cover transition-transform duration-300 ease-in-out hover:scale-105"
           src={imgSrc}
           alt={imgAlt}
           fill={true}
@@ -18,6 +18,4 @@ const ExampleTripCard = ({ location, imgSrc, imgAlt }) => {
       </div>
     </Link>
   );
-};
-
-export default ExampleTripCard;
+}

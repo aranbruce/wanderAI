@@ -15,6 +15,16 @@ h6 {
   font-family: var(--font-poppins);
 }
 
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 30px white inset !important;
+}
+input:not(:placeholder-shown):not(:focus):invalid {
+  @apply border-red;
+}
+
 @layer base {
   /* *:focus-visible {
     @apply outline-none;

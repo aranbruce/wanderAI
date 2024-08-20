@@ -1,97 +1,15 @@
-"use client";
-
-import { useState, useEffect } from "react";
-
-import useLocalStorage from "@/hooks/useLocalStorage";
-import { AnimatePresence } from "framer-motion";
-
 import Section from "@/components/section";
-import Input from "@/components/input";
-import Button from "@/components/button";
-import SearchModal from "@/components/search-modal";
 import TextAndImage from "@/components/text-and-image";
 import SignUpCard from "@/components/sign-up-card";
 import ExampleTripCard from "@/components/example-trip-card";
 import TestimonialCard from "@/components/testimonial-card";
+import SearchForm from "@/components/search-form";
 
-const Home = () => {
-  const [destination, setDestination] = useLocalStorage("destination", "");
-  const [duration, setDuration] = useLocalStorage("duration", "");
-  const [preferences, setPreferences] = useLocalStorage("preferences", []);
-  const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
-
-  useEffect(() => {
-    document.body.style.overflow = "auto";
-    document.body.style.height = "auto";
-  }, []);
-
-  const handleDestinationChange = (newDestination: string) => {
-    setDestination(newDestination);
-  };
-
-  const handleDurationChange = (newDuration: number) => {
-    setDuration(newDuration);
-  };
-
-  const handlePreferenceChange = (changedPreference: string) => {
-    if (preferences.includes(changedPreference)) {
-      setPreferences(
-        preferences.filter((preference) => preference !== changedPreference),
-      );
-    } else {
-      setPreferences([...preferences, changedPreference]);
-    }
-  };
-
-  const handleSubmit = (e) => {
-    if (destination && duration) {
-      e.preventDefault();
-      setIsSearchModalOpen(true);
-      document.body.style.overflow = "hidden";
-      document.body.style.height = "100vh";
-    }
-  };
-
+export default function Home() {
   return (
     <main className="min-h-screen">
       <Section isHero>
-        <div className="mt-12 flex w-full max-w-5xl flex-col items-center gap-8 rounded-3xl bg-[linear-gradient(180deg,rgba(0,0,0,0.10)0%,rgba(33,35,44,0.70)100%),url('/assets/mountains.jpg')] bg-cover bg-bottom px-8 py-12 shadow-lg sm:px-10 sm:py-16 md:px-12 md:py-32">
-          <div className="flex flex-col items-center gap-6 text-pretty text-center text-white">
-            <h1 className="text-4xl md:text-6xl">
-              Love travel, hate planning?
-            </h1>
-            <p className="text-lg">
-              Plan your next adventure in seconds through the power of AI
-            </p>
-          </div>
-          <div className="flex w-full max-w-3xl flex-col items-start gap-2 rounded-2xl bg-white p-6 shadow-2xl">
-            <form
-              id="cardForm"
-              className="flex w-full flex-col gap-x-4 gap-y-6 md:flex-row md:items-end md:gap-4"
-              onSubmit={handleSubmit}
-            >
-              <Input
-                type="text"
-                value={destination}
-                inputMode="text"
-                onChange={(e) => handleDestinationChange(e.target.value)}
-                placeholder="Enter your destination"
-                label="Where do you want to go?"
-                required
-              />
-              <Input
-                type="number"
-                inputMode="numeric"
-                value={duration}
-                onChange={(e) => handleDurationChange(Number(e.target.value))}
-                placeholder="Enter your trip duration"
-                label="How many days is your trip?"
-                required
-              />
-              <Button type="submit">Plan trip</Button>
-            </form>
-          </div>
-        </div>
+        <SearchForm />
       </Section>
       <Section>
         <div className="flex flex-col items-center gap-2 text-center">
@@ -165,21 +83,6 @@ const Home = () => {
       <Section>
         <SignUpCard />
       </Section>
-      <AnimatePresence>
-        {isSearchModalOpen && (
-          <SearchModal
-            setIsSearchModalOpen={setIsSearchModalOpen}
-            destination={destination}
-            handleDestinationChange={handleDestinationChange}
-            duration={duration}
-            handleDurationChange={handleDurationChange}
-            preferences={preferences}
-            handlePreferenceChange={handlePreferenceChange}
-          />
-        )}
-      </AnimatePresence>
     </main>
   );
-};
-
-export default Home;
+}

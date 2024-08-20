@@ -1,4 +1,5 @@
 import { openai } from "@ai-sdk/openai";
+import { anthropic } from "@ai-sdk/anthropic";
 import { streamObject } from "ai";
 import { locationsSchema } from "./schema";
 import { NextRequest } from "next/server";
@@ -106,6 +107,10 @@ export async function POST(request: NextRequest) {
     model: openai("gpt-4o-mini", {
       structuredOutputs: true,
     }),
+    // model: anthropic("claude-3-5-sonnet-20240620", {
+    //   cacheControl: true,
+    // }),
+
     mode: "json",
     maxRetries: 0,
     system: `
@@ -134,9 +139,16 @@ export async function POST(request: NextRequest) {
             "title": "Location Name",
             "description": "Description of the location",
             "rating": "Rating of the location between 1 and 5 to 1 decimal place",
+            "photoReferences": [
+              {
+                "photoRef": "Photo reference string supplied by Google Places API"
+              }
+            ]
           }
         ]
-        """`,
+        """
+        Try to supply a minimum of 4 photoRefs per location. Ensure the photoRefs match the location supplied by Google Places API.
+        `,
     prompt: "Generate the trip itinerary",
     schema: locationsSchema,
   });

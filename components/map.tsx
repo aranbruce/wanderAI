@@ -12,11 +12,11 @@ interface MapProps {
   isLoading: boolean;
 }
 
-const Map = ({
+export default function Map({
   tripItinerary,
   currentItineraryItemIndex,
   isLoading,
-}: MapProps) => {
+}: MapProps) {
   const initialLng =
     tripItinerary[currentItineraryItemIndex]?.coordinates?.longitude ??
     -122.4194;
@@ -157,9 +157,7 @@ const Map = ({
   return (
     <div
       ref={mapContainer}
-      className={`ml-auto w-full md:absolute md:right-0 md:h-screen md:w-[calc(100%-384px)] lg:w-[calc(100%-420px)] ${isLoading && "animate-pulse"} `}
+      className={`ml-auto h-[calc(100%-360px)] w-full md:absolute md:right-0 md:h-screen md:w-[calc(100%-384px)] lg:w-[calc(100%-420px)] ${isLoading && "h-[calc(100%] animate-pulse"} `}
     />
   );
-};
-
-export default Map;
+}

@@ -1,11 +1,11 @@
 import Section from "@/components/section";
 import Button from "@/components/button";
 
-const resetResponse = () => {
+function resetResponse() {
   localStorage.removeItem("response");
-};
+}
 
-const Error = () => {
+export default function Error() {
   return (
     <Section>
       <div className="flex h-[calc(100svh-72px)] flex-col items-center justify-center gap-6 text-center">
@@ -16,6 +16,4 @@ const Error = () => {
       </div>
     </Section>
   );
-};
-
-export default Error;
+}

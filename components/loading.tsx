@@ -1,10 +1,10 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Image from "next/image";
 import { motion } from "framer-motion";
+import LogoIcon from "@/images/icons/logo-icon";
 
-const Loading = () => {
+export default function Loading() {
   const [activeTextIndex, setActiveTextIndex] = useState(0);
 
   const animationTime = 3.5;
@@ -30,14 +30,7 @@ const Loading = () => {
   return (
     <div className="flex h-screen items-center justify-center">
       <div className="flex w-full flex-col items-center gap-4">
-        <Image
-          src="/assets/brandMark.svg"
-          alt="WanderAI Logo"
-          width={96}
-          height={96}
-          className="text animate-pulse"
-        />
-
+        <LogoIcon height="120" width="120" />
         {activeTextIndex === 0 ? (
           <motion.div className="opacity-0" animate={animation}>
             <h4>Searching the internet for locations</h4>
@@ -54,6 +47,4 @@ const Loading = () => {
       </div>
     </div>
   );
-};
-
-export default Loading;
+}

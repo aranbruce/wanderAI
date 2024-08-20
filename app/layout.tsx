@@ -3,7 +3,7 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Poppins } from "next/font/google";
 import { GeistSans } from "geist/font/sans";
 
-import NavBar from "@/components/navigation";
+import Navigation from "@/components/navigation";
 import { Analytics } from "@vercel/analytics/react";
 
 const poppins = Poppins({
@@ -12,8 +12,6 @@ const poppins = Poppins({
   variable: "--font-poppins",
   display: "swap",
 });
-
-const hideButton = false;
 
 export const metadata = {
   title: "WanderAI",
@@ -29,7 +27,7 @@ export default function RootLayout({ children }) {
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       </head>
       <body className={`${GeistSans.variable} ${poppins.variable}`}>
-        <NavBar hideButton={hideButton} />
+        <Navigation />
         {children}
         <Analytics />
         <SpeedInsights />

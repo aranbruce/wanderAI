@@ -1,12 +1,10 @@
 import { Suspense } from "react";
 import TripContent from "@/components/trip-content";
 
-const Trip = () => {
+export default function Trip() {
   return (
     <Suspense>
       <TripContent />
     </Suspense>
   );
-};
-
-export default Trip;
+}

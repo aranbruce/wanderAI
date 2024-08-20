@@ -7,22 +7,22 @@ interface LocationCardProps {
   location: LocationProps;
   increaseTimeOfDay: () => void;
   decreaseTimeOfDay: () => void;
+  isLoading: boolean;
 }
 
-const LocationCard = ({
+export default function LocationCard({
   location,
   increaseTimeOfDay,
   decreaseTimeOfDay,
-}: LocationCardProps) => {
-  const apiKey = process.env.NEXT_PUBLIC_GOOGLE_PLACES_API_KEY;
-
+  isLoading,
+}: LocationCardProps) {
   return (
-    <div className="absolute bottom-0 z-10 flex w-full flex-col items-center gap-4 rounded-t-lg bg-white pt-6 shadow-lg md:h-screen md:w-96 md:justify-between md:gap-4 md:rounded-none md:pt-20 lg:w-[420px]">
+    <div className="shadow-heavy fixed bottom-0 z-30 flex w-full flex-col items-center gap-4 rounded-t-lg bg-white pt-6 md:h-screen md:w-96 md:justify-between md:gap-4 md:rounded-none md:pt-20 lg:w-[420px]">
       <div className="flex min-h-0 w-full flex-col gap-3">
         <div className="flex w-full items-center gap-2 px-6 md:px-8">
           <div className="flex w-full flex-col gap-2">
             {location?.day && (
-              <h3 className="text-sm font-semibold text-gray-600">
+              <h3 className="text-sm font-semibold text-gray-800">
                 {`Day ${location?.day} - 
                   ${
                     location?.timeOfDay?.charAt(0).toUpperCase() +
@@ -34,7 +34,7 @@ const LocationCard = ({
           </div>
           {location?.rating && (
             <div className="flex items-center justify-end gap-1">
-              <p className="text-base font-semibold text-green-600">
+              <p className="text-green-600 text-base font-semibold">
                 {location?.rating}
               </p>
               <Image
@@ -52,13 +52,16 @@ const LocationCard = ({
             {location?.description}
           </p>
           <div className="md:px-8-6 flex w-full snap-x snap-mandatory scroll-pl-6 gap-4 overflow-x-scroll px-6 md:grid md:snap-y md:grid-cols-2 md:overflow-y-scroll">
-            {location?.photoReferences ? (
-              location?.photoReferences.map((photoRef) => (
-                <div className="bg-gray-30 relative h-32 w-full min-w-32 overflow-hidden rounded-xl">
+            {location?.photoReferences && !isLoading ? (
+              location?.photoReferences.map((photo) => (
+                <div
+                  className="bg-gray-30 relative h-32 w-full min-w-32 overflow-hidden rounded-xl"
+                  key={photo.photoRef}
+                >
                   <Image
                     fill={true}
-                    key={photoRef}
-                    src={`https://maps.googleapis.com/maps/api/place/photo?photo_reference=${photoRef}&maxheight=1600&key=${apiKey}`}
+                    key={photo.photoRef}
+                    src={`https://maps.googleapis.com/maps/api/place/photo?photo_reference=${photo.photoRef}&maxheight=1600&key=${process.env.NEXT_PUBLIC_GOOGLE_PLACES_API_KEY}`}
                     alt="Location image"
                     className="h-full w-full min-w-[120px] rounded-xl bg-gray-300 object-cover"
                   />
@@ -85,6 +88,4 @@ const LocationCard = ({
       </footer>
     </div>
   );
-};
-
-export default LocationCard;
+}

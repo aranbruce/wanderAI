@@ -3,7 +3,7 @@ interface BackIconProps {
   width: string;
 }
 
-const BackIcon = ({ height, width }: BackIconProps) => {
+export default function BackIcon({ height, width }: BackIconProps) {
   return (
     <svg
       width={width}
@@ -20,6 +20,4 @@ const BackIcon = ({ height, width }: BackIconProps) => {
       />
     </svg>
   );
-};
-
-export default BackIcon;
+}

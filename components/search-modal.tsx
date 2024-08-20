@@ -8,7 +8,7 @@ import Button from "@/components/button";
 import Backdrop from "@/components/backdrop";
 import BackIcon from "@/images/icons/back-icon";
 
-const SearchModal = ({
+export default function SearchModal({
   destination,
   handleDestinationChange,
   duration,
@@ -16,18 +16,18 @@ const SearchModal = ({
   preferences,
   handlePreferenceChange,
   setIsSearchModalOpen,
-}) => {
-  const handleModalClose = () => {
+}) {
+  function handleModalClose() {
     console.log("handleModalClose");
     setIsSearchModalOpen(false);
     document.body.style.overflow = "auto";
     document.body.style.height = "auto";
-  };
+  }
 
   const router = useRouter();
   const isLargeScreen = useMediaQuery({ query: "(min-width: 768px)" });
 
-  const handleSubmit = (e) => {
+  function handleSubmit(e) {
     if (destination && duration) {
       e.preventDefault();
       document.body.style.overflow = "auto";
@@ -38,7 +38,7 @@ const SearchModal = ({
       const url = `/trip?destination=${destination}&duration=${duration}&${preferenceString}`;
       router.push(url);
     }
-  };
+  }
 
   const animation = isLargeScreen
     ? {
@@ -72,10 +72,10 @@ const SearchModal = ({
         }}
         transition={{ duration: 0.2 }}
         onClick={(e) => e.stopPropagation()} // Prevent click from closing modal
-        className="fixed bottom-0 left-0 z-50 flex h-fit max-h-screen w-full flex-col items-start overflow-hidden rounded-t-xl bg-white shadow-lg md:bottom-1/2 md:left-1/2 md:w-[568px] md:-translate-x-1/2 md:-translate-y-1/2 md:transform md:rounded-xl"
+        className="shadow-heavy fixed bottom-0 left-0 z-50 flex h-fit max-h-screen w-full flex-col items-start overflow-hidden rounded-t-xl bg-white md:bottom-1/2 md:left-1/2 md:w-[568px] md:-translate-x-1/2 md:-translate-y-1/2 md:transform md:rounded-xl"
       >
-        <header className="sticky top-0 w-full border-b border-gray-200 bg-white p-6">
-          <h3>Your trip details</h3>
+        <header className="sticky top-0 w-full border-b border-gray-200 bg-white px-6 py-4">
+          <h3 className="text-lg">Your trip details</h3>
         </header>
         <form
           id="modalForm"
@@ -182,6 +182,4 @@ const SearchModal = ({
       </motion.div>
     </Backdrop>
   );
-};
-
-export default SearchModal;
+}
