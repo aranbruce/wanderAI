@@ -1,29 +1,56 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 * {
-  box-sizing: border-box;
-  padding: 0;
-  margin: 0;
+  font-family: var(--font-geist-sans);
 }
 
-html,
-body {
-  max-width: 100vw;
-  overflow-x: hidden;
-  color: #201D23;
-  font-size: 1rem;
-  line-height: 1.5rem;
-  /* color: rgba(255, 255, 255, 0.80); */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-poppins);
 }
 
-a {
-  text-decoration: none;
-  width: auto;
-  height: auto;
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 30px white inset !important;
+}
+input:not(:placeholder-shown):not(:focus):invalid {
+  @apply border-red;
 }
 
-input, button {
-  font-family: inherit;
-}
-
-h1, h2, h3, h4, h5, h6 {
-  font-weight: 600;
+@layer base {
+  /* *:focus-visible {
+    @apply outline-none;
+    @apply ring-1;
+    @apply ring-green-400/20;
+    @apply ring-offset-1;
+    @apply ring-offset-white;
+  } */
+  a:focus-visible {
+    @apply ring-2;
+    @apply ring-green-400/20;
+    @apply ring-offset-1;
+    @apply ring-offset-white;
+    @apply outline-none;
+  }
+  body {
+    @apply bg-white;
+    @apply text-black;
+  }
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-semibold;
+    @apply leading-tight;
+  }
 }
