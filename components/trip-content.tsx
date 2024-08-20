@@ -34,30 +34,27 @@ const TripContent = () => {
   const [tripItinerary, setTripItinerary] = useState<LocationProps[]>([]);
   const [currentItineraryItemIndex, setCurrentItineraryItemIndex] = useState(0);
   const [isSignUpModalOpen, setIsSignUpModalOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+  // const [isLoading, setIsLoading] = useState(true);
 
   const getNewSearchParams = useGetNewSearchParams();
   const { destination, duration, preferences } = getNewSearchParams();
   const router = useRouter();
 
-  useEffect(() => {
-    console.log("tripItinerary: ", tripItinerary);
-    if (isLoading && tripItinerary?.length > 0) {
-      setIsLoading(false);
-    }
-  }, [tripItinerary]);
-
-  useEffect(() => {
-    fetchItineraryDetails();
-    // submit({ destination, duration, preferences });
-    // console.log("object: ", object);
-    // setTripItinerary(JSON.stringify(object));
-  }, []);
-
-  const { object, submit } = useObject({
+  const { object, submit, stop, isLoading } = useObject({
     api: "/api/trip",
     schema: locationsSchema,
+    onFinish: (object) => {
+      console.log("object: ", object);
+      setTripItinerary(object?.object?.locations);
+    },
   });
+
+  useEffect(() => {
+    // fetchItineraryDetails();
+    stop();
+    submit({ destination, duration, preferences });
+    console.log("object: ", object);
+  }, []);
 
   const fetchItineraryDetails = async () => {
     const { object } = await generateTripItinerary({
@@ -99,43 +96,44 @@ const TripContent = () => {
   };
 
   return (
-    <>
-      {isLoading ? (
+    <div>
+      {!object?.locations && tripItinerary.length === 0 ? (
         <Loading />
       ) : (
         <>
-          {/* {object?.locations?.map((location: LocationProps, index: number) => (
-          <div key={index}>
-            <div>{location?.title}</div>
-            <div>{location?.description}</div>
-          </div>
-        ))} */}
-          {tripItinerary[currentItineraryItemIndex]?.coordinates?.latitude &&
-            tripItinerary[currentItineraryItemIndex]?.coordinates
-              ?.longitude && (
-              <Map
-                tripItinerary={tripItinerary}
-                currentItineraryItemIndex={currentItineraryItemIndex}
+          <Map
+            tripItinerary={tripItinerary}
+            currentItineraryItemIndex={currentItineraryItemIndex}
+            isLoading={isLoading}
+          />
+          {isLoading &&
+            object?.locations &&
+            object.locations[currentItineraryItemIndex] && (
+              <LocationCard
+                location={object.locations[currentItineraryItemIndex]}
+                increaseTimeOfDay={increaseTimeOfDay}
+                decreaseTimeOfDay={decreaseTimeOfDay}
               />
             )}
-          {tripItinerary[currentItineraryItemIndex] && (
+          {!isLoading && (
             <LocationCard
               location={tripItinerary[currentItineraryItemIndex]}
               increaseTimeOfDay={increaseTimeOfDay}
               decreaseTimeOfDay={decreaseTimeOfDay}
             />
           )}
-          <AnimatePresence>
-            {isSignUpModalOpen && (
-              <SignUpModal
-                setIsSignUpModalOpen={setIsSignUpModalOpen}
-                isSignUpModalOpen={isSignUpModalOpen}
-              />
-            )}
-          </AnimatePresence>
         </>
       )}
-    </>
+
+      <AnimatePresence>
+        {isSignUpModalOpen && (
+          <SignUpModal
+            setIsSignUpModalOpen={setIsSignUpModalOpen}
+            isSignUpModalOpen={isSignUpModalOpen}
+          />
+        )}
+      </AnimatePresence>
+    </div>
   );
 };
 

@@ -35,6 +35,7 @@ const Loading = () => {
           alt="WanderAI Logo"
           width={96}
           height={96}
+          className="text animate-pulse"
         />
 
         {activeTextIndex === 0 ? (

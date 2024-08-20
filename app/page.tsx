@@ -25,15 +25,15 @@ const Home = () => {
     document.body.style.height = "auto";
   }, []);
 
-  const handleDestinationChange = (e) => {
-    setDestination(e.target.value);
+  const handleDestinationChange = (newDestination: string) => {
+    setDestination(newDestination);
   };
 
-  const handleDurationChange = (e) => {
-    setDuration(e.target.value);
+  const handleDurationChange = (newDuration: number) => {
+    setDuration(newDuration);
   };
 
-  const handlePreferenceChange = (changedPreference) => {
+  const handlePreferenceChange = (changedPreference: string) => {
     if (preferences.includes(changedPreference)) {
       setPreferences(
         preferences.filter((preference) => preference !== changedPreference),
@@ -74,7 +74,7 @@ const Home = () => {
                 type="text"
                 value={destination}
                 inputMode="text"
-                onChange={handleDestinationChange}
+                onChange={(e) => handleDestinationChange(e.target.value)}
                 placeholder="Enter your destination"
                 label="Where do you want to go?"
                 required
@@ -83,7 +83,7 @@ const Home = () => {
                 type="number"
                 inputMode="numeric"
                 value={duration}
-                onChange={handleDurationChange}
+                onChange={(e) => handleDurationChange(Number(e.target.value))}
                 placeholder="Enter your trip duration"
                 label="How many days is your trip?"
                 required

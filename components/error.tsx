@@ -8,7 +8,7 @@ const resetResponse = () => {
 const Error = () => {
   return (
     <Section>
-      <div className="flex h-[calc(100vh-72px)] flex-col items-center justify-center gap-6 text-center">
+      <div className="flex h-[calc(100svh-72px)] flex-col items-center justify-center gap-6 text-center">
         <h1 className="text-2xl">Oops! Something went wrong.</h1>
         <Button onClick={resetResponse} href="/">
           Back to Homepage

@@ -1,6 +1,3 @@
-import Skeleton from "react-loading-skeleton";
-import "react-loading-skeleton/dist/skeleton.css";
-
 import Image from "next/image";
 import Button from "@/components/button";
 import BackIcon from "@/images/icons/back-icon";
@@ -20,22 +17,22 @@ const LocationCard = ({
   const apiKey = process.env.NEXT_PUBLIC_GOOGLE_PLACES_API_KEY;
 
   return (
-    <div className="absolute bottom-0 z-10 flex w-full flex-col items-center gap-6 rounded-t-lg bg-white py-6 shadow-lg md:h-screen md:w-96 md:justify-between md:gap-4 md:rounded-none md:px-2 md:pt-20 lg:w-[420px]">
+    <div className="absolute bottom-0 z-10 flex w-full flex-col items-center gap-4 rounded-t-lg bg-white pt-6 shadow-lg md:h-screen md:w-96 md:justify-between md:gap-4 md:rounded-none md:pt-20 lg:w-[420px]">
       <div className="flex min-h-0 w-full flex-col gap-3">
-        <div className="flex w-full items-center gap-2 px-6">
+        <div className="flex w-full items-center gap-2 px-6 md:px-8">
           <div className="flex w-full flex-col gap-2">
             {location?.day && (
               <h3 className="text-sm font-semibold text-gray-600">
                 {`Day ${location?.day} - 
                   ${
                     location?.timeOfDay?.charAt(0).toUpperCase() +
-                    location?.timeOfDay?.slice(1)
+                      location?.timeOfDay?.slice(1) || ""
                   }`}
               </h3>
             )}
             <h2 className="w-full text-lg font-semibold">{location?.title}</h2>
           </div>
-          {location.rating && (
+          {location?.rating && (
             <div className="flex items-center justify-end gap-1">
               <p className="text-base font-semibold text-green-600">
                 {location?.rating}
@@ -51,49 +48,36 @@ const LocationCard = ({
           )}
         </div>
         <div className="flex w-full flex-col gap-4">
-          <p className="px-6 leading-6 text-gray-800">
+          <p className="px-6 leading-6 text-gray-800 md:px-8">
             {location?.description}
           </p>
-          <div className="flex w-full snap-x snap-mandatory scroll-pl-6 gap-4 overflow-x-scroll px-6 md:grid md:snap-y md:grid-cols-2 md:overflow-y-scroll">
+          <div className="md:px-8-6 flex w-full snap-x snap-mandatory scroll-pl-6 gap-4 overflow-x-scroll px-6 md:grid md:snap-y md:grid-cols-2 md:overflow-y-scroll">
             {location?.photoReferences ? (
               location?.photoReferences.map((photoRef) => (
-                <Image
-                  width={128}
-                  height={128}
-                  key={photoRef}
-                  src={`https://maps.googleapis.com/maps/api/place/photo?photo_reference=${photoRef}&maxheight=1600&key=${apiKey}`}
-                  alt="Location image"
-                  className="min-w-[120px] rounded-xl bg-gray-300 object-cover"
-                />
+                <div className="bg-gray-30 relative h-32 w-full min-w-32 overflow-hidden rounded-xl">
+                  <Image
+                    fill={true}
+                    key={photoRef}
+                    src={`https://maps.googleapis.com/maps/api/place/photo?photo_reference=${photoRef}&maxheight=1600&key=${apiKey}`}
+                    alt="Location image"
+                    className="h-full w-full min-w-[120px] rounded-xl bg-gray-300 object-cover"
+                  />
+                </div>
               ))
             ) : (
               <>
-                <Skeleton
-                  count={1}
-                  height={128}
-                  containerClassName="h-32 snap-start w-full rounded-xl object-cover min-w-[128px] bg-gray-300 leading-4 overflow-hidden"
-                />
-                <Skeleton
-                  count={1}
-                  height={128}
-                  containerClassName="h-32 snap-start w-full rounded-xl object-cover min-w-[128px] bg-gray-300 leading-4 overflow-hidden"
-                />
-                <Skeleton
-                  count={1}
-                  height={128}
-                  containerClassName="h-32 snap-start w-full rounded-xl object-cover min-w-[128px] bg-gray-300 leading-4 overflow-hidden"
-                />
-                <Skeleton
-                  count={1}
-                  height={128}
-                  containerClassName="h-32 snap-start w-full rounded-xl object-cover min-w-[128px] bg-gray-300 leading-4 overflow-hidden"
-                />
+                {Array.from({ length: 4 }).map((_, i) => (
+                  <div
+                    key={i}
+                    className="h-32 w-full min-w-[128px] animate-pulse snap-start overflow-hidden rounded-xl bg-gray-300 object-cover"
+                  />
+                ))}
               </>
             )}
           </div>
         </div>
       </div>
-      <footer className="grid w-full grid-cols-[0fr_1fr] gap-4 px-6">
+      <footer className="md:px-8-6 z-10 grid w-full grid-cols-[0fr_1fr] gap-4 bg-white px-6 py-3 md:py-4">
         <Button variant="secondary" onClick={decreaseTimeOfDay}>
           <BackIcon height="24" width="24" />
         </Button>

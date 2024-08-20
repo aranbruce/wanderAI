@@ -27,7 +27,7 @@ const Input = ({
         </label>
       )}
       <input
-        className="flex w-full items-center justify-center gap-1 rounded-full border border-gray-200 bg-white px-4 py-3 font-normal outline-none focus-visible:border-gray-300 focus-visible:ring-[3px] focus-visible:ring-green-400/40 focus-visible:ring-offset-1 focus-visible:ring-offset-white"
+        className="flex w-full items-center justify-center gap-1 rounded-full border border-gray-200 bg-white px-4 py-3 font-normal outline-none transition focus-visible:border-gray-300 focus-visible:ring-[3px] focus-visible:ring-green-400/40 focus-visible:ring-offset-1 focus-visible:ring-offset-white"
         id={label}
         type={type}
         inputMode={inputMode}

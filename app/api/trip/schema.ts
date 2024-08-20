@@ -4,6 +4,7 @@ import { z } from "zod";
 export const locationsSchema = z.object({
   locations: z.array(
     z.object({
+      id: z.string().describe("The id of the location"),
       coordinates: z.object({
         latitude: z.number().describe("The latitude of the location"),
         longitude: z.number().describe("The longitude of the location"),
@@ -18,10 +19,11 @@ export const locationsSchema = z.object({
         // .optional()
         .describe("The rating of the location"),
       description: z.string().describe("The description of the location"),
-
-      // photoReferences: z
-      //   .array(z.string())
-      //   .describe("The photo references of the location"),
+      // photoReferences: z.array(
+      //   z.object({
+      //     photoRef: z.string().describe("The photo reference of the location"),
+      //   }),
+      // ),
     }),
   ),
 });
