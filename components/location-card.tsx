@@ -51,7 +51,7 @@ export default function LocationCard({
               {location?.description}
             </p>
           ) : (
-            <div className="flex w-full flex-col gap-3 px-6">
+            <div className="flex w-full flex-col gap-3 px-6 md:px-8">
               <div className="h-5 w-1/2 animate-pulse rounded-md bg-gray-300" />
               <div className="h-5 w-3/4 animate-pulse rounded-md bg-gray-300" />
             </div>
