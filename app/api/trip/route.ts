@@ -4,8 +4,9 @@ import { streamObject } from "ai";
 import { locationsSchema } from "./schema";
 import { NextRequest } from "next/server";
 
-// Allow streaming responses up to 30 seconds
-export const maxDuration = 60;
+// Allow streaming responses up to 240 seconds on edge runtime
+export const maxDuration = 320;
+export const runtime = "edge";
 
 export async function POST(request: NextRequest) {
   const { destination, duration, preferences } = await request.json();
@@ -112,16 +113,10 @@ export async function POST(request: NextRequest) {
   }
 
   const result = await streamObject({
-    model: openai("gpt-4o-2024-08-06", {
-      // model: openai("gpt-4o-mini", {
+    // model: openai("gpt-4o-2024-08-06", {
+    model: openai("gpt-4o-mini", {
       structuredOutputs: true,
     }),
-    // model: anthropic("claude-3-5-sonnet-20240620", {
-    //   cacheControl: true,
-    // }),
-    // model: vertex("gemini-1.5-pro-latest", {
-    //   useSearchGrounding: true,
-    // }),
 
     mode: "json",
     maxRetries: 0,
@@ -162,8 +157,10 @@ export async function POST(request: NextRequest) {
           }
         ]
         """
-        Proved as many photoRef values per location as can be found for that id in the locations from Google.
+        Proved as many photoRef values as you can in the photoReferences array per location as can be found for that id in the locations from Google.
+        Provide at least 6 photoRef per location.
         Ensure the photoRefs match the location supplied in the locations from Google.
+        Do not repeat locations.
         `,
     prompt: "Generate the trip itinerary",
     schema: locationsSchema,

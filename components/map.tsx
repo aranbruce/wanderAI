@@ -163,7 +163,7 @@ export default function Map({
   return (
     <div
       ref={mapContainer}
-      className={`ml-auto h-[calc(100%-360px)] w-full md:absolute md:right-0 md:h-screen md:w-[calc(100%-384px)] lg:w-[calc(100%-420px)]`}
+      className={`ml-auto h-[calc(100%-300px)] w-full md:absolute md:right-0 md:h-screen md:w-[calc(100%-384px)] lg:w-[calc(100%-420px)]`}
     />
   );
 }
