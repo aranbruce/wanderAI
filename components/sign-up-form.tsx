@@ -2,8 +2,6 @@
 
 import { useState } from "react";
 
-import va from "@vercel/analytics";
-
 import Button from "@/components/button";
 import Input from "@/components/input";
 import ThankYou from "./thank-you";
@@ -44,7 +42,6 @@ export default function SignUpForm() {
       if (res.code === 200) {
         setSubmitted(true);
         console.log("submitted");
-        va.track("Signup");
       }
     } catch (error) {
       console.log("error:", error.message);
