@@ -7,17 +7,15 @@ interface LocationCardProps {
   location: LocationProps;
   increaseTimeOfDay: () => void;
   decreaseTimeOfDay: () => void;
-  isLoading: boolean;
 }
 
 export default function LocationCard({
   location,
   increaseTimeOfDay,
   decreaseTimeOfDay,
-  isLoading,
 }: LocationCardProps) {
   return (
-    <div className="shadow-heavy fixed bottom-0 z-30 flex w-full flex-col items-center gap-4 rounded-t-lg bg-white pt-6 md:h-screen md:w-96 md:justify-between md:gap-4 md:rounded-none md:pt-20 lg:w-[420px]">
+    <div className="fixed bottom-0 z-30 flex w-full flex-col items-center gap-4 rounded-t-lg bg-white pt-6 shadow-heavy md:h-screen md:w-96 md:justify-between md:gap-4 md:rounded-none md:pt-20 lg:w-[420px]">
       <div className="flex min-h-0 w-full flex-col gap-3">
         <div className="flex w-full items-center gap-2 px-6 md:px-8">
           <div className="flex w-full flex-col gap-2">
@@ -47,15 +45,22 @@ export default function LocationCard({
             </div>
           )}
         </div>
-        <div className="flex w-full flex-col gap-4">
+        <div className="flex min-h-0 w-full flex-col gap-4">
           <p className="px-6 leading-6 text-gray-800 md:px-8">
-            {location?.description}
+            {location?.description ? (
+              location?.description
+            ) : (
+              <div className="flex w-full flex-col gap-3">
+                <div className="h-5 w-1/2 animate-pulse rounded-md bg-gray-300" />
+                <div className="h-5 w-3/4 animate-pulse rounded-md bg-gray-300" />
+              </div>
+            )}
           </p>
-          <div className="md:px-8-6 flex w-full snap-x snap-mandatory scroll-pl-6 gap-4 overflow-x-scroll px-6 md:grid md:snap-y md:grid-cols-2 md:overflow-y-scroll">
-            {location?.photoReferences && !isLoading ? (
+          <div className="flex w-full snap-x snap-mandatory scroll-pl-6 gap-4 overflow-x-scroll px-6 md:grid md:snap-y md:grid-cols-2 md:overflow-y-scroll md:px-8">
+            {location?.photoReferences && location?.isLoaded ? (
               location?.photoReferences.map((photo) => (
                 <div
-                  className="bg-gray-30 relative h-32 w-full min-w-32 overflow-hidden rounded-xl"
+                  className="bg-gray-30 relative h-32 w-full min-w-32 snap-start overflow-hidden rounded-xl"
                   key={photo.photoRef}
                 >
                   <Image

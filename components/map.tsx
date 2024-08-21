@@ -9,26 +9,23 @@ import { LocationProps } from "@/components/trip-content";
 interface MapProps {
   tripItinerary: LocationProps[];
   currentItineraryItemIndex: number;
-  isLoading: boolean;
 }
 
 export default function Map({
   tripItinerary,
   currentItineraryItemIndex,
-  isLoading,
 }: MapProps) {
   const initialLng =
-    tripItinerary[currentItineraryItemIndex]?.coordinates?.longitude ??
-    -122.4194;
+    tripItinerary[currentItineraryItemIndex]?.coordinates?.longitude ?? null;
   const initialLat =
-    tripItinerary[currentItineraryItemIndex]?.coordinates?.latitude || 37.7749;
+    tripItinerary[currentItineraryItemIndex]?.coordinates?.latitude || null;
 
   const mapContainer = useRef(null);
   const map = useRef(null);
   const markersRef = useRef([]);
   const [lng, setLng] = useState(initialLng);
   const [lat, setLat] = useState(initialLat);
-  const [zoom, setZoom] = useState(15);
+  const [zoom, setZoom] = useState(3);
 
   useEffect(() => {
     setLng(initialLng);
@@ -46,7 +43,10 @@ export default function Map({
   }, []);
 
   useEffect(() => {
-    if (isLoading || !Array.isArray(tripItinerary)) return; // wait for the tripItinerary to load and ensure it's an array
+    if (!Array.isArray(tripItinerary)) {
+      console.error("tripItinerary is not an array");
+      return; // ensure tripItinerary is an array
+    }
 
     const locations = tripItinerary
       .filter(
@@ -101,7 +101,7 @@ export default function Map({
         markersRef.current.push(marker);
       }
     });
-  }, [isLoading, tripItinerary, currentItineraryItemIndex]);
+  }, [tripItinerary, currentItineraryItemIndex]);
 
   useEffect(() => {
     if (!map.current) return; // wait for map to initialize
@@ -117,7 +117,7 @@ export default function Map({
     if (initialLat && initialLng) {
       map.current.flyTo({
         center: [initialLng, initialLat],
-        zoom: map.current.getZoom(),
+        zoom: 15,
         speed: 1, // Adjust this value to control the animation speed
         curve: 1, // Adjust this value to control the animation curve
       });
@@ -133,12 +133,18 @@ export default function Map({
     tripItinerary.forEach((location, index) => {
       const isCurrentItem = index === currentItineraryItemIndex;
       const markerColor = isCurrentItem ? "#347463" : "#55C4A7"; // Red for current item, green for others
+      if (
+        !location?.coordinates?.longitude ||
+        !location?.coordinates?.latitude
+      ) {
+        return;
+      }
       const marker = new mapboxgl.Marker({
         color: markerColor,
       })
         .setLngLat([
-          location.coordinates.longitude,
-          location.coordinates.latitude,
+          location?.coordinates?.longitude,
+          location?.coordinates?.latitude,
         ])
         .addTo(map.current);
 
@@ -157,7 +163,7 @@ export default function Map({
   return (
     <div
       ref={mapContainer}
-      className={`ml-auto h-[calc(100%-360px)] w-full md:absolute md:right-0 md:h-screen md:w-[calc(100%-384px)] lg:w-[calc(100%-420px)] ${isLoading && "h-[calc(100%] animate-pulse"} `}
+      className={`ml-auto h-[calc(100%-360px)] w-full md:absolute md:right-0 md:h-screen md:w-[calc(100%-384px)] lg:w-[calc(100%-420px)]`}
     />
   );
 }

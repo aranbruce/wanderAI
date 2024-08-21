@@ -1,6 +1,5 @@
 import { z } from "zod";
 
-// define a schema for the notifications
 export const locationsSchema = z.object({
   locations: z.array(
     z.object({
@@ -25,9 +24,11 @@ export const locationsSchema = z.object({
             .string()
             .describe(
               "The photo_reference string supplied by Google Places API",
-            ),
+            )
+            .nullable(),
         }),
       ),
+      isLoaded: z.boolean().describe("A flag that is always true"),
     }),
   ),
 });

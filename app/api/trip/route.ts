@@ -1,5 +1,5 @@
 import { openai } from "@ai-sdk/openai";
-import { anthropic } from "@ai-sdk/anthropic";
+
 import { streamObject } from "ai";
 import { locationsSchema } from "./schema";
 import { NextRequest } from "next/server";
@@ -43,9 +43,14 @@ export async function POST(request: NextRequest) {
       };
 
       if (preferences.length > 0) {
-        for (const preference of preferences) {
+        const placePromises = preferences.map((preference) => {
           const query = `${preference} places in ${destination}`;
-          const googlePlacesData = await fetchPlaces(query);
+          return fetchPlaces(query);
+        });
+
+        const allGooglePlacesData = await Promise.all(placePromises);
+
+        for (const googlePlacesData of allGooglePlacesData) {
           if (googlePlacesData.places) {
             allPlacesData.push(...googlePlacesData.places);
           }
@@ -93,22 +98,29 @@ export async function POST(request: NextRequest) {
     preferences,
   });
 
+  const placeDetailsPromises = googlePlacesResponseString.map((place) =>
+    getPlaceDetailsFromGoogle({ placeId: place.id }),
+  );
+
+  const placeDetailsArray = await Promise.all(placeDetailsPromises);
+
   for (let i = 0; i < googlePlacesResponseString.length; i++) {
-    const placeId = googlePlacesResponseString[i].id;
-    const placeDetails = await getPlaceDetailsFromGoogle({ placeId });
     googlePlacesResponseString[i] = {
       ...googlePlacesResponseString[i],
-      ...placeDetails,
+      ...placeDetailsArray[i],
     };
   }
 
   const result = await streamObject({
-    // model: openai("gpt-4o-2024-08-06", {
-    model: openai("gpt-4o-mini", {
+    model: openai("gpt-4o-2024-08-06", {
+      // model: openai("gpt-4o-mini", {
       structuredOutputs: true,
     }),
     // model: anthropic("claude-3-5-sonnet-20240620", {
     //   cacheControl: true,
+    // }),
+    // model: vertex("gemini-1.5-pro-latest", {
+    //   useSearchGrounding: true,
     // }),
 
     mode: "json",
@@ -147,7 +159,8 @@ export async function POST(request: NextRequest) {
           }
         ]
         """
-        Try to supply a minimum of 4 photoRefs per location. Ensure the photoRefs match the location supplied by Google Places API.
+        Try to supply as many photoRefs per location as can be found for that id from Google.
+        Ensure the photoRefs match the location supplied by Google Places API.
         `,
     prompt: "Generate the trip itinerary",
     schema: locationsSchema,

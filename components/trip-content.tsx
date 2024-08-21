@@ -27,6 +27,7 @@ export interface LocationProps {
   };
   rating?: number;
   photoReferences?: PhotoReference[];
+  isLoaded?: boolean;
 }
 
 type PhotoReference = {
@@ -80,9 +81,8 @@ export default function TripContent() {
       ) : (
         <>
           <Map
-            tripItinerary={tripItinerary}
+            tripItinerary={isLoading ? object?.locations : tripItinerary}
             currentItineraryItemIndex={currentItineraryItemIndex}
-            isLoading={isLoading}
           />
           {isLoading &&
           object?.locations &&
@@ -91,14 +91,12 @@ export default function TripContent() {
               location={object.locations[currentItineraryItemIndex]}
               increaseTimeOfDay={increaseTimeOfDay}
               decreaseTimeOfDay={decreaseTimeOfDay}
-              isLoading={isLoading}
             />
           ) : (
             <LocationCard
               location={tripItinerary[currentItineraryItemIndex]}
               increaseTimeOfDay={increaseTimeOfDay}
               decreaseTimeOfDay={decreaseTimeOfDay}
-              isLoading={isLoading}
             />
           )}
         </>

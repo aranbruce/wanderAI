@@ -1,10 +1,8 @@
 import "./globals.css";
-import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Poppins } from "next/font/google";
 import { GeistSans } from "geist/font/sans";
 
 import Navigation from "@/components/navigation";
-import { Analytics } from "@vercel/analytics/react";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -29,8 +27,6 @@ export default function RootLayout({ children }) {
       <body className={`${GeistSans.variable} ${poppins.variable}`}>
         <Navigation />
         {children}
-        <Analytics />
-        <SpeedInsights />
       </body>
     </html>
   );

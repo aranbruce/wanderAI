@@ -30,7 +30,7 @@ export default function Loading() {
   return (
     <div className="flex h-screen items-center justify-center">
       <div className="flex w-full flex-col items-center gap-4">
-        <LogoIcon height="120" width="120" />
+        <LogoIcon height="120" width="120" pulse />
         {activeTextIndex === 0 ? (
           <motion.div className="opacity-0" animate={animation}>
             <h4>Searching the internet for locations</h4>
