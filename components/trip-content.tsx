@@ -26,13 +26,9 @@ export interface LocationProps {
     longitude?: number;
   };
   rating?: number;
-  photoReferences?: PhotoReference[];
+  photoReferences?: string[];
   isLoaded?: boolean;
 }
-
-type PhotoReference = {
-  photoRef?: string;
-};
 
 export default function TripContent() {
   const [tripItinerary, setTripItinerary] = useState<LocationProps[]>([]);
@@ -59,7 +55,7 @@ export default function TripContent() {
   }, []);
 
   function increaseTimeOfDay() {
-    if (currentItineraryItemIndex === tripItinerary.length - 1) {
+    if (currentItineraryItemIndex === duration * 3 - 1) {
       setIsSignUpModalOpen(true);
     } else {
       setCurrentItineraryItemIndex(currentItineraryItemIndex + 1);

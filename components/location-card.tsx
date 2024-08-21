@@ -15,7 +15,7 @@ export default function LocationCard({
   decreaseTimeOfDay,
 }: LocationCardProps) {
   return (
-    <div className="fixed bottom-0 z-30 flex w-full flex-col items-center gap-4 rounded-t-lg bg-white pt-6 shadow-heavy md:h-screen md:w-96 md:justify-between md:gap-4 md:rounded-none md:pt-20 lg:w-[420px]">
+    <div className="fixed bottom-0 z-30 flex w-full flex-col items-center gap-4 rounded-t-lg bg-white pt-6 shadow-medium md:h-screen md:w-96 md:justify-between md:gap-4 md:rounded-none md:pt-20 lg:w-[420px]">
       <div className="flex min-h-0 w-full flex-col gap-3">
         <div className="flex w-full items-center gap-2 px-6 md:px-8">
           <div className="flex w-full flex-col gap-2">
@@ -58,15 +58,15 @@ export default function LocationCard({
           )}
           <div className="flex w-full snap-x snap-mandatory scroll-pl-6 gap-4 overflow-x-scroll px-6 md:grid md:snap-y md:grid-cols-2 md:overflow-y-scroll md:px-8">
             {location?.photoReferences && location?.isLoaded ? (
-              location?.photoReferences.map((photo) => (
+              location?.photoReferences.map((photoRef) => (
                 <div
                   className="bg-gray-30 relative h-32 w-full min-w-32 snap-start overflow-hidden rounded-xl"
-                  key={photo.photoRef}
+                  key={photoRef}
                 >
                   <Image
                     fill={true}
-                    key={photo.photoRef}
-                    src={`https://maps.googleapis.com/maps/api/place/photo?photo_reference=${photo.photoRef}&maxheight=1600&key=${process.env.NEXT_PUBLIC_GOOGLE_PLACES_API_KEY}`}
+                    key={photoRef}
+                    src={`https://maps.googleapis.com/maps/api/place/photo?photo_reference=${photoRef}&maxheight=1600&key=${process.env.NEXT_PUBLIC_GOOGLE_PLACES_API_KEY}`}
                     alt="Location image"
                     className="h-full w-full min-w-[120px] rounded-xl bg-gray-300 object-cover"
                   />

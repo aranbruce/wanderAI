@@ -130,7 +130,10 @@ export async function POST(request: NextRequest) {
           ", ",
         )}
         Select appropriate locations by matching the types to the preferences.
-        Use some of the following locations from Google: ${JSON.stringify(googlePlacesResponseString)}
+        Use some of the following locations from Google: 
+        """
+        ${JSON.stringify(googlePlacesResponseString)}
+        """
         Describe each location in detail using 2 sentences.
         Do not include the rating in the description.
         Do not include the location in the description.
@@ -159,8 +162,8 @@ export async function POST(request: NextRequest) {
           }
         ]
         """
-        Try to supply as many photoRefs per location as can be found for that id from Google.
-        Ensure the photoRefs match the location supplied by Google Places API.
+        Proved as many photoRef values per location as can be found for that id in the locations from Google.
+        Ensure the photoRefs match the location supplied in the locations from Google.
         `,
     prompt: "Generate the trip itinerary",
     schema: locationsSchema,
