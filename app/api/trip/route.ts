@@ -5,7 +5,7 @@ import { locationsSchema } from "./schema";
 import { NextRequest } from "next/server";
 
 // Allow streaming responses up to 30 seconds
-export const maxDuration = 30;
+export const maxDuration = 60;
 
 export async function POST(request: NextRequest) {
   const { destination, duration, preferences } = await request.json();
