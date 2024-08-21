@@ -50,7 +50,7 @@ export default function SearchForm() {
             Plan your next adventure in seconds through the power of AI
           </p>
         </div>
-        <div className="shadow-heavy flex w-full max-w-3xl flex-col items-start gap-2 rounded-2xl bg-white p-6">
+        <div className="shadow-heavy flex w-full max-w-3xl flex-col items-start gap-2 rounded-2xl bg-white p-4 md:p-6">
           <form
             id="cardForm"
             className="flex w-full flex-col gap-x-4 gap-y-6 md:flex-row md:items-end md:gap-4"

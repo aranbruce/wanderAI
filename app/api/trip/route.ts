@@ -1,11 +1,11 @@
 import { openai } from "@ai-sdk/openai";
-import { anthropic } from "@ai-sdk/anthropic";
+
 import { streamObject } from "ai";
 import { locationsSchema } from "./schema";
 import { NextRequest } from "next/server";
 
 // Allow streaming responses up to 30 seconds
-export const maxDuration = 30;
+export const maxDuration = 60;
 
 export async function POST(request: NextRequest) {
   const { destination, duration, preferences } = await request.json();
@@ -43,9 +43,14 @@ export async function POST(request: NextRequest) {
       };
 
       if (preferences.length > 0) {
-        for (const preference of preferences) {
+        const placePromises = preferences.map((preference) => {
           const query = `${preference} places in ${destination}`;
-          const googlePlacesData = await fetchPlaces(query);
+          return fetchPlaces(query);
+        });
+
+        const allGooglePlacesData = await Promise.all(placePromises);
+
+        for (const googlePlacesData of allGooglePlacesData) {
           if (googlePlacesData.places) {
             allPlacesData.push(...googlePlacesData.places);
           }
@@ -93,22 +98,29 @@ export async function POST(request: NextRequest) {
     preferences,
   });
 
+  const placeDetailsPromises = googlePlacesResponseString.map((place) =>
+    getPlaceDetailsFromGoogle({ placeId: place.id }),
+  );
+
+  const placeDetailsArray = await Promise.all(placeDetailsPromises);
+
   for (let i = 0; i < googlePlacesResponseString.length; i++) {
-    const placeId = googlePlacesResponseString[i].id;
-    const placeDetails = await getPlaceDetailsFromGoogle({ placeId });
     googlePlacesResponseString[i] = {
       ...googlePlacesResponseString[i],
-      ...placeDetails,
+      ...placeDetailsArray[i],
     };
   }
 
   const result = await streamObject({
-    // model: openai("gpt-4o-2024-08-06", {
-    model: openai("gpt-4o-mini", {
+    model: openai("gpt-4o-2024-08-06", {
+      // model: openai("gpt-4o-mini", {
       structuredOutputs: true,
     }),
     // model: anthropic("claude-3-5-sonnet-20240620", {
     //   cacheControl: true,
+    // }),
+    // model: vertex("gemini-1.5-pro-latest", {
+    //   useSearchGrounding: true,
     // }),
 
     mode: "json",
@@ -118,7 +130,10 @@ export async function POST(request: NextRequest) {
           ", ",
         )}
         Select appropriate locations by matching the types to the preferences.
-        Use some of the following locations from Google: ${JSON.stringify(googlePlacesResponseString)}
+        Use some of the following locations from Google: 
+        """
+        ${JSON.stringify(googlePlacesResponseString)}
+        """
         Describe each location in detail using 2 sentences.
         Do not include the rating in the description.
         Do not include the location in the description.
@@ -147,7 +162,8 @@ export async function POST(request: NextRequest) {
           }
         ]
         """
-        Try to supply a minimum of 4 photoRefs per location. Ensure the photoRefs match the location supplied by Google Places API.
+        Proved as many photoRef values per location as can be found for that id in the locations from Google.
+        Ensure the photoRefs match the location supplied in the locations from Google.
         `,
     prompt: "Generate the trip itinerary",
     schema: locationsSchema,
