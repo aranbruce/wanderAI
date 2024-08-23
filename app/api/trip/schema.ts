@@ -18,18 +18,8 @@ export const locationsSchema = z.object({
         // .optional()
         .describe("The rating of the location"),
       description: z.string().describe("The description of the location"),
-      photoReferences: z
-        .array(
-          z
-            .string()
-            .describe(
-              "The photo_reference string supplied by Google Places API",
-            )
-            .nullable(),
-        )
-        .describe("The photo references of the location"),
-
       isLoaded: z.boolean().describe("A flag that is always true"),
+      photoReferences: z.array(z.string()).describe("An empty array"),
     }),
   ),
 });
