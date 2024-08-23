@@ -9,7 +9,7 @@ export default function Navigation() {
   const scrolled = useScrollHandler();
 
   return (
-    <nav className="absolute top-0 z-50 flex w-full justify-center from-white px-3 py-2 transition-all duration-150 ease-in-out md:px-6">
+    <nav className="absolute top-0 z-40 flex w-full justify-center from-white px-3 py-2 transition-all duration-150 ease-in-out md:px-6">
       <div className="flex w-full items-center justify-between">
         <Link href="/" className="h-8">
           <Image

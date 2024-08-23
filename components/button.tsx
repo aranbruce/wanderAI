@@ -14,6 +14,7 @@ export default function Button({
   children,
   onClick,
   href,
+  ...props
 }: ButtonProps) {
   const baseClasses =
     "transition inline-flex items-center justify-center gap-2 rounded-full font-medium tracking-wide cursor-pointer shadow-medium outline-none flex-shrink-0 text-nowrap focus-visible:ring-[3px] focus-visible:ring-green-400/40 focus-visible:ring-offset-1 focus-visible:ring-offset-white focus-visible:outline-none";
@@ -31,7 +32,7 @@ export default function Button({
       {children}
     </Link>
   ) : (
-    <button onClick={onClick} type={type} className={buttonClasses}>
+    <button onClick={onClick} type={type} className={buttonClasses} {...props}>
       {children}
     </button>
   );

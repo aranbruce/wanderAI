@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { readStreamableValue } from "ai/rsc";
 import { useRouter } from "next/navigation";
 import { experimental_useObject as useObject } from "ai/react";
 import { AnimatePresence } from "framer-motion";
@@ -71,7 +70,10 @@ export default function TripContent() {
   }
 
   function increaseTimeOfDay() {
-    if (currentItineraryItemIndex === duration * 3 - 1) {
+    if (
+      currentItineraryItemIndex === duration * 3 - 1 ||
+      currentItineraryItemIndex >= 3 * 2 - 1
+    ) {
       setIsSignUpModalOpen(true);
     } else {
       setCurrentItineraryItemIndex(currentItineraryItemIndex + 1);
@@ -114,8 +116,8 @@ export default function TripContent() {
       <AnimatePresence>
         {isSignUpModalOpen && (
           <SignUpModal
-            setIsSignUpModalOpen={setIsSignUpModalOpen}
-            isSignUpModalOpen={isSignUpModalOpen}
+            setIsModalOpen={setIsSignUpModalOpen}
+            isModalOpen={isSignUpModalOpen}
           />
         )}
       </AnimatePresence>

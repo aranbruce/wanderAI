@@ -19,7 +19,7 @@ export async function POST(request: NextRequest) {
   if (!destination || !duration || !preferences) {
     throw new Error("Missing required fields.");
   }
-  if (duration < 2) {
+  if (duration > 2) {
     duration = 2;
   }
 
