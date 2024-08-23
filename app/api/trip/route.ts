@@ -27,13 +27,12 @@ export async function POST(request: NextRequest) {
             headers: {
               "Content-Type": "application/json",
               "X-Goog-Api-Key": process.env.GOOGLE_PLACES_API_KEY,
-              "X-Goog-FieldMask":
-                "places.displayName,places.id,places.types,places.rating,places.googleMapsUri,places.websiteUri,places.location,places.editorialSummary",
+              "X-Goog-FieldMask": "places.id",
             },
             body: JSON.stringify({
               textQuery: query,
               languageCode: "en",
-              minRating: 4,
+              minRating: 4.5,
             }),
           },
         );
@@ -74,11 +73,15 @@ export async function POST(request: NextRequest) {
     "use server";
     try {
       const response = await fetch(
-        `https://maps.googleapis.com/maps/api/place/details/json?key=${process.env.GOOGLE_PLACES_API_KEY}&place_id=${placeId}&fields=photos/photo_reference,rating,geometry/location`,
+        `https://places.googleapis.com/v1/places/${placeId}?fields=id,types,formattedAddress,location,rating,googleMapsUri,websiteUri,userRatingCount,displayName,editorialSummary`,
+        // accessibilityOptions
+        // currentOpeningHours
+
         {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
+            "X-Goog-Api-Key": process.env.GOOGLE_PLACES_API_KEY,
           },
         },
       );
@@ -87,9 +90,11 @@ export async function POST(request: NextRequest) {
           `Google Places Details API error: ${response.statusText}`,
         );
       }
-      return response.json();
+      const placeDetails = await response.json();
+      // console.log("placeDetails", placeDetails);
+      return placeDetails;
     } catch (error) {
-      console.log("Error:", error.message);
+      console.log("Error:", error.message, error);
       throw new Error("API call failed.");
     }
   }
@@ -113,7 +118,6 @@ export async function POST(request: NextRequest) {
   }
 
   const result = await streamObject({
-    // model: openai("gpt-4o-2024-08-06", {
     model: openai("gpt-4o-mini", {
       structuredOutputs: true,
     }),
@@ -149,17 +153,10 @@ export async function POST(request: NextRequest) {
             "title": "Location Name",
             "description": "Description of the location",
             "rating": "Rating of the location between 1 and 5 to 1 decimal place",
-            "photoReferences": [
-              {
-                "photoRef": "Photo reference string supplied by Google Places API"
-              }
-            ]
+            "photoReferences": [],
           }
         ]
         """
-        Proved as many photoRef values as you can in the photoReferences array per location as can be found for that id in the locations from Google.
-        Provide at least 6 photoRef per location.
-        Ensure the photoRefs match the location supplied in the locations from Google.
         Do not repeat locations.
         `,
     prompt: "Generate the trip itinerary",

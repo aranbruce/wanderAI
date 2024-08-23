@@ -44,7 +44,15 @@ export default function TripContent() {
     schema: locationsSchema,
     onFinish: (object) => {
       console.log("object: ", object);
-      setTripItinerary(object?.object?.locations);
+      const tripItineraryWithPhotos = object.object.locations.map(
+        async (location: LocationProps) => {
+          const photoReferences = await getPhotos(location.id);
+          return { ...location, photoReferences };
+        },
+      );
+      Promise.all(tripItineraryWithPhotos).then((tripItinerary) =>
+        setTripItinerary(tripItinerary),
+      );
     },
   });
 
@@ -53,6 +61,14 @@ export default function TripContent() {
     submit({ destination, duration, preferences });
     console.log("object: ", object);
   }, []);
+
+  async function getPhotos(placeId: string) {
+    const response = await fetch(`/api/photos?placeId=${placeId}`);
+    if (!response.ok) {
+      throw new Error(`Failed to fetch photos: ${response.statusText}`);
+    }
+    return response.json();
+  }
 
   function increaseTimeOfDay() {
     if (currentItineraryItemIndex === duration * 3 - 1) {
@@ -77,24 +93,21 @@ export default function TripContent() {
       ) : (
         <>
           <Map
-            tripItinerary={isLoading ? object?.locations : tripItinerary}
+            tripItinerary={
+              tripItinerary.length === 0 ? object?.locations : tripItinerary
+            }
             currentItineraryItemIndex={currentItineraryItemIndex}
           />
-          {isLoading &&
-          object?.locations &&
-          object.locations[currentItineraryItemIndex] ? (
-            <LocationCard
-              location={object.locations[currentItineraryItemIndex]}
-              increaseTimeOfDay={increaseTimeOfDay}
-              decreaseTimeOfDay={decreaseTimeOfDay}
-            />
-          ) : (
-            <LocationCard
-              location={tripItinerary[currentItineraryItemIndex]}
-              increaseTimeOfDay={increaseTimeOfDay}
-              decreaseTimeOfDay={decreaseTimeOfDay}
-            />
-          )}
+
+          <LocationCard
+            location={
+              tripItinerary.length === 0
+                ? object.locations[currentItineraryItemIndex]
+                : tripItinerary[currentItineraryItemIndex]
+            }
+            increaseTimeOfDay={increaseTimeOfDay}
+            decreaseTimeOfDay={decreaseTimeOfDay}
+          />
         </>
       )}
 
