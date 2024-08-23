@@ -86,7 +86,7 @@ export default function LocationCard({
                       key={photoUri}
                       src={photoUri}
                       alt="Location image"
-                      className="h-full w-full min-w-[120px] rounded-xl bg-gray-300 object-cover"
+                      className="h-full w-full min-w-[120px] cursor-pointer rounded-xl bg-gray-300 object-cover"
                       onClick={() => openModal(photoUri)}
                     />
                   </div>
