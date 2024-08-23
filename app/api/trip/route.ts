@@ -4,16 +4,24 @@ import { streamObject } from "ai";
 import { locationsSchema } from "./schema";
 import { NextRequest } from "next/server";
 
-// Allow streaming responses up to 240 seconds on edge runtime
-export const maxDuration = 320;
+// Allow streaming responses up to 120 seconds on edge runtime
+export const maxDuration = 120;
 export const runtime = "edge";
 
 export async function POST(request: NextRequest) {
-  const { destination, duration, preferences } = await request.json();
+  let { destination, duration, preferences } = await request.json();
+
   console.log("Generating trip itinerary...");
   console.log("Destination: ", destination);
   console.log("Duration: ", duration);
   console.log("Preferences: ", preferences);
+
+  if (!destination || !duration || !preferences) {
+    throw new Error("Missing required fields.");
+  }
+  if (duration < 2) {
+    duration = 2;
+  }
 
   async function getPlacesFromGoogle({ destination, preferences }) {
     console.log("Getting places from Google Places...");
