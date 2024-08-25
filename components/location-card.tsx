@@ -29,7 +29,7 @@ export default function LocationCard({
 
   return (
     <>
-      <div className="shadow-top fixed bottom-0 z-30 flex w-full flex-col items-center gap-2 rounded-t-lg bg-white pt-4 md:h-screen md:w-96 md:justify-between md:gap-4 md:rounded-none md:pt-20 md:shadow-medium lg:w-[420px]">
+      <div className="fixed bottom-0 z-30 flex w-full flex-col items-center gap-2 rounded-t-lg bg-white pt-4 shadow-top md:h-screen md:w-96 md:justify-between md:gap-4 md:rounded-none md:pt-20 md:shadow-medium lg:w-[420px]">
         <div className="flex min-h-0 w-full flex-col gap-2 md:gap-3">
           <div className="flex w-full items-start gap-2 px-4 md:px-8">
             <div className="flex w-full flex-col gap-1 md:gap-2">
@@ -83,11 +83,13 @@ export default function LocationCard({
                   >
                     <Image
                       fill={true}
+                      sizes="128px"
                       key={photoUri}
                       src={photoUri}
                       alt="Location image"
                       className="h-full w-full min-w-[120px] cursor-pointer rounded-xl bg-gray-300 object-cover"
                       onClick={() => openModal(photoUri)}
+                      priority
                     />
                   </div>
                 ))

@@ -67,6 +67,7 @@ export default function ImageModal({
 
         <Image
           fill={true}
+          sizes="100vw"
           key={selectedPhotoUri}
           src={selectedPhotoUri}
           alt="Location image"

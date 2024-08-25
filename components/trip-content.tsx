@@ -42,7 +42,6 @@ export default function TripContent() {
     api: "/api/trip",
     schema: locationsSchema,
     onFinish: (object) => {
-      console.log("object: ", object);
       const tripItineraryWithPhotos = object.object.locations.map(
         async (location: LocationProps) => {
           const photoReferences = await getPhotos(location.id);
