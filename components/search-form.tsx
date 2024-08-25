@@ -1,20 +1,34 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import useLocalStorage from "@/hooks/useLocalStorage";
 import { AnimatePresence } from "framer-motion";
 
 import Button from "@/components/button";
 import Input from "@/components/input";
 import SearchModal from "@/components/search-modal";
+import SearchInput from "./search-input";
+
+type Destination = {
+  place: string;
+  placeId: string;
+  text: string;
+};
 
 export default function SearchForm() {
-  const [destination, setDestination] = useLocalStorage("destination", "");
+  const [destination, setDestination] = useLocalStorage<Destination | null>(
+    "destination",
+    null,
+  );
   const [duration, setDuration] = useLocalStorage("duration", "");
   const [preferences, setPreferences] = useLocalStorage("preferences", []);
   const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
 
-  function handleDestinationChange(newDestination: string) {
+  useEffect(() => {
+    console.log("destination", destination);
+  }, [destination]);
+
+  function handleDestinationChange(newDestination: Destination) {
     setDestination(newDestination);
   }
 
@@ -43,26 +57,24 @@ export default function SearchForm() {
 
   return (
     <>
-      <div className="shadow-heavy mt-12 flex w-full flex-col items-center gap-8 rounded-3xl bg-[linear-gradient(180deg,rgba(0,0,0,0.10)0%,rgba(33,35,44,0.70)100%),url('/assets/mountains.jpg')] bg-cover bg-bottom px-6 py-16 sm:px-10 sm:py-16 md:mt-0 md:px-12 md:py-48">
+      <div className="mt-12 flex w-full flex-col items-center gap-8 rounded-3xl bg-[linear-gradient(180deg,rgba(0,0,0,0.10)0%,rgba(33,35,44,0.70)100%),url('/assets/mountains.jpg')] bg-cover bg-bottom px-6 py-16 shadow-heavy sm:px-10 sm:py-16 md:mt-0 md:px-12 md:py-48">
         <div className="flex flex-col items-center gap-6 text-pretty text-center text-white">
           <h1 className="text-4xl md:text-7xl">Love travel, hate planning?</h1>
           <p className="text-lg font-normal">
             Plan your next adventure in seconds through the power of AI
           </p>
         </div>
-        <div className="shadow-heavy flex w-full max-w-3xl flex-col items-start gap-2 rounded-2xl bg-white p-4 md:p-6">
+        <div className="flex w-full max-w-3xl flex-col items-start gap-2 rounded-2xl bg-white p-4 shadow-heavy md:p-6">
           <form
             id="cardForm"
             className="flex w-full flex-col gap-x-4 gap-y-6 md:flex-row md:items-end md:gap-4"
             onSubmit={handleSubmit}
           >
-            <Input
-              type="text"
-              value={destination}
-              inputMode="text"
-              onChange={(e) => handleDestinationChange(e.target.value)}
-              placeholder="Enter your destination"
+            <SearchInput
               label="Where do you want to go?"
+              showLabel
+              initialInputValue={destination?.text}
+              setSearchValue={setDestination}
               required
             />
             <Input
@@ -72,6 +84,7 @@ export default function SearchForm() {
               onChange={(e) => handleDurationChange(e.target.value)}
               placeholder="Enter your trip duration"
               label="How many days is your trip?"
+              showLabel
               required
             />
             <Button type="submit">Plan trip</Button>
@@ -84,6 +97,7 @@ export default function SearchForm() {
           <SearchModal
             setIsSearchModalOpen={setIsSearchModalOpen}
             destination={destination}
+            setDestination={setDestination}
             handleDestinationChange={handleDestinationChange}
             duration={duration}
             handleDurationChange={handleDurationChange}

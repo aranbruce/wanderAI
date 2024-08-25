@@ -58,7 +58,6 @@ export default function TripContent() {
   useEffect(() => {
     stop();
     submit({ destination, duration, preferences });
-    console.log("object: ", object);
   }, []);
 
   async function getPhotos(placeId: string) {
