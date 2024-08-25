@@ -22,7 +22,7 @@ input:-webkit-autofill:active {
   -webkit-box-shadow: 0 0 0 30px white inset !important;
 }
 input:not(:placeholder-shown):not(:focus):invalid {
-  @apply border-red;
+  @apply border-red-300;
 }
 
 @layer base {

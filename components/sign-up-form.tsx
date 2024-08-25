@@ -93,7 +93,7 @@ export default function SignUpForm() {
                 required
               />
             </div>
-            {error && <p className="text-red">{error}</p>}
+            {error && <p className="text-red-300">{error}</p>}
             <Button type="submit">Sign up</Button>
           </form>
         </div>

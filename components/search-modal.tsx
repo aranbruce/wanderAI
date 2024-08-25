@@ -11,8 +11,7 @@ import BackIcon from "@/images/icons/back-icon";
 
 export default function SearchModal({
   destination,
-  setDestination,
-  handleDestinationChange,
+  setSelectedDestination,
   duration,
   handleDurationChange,
   preferences,
@@ -20,7 +19,6 @@ export default function SearchModal({
   setIsSearchModalOpen,
 }) {
   function handleModalClose() {
-    console.log("handleModalClose");
     setIsSearchModalOpen(false);
     document.body.style.overflow = "auto";
     document.body.style.height = "auto";
@@ -89,8 +87,8 @@ export default function SearchModal({
               <SearchInput
                 label="Where do you want to go?"
                 showLabel
-                initialInputValue={destination?.text}
-                setSearchValue={setDestination}
+                destinationValue={destination}
+                setDestinationValue={setSelectedDestination}
                 required
               />
               <Input

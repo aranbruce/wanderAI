@@ -7,13 +7,7 @@ import { AnimatePresence } from "framer-motion";
 import Button from "@/components/button";
 import Input from "@/components/input";
 import SearchModal from "@/components/search-modal";
-import SearchInput from "./search-input";
-
-type Destination = {
-  place: string;
-  placeId: string;
-  text: string;
-};
+import SearchInput, { Destination } from "@/components/search-input";
 
 export default function SearchForm() {
   const [destination, setDestination] = useLocalStorage<Destination | null>(
@@ -47,8 +41,8 @@ export default function SearchForm() {
   }
 
   function handleSubmit(e) {
-    if (destination && duration) {
-      e.preventDefault();
+    e.preventDefault();
+    if (destination && duration && duration !== "0") {
       setIsSearchModalOpen(true);
       document.body.style.overflow = "hidden";
       document.body.style.height = "100vh";
@@ -73,8 +67,8 @@ export default function SearchForm() {
             <SearchInput
               label="Where do you want to go?"
               showLabel
-              initialInputValue={destination?.text}
-              setSearchValue={setDestination}
+              destinationValue={destination}
+              setDestinationValue={handleDestinationChange}
               required
             />
             <Input
@@ -85,6 +79,8 @@ export default function SearchForm() {
               placeholder="Enter your trip duration"
               label="How many days is your trip?"
               showLabel
+              min={1}
+              max={14}
               required
             />
             <Button type="submit">Plan trip</Button>
@@ -97,8 +93,7 @@ export default function SearchForm() {
           <SearchModal
             setIsSearchModalOpen={setIsSearchModalOpen}
             destination={destination}
-            setDestination={setDestination}
-            handleDestinationChange={handleDestinationChange}
+            setSelectedDestination={handleDestinationChange}
             duration={duration}
             handleDurationChange={handleDurationChange}
             preferences={preferences}
