@@ -61,7 +61,7 @@ export default function SearchForm() {
         <div className="flex w-full max-w-3xl flex-col items-start gap-2 rounded-2xl bg-white p-4 shadow-heavy md:p-6">
           <form
             id="cardForm"
-            className="flex w-full flex-col gap-x-4 gap-y-6 md:flex-row md:items-end md:gap-4"
+            className="flex w-full flex-col gap-x-4 gap-y-6 md:grid md:grid-cols-[1fr,1fr,100px] md:items-end md:gap-4"
             onSubmit={handleSubmit}
           >
             <SearchInput
