@@ -72,7 +72,7 @@ export default function LocationCard({
                 <div className="h-5 w-3/4 animate-pulse rounded-md bg-gray-300" />
               </div>
             )}
-            <div className="flex w-full snap-x snap-mandatory scroll-pl-6 gap-4 overflow-x-scroll px-4 md:grid md:snap-y md:grid-cols-2 md:overflow-y-scroll md:px-8">
+            <div className="flex w-full snap-x snap-mandatory scroll-pl-4 gap-4 overflow-x-scroll px-4 md:grid md:snap-y md:grid-cols-2 md:overflow-y-scroll md:px-8">
               {location?.isLoaded &&
               location?.photoReferences &&
               location.photoReferences?.length > 0 ? (
