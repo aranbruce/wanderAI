@@ -79,6 +79,7 @@ export default function SignUpForm() {
                 onChange={handleFullNameChange}
                 placeholder="Enter your full name"
                 label="Full name"
+                showLabel
                 required
               />
               <Input
@@ -88,10 +89,11 @@ export default function SignUpForm() {
                 onChange={handleEmailChange}
                 placeholder="Enter your email"
                 label="Email"
+                showLabel
                 required
               />
             </div>
-            {error && <p className="text-red">{error}</p>}
+            {error && <p className="text-red-300">{error}</p>}
             <Button type="submit">Sign up</Button>
           </form>
         </div>

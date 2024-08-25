@@ -29,7 +29,7 @@ export default function LocationCard({
 
   return (
     <>
-      <div className="shadow-top fixed bottom-0 z-30 flex w-full flex-col items-center gap-2 rounded-t-lg bg-white pt-4 md:h-screen md:w-96 md:justify-between md:gap-4 md:rounded-none md:pt-20 md:shadow-medium lg:w-[420px]">
+      <div className="fixed bottom-0 z-30 flex w-full flex-col items-center gap-2 rounded-t-lg bg-white pt-4 shadow-top md:h-screen md:w-96 md:justify-between md:gap-4 md:rounded-none md:pt-20 md:shadow-medium lg:w-[420px]">
         <div className="flex min-h-0 w-full flex-col gap-2 md:gap-3">
           <div className="flex w-full items-start gap-2 px-4 md:px-8">
             <div className="flex w-full flex-col gap-1 md:gap-2">
@@ -81,8 +81,7 @@ export default function LocationCard({
                     className="bg-gray-30 relative h-32 w-full min-w-32 snap-start overflow-hidden rounded-xl"
                     key={photoUri}
                   >
-                    <Image
-                      fill={true}
+                    <img
                       key={photoUri}
                       src={photoUri}
                       alt="Location image"

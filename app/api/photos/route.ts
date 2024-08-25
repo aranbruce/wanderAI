@@ -55,6 +55,8 @@ export async function GET(request: NextRequest) {
     return new Response(JSON.stringify(photoURLs));
   } catch (error) {
     console.log("Error:", error.message);
-    throw new Error("API call failed.");
+    return new Response(JSON.stringify({ error: "API call failed." }), {
+      status: 500,
+    });
   }
 }

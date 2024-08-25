@@ -3,6 +3,7 @@ import { useRouter } from "next/navigation";
 import { useMediaQuery } from "react-responsive";
 
 import Input from "@/components/input";
+import SearchInput from "@/components/search-input";
 import Checkbox from "@/components/checkbox";
 import Button from "@/components/button";
 import Backdrop from "@/components/backdrop";
@@ -10,7 +11,7 @@ import BackIcon from "@/images/icons/back-icon";
 
 export default function SearchModal({
   destination,
-  handleDestinationChange,
+  setSelectedDestination,
   duration,
   handleDurationChange,
   preferences,
@@ -18,7 +19,6 @@ export default function SearchModal({
   setIsSearchModalOpen,
 }) {
   function handleModalClose() {
-    console.log("handleModalClose");
     setIsSearchModalOpen(false);
     document.body.style.overflow = "auto";
     document.body.style.height = "auto";
@@ -35,7 +35,7 @@ export default function SearchModal({
       const preferenceString = preferences
         .map((preference) => `preferences=${preference}`)
         .join("&");
-      const url = `/trip?destination=${destination}&duration=${duration}&${preferenceString}`;
+      const url = `/trip?destination=${destination.text}&duration=${duration}&${preferenceString}`;
       router.push(url);
     }
   }
@@ -72,7 +72,7 @@ export default function SearchModal({
         }}
         transition={{ duration: 0.2 }}
         onClick={(e) => e.stopPropagation()} // Prevent click from closing modal
-        className="shadow-heavy fixed bottom-0 left-0 z-50 flex h-fit max-h-screen w-full flex-col items-start overflow-hidden rounded-t-xl bg-white md:bottom-1/2 md:left-1/2 md:w-[568px] md:-translate-x-1/2 md:-translate-y-1/2 md:transform md:rounded-xl"
+        className="fixed bottom-0 left-0 z-50 flex h-fit max-h-screen w-full flex-col items-start overflow-hidden rounded-t-xl bg-white shadow-heavy md:bottom-1/2 md:left-1/2 md:w-[568px] md:-translate-x-1/2 md:-translate-y-1/2 md:transform md:rounded-xl"
       >
         <header className="sticky top-0 w-full border-b border-gray-200 bg-white px-6 py-4">
           <h3 className="text-lg">Your trip details</h3>
@@ -84,13 +84,11 @@ export default function SearchModal({
         >
           <div className="flex flex-col gap-8 overflow-y-auto p-6 pb-32">
             <div className="flex flex-col gap-4">
-              <Input
-                type="text"
-                inputMode="text"
-                value={destination}
-                onChange={(e) => handleDestinationChange(e.target.value)}
-                placeholder="Enter your destination"
+              <SearchInput
                 label="Where do you want to go?"
+                showLabel
+                destinationValue={destination}
+                setDestinationValue={setSelectedDestination}
                 required
               />
               <Input
@@ -100,6 +98,7 @@ export default function SearchModal({
                 onChange={(e) => handleDurationChange(e.target.value)}
                 placeholder="Enter your trip duration"
                 label="How many days is your trip?"
+                showLabel
                 required
               />
             </div>

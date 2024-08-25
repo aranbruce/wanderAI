@@ -42,7 +42,7 @@ export default function ImageModal({
         }}
         transition={{ duration: 0.2 }}
         onClick={(e) => e.stopPropagation()} // Prevent click from closing modal
-        className="fixed bottom-0 left-1/2 z-50 flex h-full max-h-[calc(100%-24px)] w-full max-w-[calc(100%-24px)] -translate-x-1/2 translate-y-1/2 transform flex-col items-stretch gap-4 overflow-hidden text-pretty rounded-xl bg-white p-6 text-center shadow-heavy md:bottom-1/2 md:w-[960px] md:translate-y-1/2"
+        className="fixed bottom-0 left-1/2 z-50 flex h-full max-h-[calc(100%-24px)] w-full max-w-[calc(100%-24px)] translate-x-1/2 translate-y-1/2 transform flex-col items-stretch gap-4 overflow-hidden text-pretty rounded-xl bg-white text-center shadow-heavy md:bottom-1/2 md:w-[960px] md:translate-y-1/2"
       >
         <Button
           className="absolute right-2 top-2 z-50 flex h-10 w-10 flex-col items-center justify-center rounded-full border border-gray-200 bg-white text-black hover:bg-gray-100 active:bg-gray-200 md:right-4 md:top-4"
@@ -65,8 +65,7 @@ export default function ImageModal({
           </svg>
         </Button>
 
-        <Image
-          fill={true}
+        <img
           key={selectedPhotoUri}
           src={selectedPhotoUri}
           alt="Location image"
