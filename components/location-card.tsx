@@ -113,9 +113,11 @@ export default function LocationCard({
       {isImageModalOpen && (
         <AnimatePresence>
           <ImageModal
-            isModalOpen={isImageModalOpen}
             setIsModalOpen={setIsImageModalOpen}
-            selectedPhotoUri={selectedPhotoUri}
+            photoUris={location.photoReferences}
+            selectedPhotoIndex={location.photoReferences.indexOf(
+              selectedPhotoUri,
+            )}
           ></ImageModal>
         </AnimatePresence>
       )}
