@@ -81,15 +81,20 @@ export async function POST(request: NextRequest) {
     "use server";
     try {
       const response = await fetch(
-        `https://places.googleapis.com/v1/places/${placeId}?fields=id,types,formattedAddress,location,rating,googleMapsUri,websiteUri,userRatingCount,displayName,editorialSummary`,
-        // accessibilityOptions
-        // currentOpeningHours
+        `https://places.googleapis.com/v1/places/${placeId}`,
 
         {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
             "X-Goog-Api-Key": process.env.GOOGLE_PLACES_API_KEY,
+            "X-Goog-FieldMask":
+              "id,types,formattedAddress,location,rating,googleMapsUri,websiteUri,userRatingCount,displayName.text,editorialSummary,userRatingCount,allowsDogs,priceLevel,servesBrunch,servesLunch,servesDinner,servesVegetarianFood",
+            // "X-Goog-FieldMask": "*",
+            // accessibilityOptions
+            // currentOpeningHours
+            // regularOpeningHours
+            // reviews
           },
         },
       );
@@ -99,7 +104,6 @@ export async function POST(request: NextRequest) {
         );
       }
       const placeDetails = await response.json();
-      // console.log("placeDetails", placeDetails);
       return placeDetails;
     } catch (error) {
       console.log("Error:", error.message, error);
@@ -159,9 +163,13 @@ export async function POST(request: NextRequest) {
             "day": "Day number",
             "timeOfDay": "morning, afternoon, or evening",
             "title": "Location Name",
-            "description": "Description of the location",
             "rating": "Rating of the location between 1 and 5 to 1 decimal place",
+            "reviewCount": "Number of reviews (the userRatingCount) from Google",
+            "googleMapsUri": "Google Maps URL (googleMapsUri) and not the websiteUri",
+            "priceLevel": "$, $$, $$$, or $$$$" (the priceLevel field from Google),
+            "description": "Description of the location",
             "photoReferences": [],
+            "isLoaded": true,
           }
         ]
         """

@@ -13,13 +13,20 @@ export const locationsSchema = z.object({
         .enum(["morning", "afternoon", "evening"])
         .describe("The time of day"),
       title: z.string().describe("The title of the location"),
-      rating: z
-        .number()
-        // .optional()
-        .describe("The rating of the location"),
+      rating: z.number().describe("The rating of the location"),
+      reviewCount: z.number().describe("The number of reviews"),
+      googleMapsUri: z
+        .string()
+        .describe("The Google Maps URL (googleMapsUri) and not the websiteUri"),
+      priceLevel: z
+        .enum(["$", "$$", "$$$", "$$$$"])
+        .describe(
+          "The price level of the location indicated by the priceLevel field from Google",
+        ),
       description: z.string().describe("The description of the location"),
-      isLoaded: z.boolean().describe("A flag that is always true"),
       photoReferences: z.array(z.string()).describe("An empty array"),
+
+      isLoaded: z.boolean().describe("A flag that is always true"),
     }),
   ),
 });

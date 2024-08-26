@@ -19,12 +19,16 @@ export interface LocationProps {
   day?: number;
   timeOfDay?: string;
   title?: string;
+  rating?: number;
+  reviewCount?: number;
+  googleMapsUri?: string;
+  priceLevel?: "$" | "$$" | "$$$" | "$$$$";
   description?: string;
   coordinates?: {
     latitude?: number;
     longitude?: number;
   };
-  rating?: number;
+
   photoReferences?: string[];
   isLoaded?: boolean;
 }
