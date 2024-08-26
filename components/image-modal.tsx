@@ -1,4 +1,4 @@
-import Image from "next/image";
+import { useEffect, useRef } from "react";
 
 import Button from "@/components/button";
 import Backdrop from "@/components/backdrop";
@@ -6,17 +6,28 @@ import { motion } from "framer-motion";
 
 interface ImageModalProps {
   setIsModalOpen: (isOpen: boolean) => void;
-  isModalOpen: boolean;
-  selectedPhotoUri?: string;
+  photoUris: string[];
+  selectedPhotoIndex: number;
 }
 
 export default function ImageModal({
   setIsModalOpen,
-  isModalOpen,
-  selectedPhotoUri,
+  photoUris,
+  selectedPhotoIndex,
 }: ImageModalProps) {
+  const imageRefs = useRef<(HTMLImageElement | null)[]>([]);
+
+  useEffect(() => {
+    if (imageRefs.current[selectedPhotoIndex]) {
+      imageRefs.current[selectedPhotoIndex]?.scrollIntoView({
+        block: "nearest",
+        inline: "center",
+      });
+    }
+  }, [selectedPhotoIndex]);
+
   function handleModalClose() {
-    setIsModalOpen(!isModalOpen);
+    setIsModalOpen(false);
   }
 
   return (
@@ -42,7 +53,7 @@ export default function ImageModal({
         }}
         transition={{ duration: 0.2 }}
         onClick={(e) => e.stopPropagation()} // Prevent click from closing modal
-        className="fixed bottom-0 left-1/2 z-50 flex h-full max-h-[calc(100%-24px)] w-full max-w-[calc(100%-24px)] translate-x-1/2 translate-y-1/2 transform flex-col items-stretch gap-4 overflow-hidden text-pretty rounded-xl bg-white text-center shadow-heavy md:bottom-1/2 md:w-[960px] md:translate-y-1/2"
+        className="fixed bottom-0 left-1/2 z-50 flex h-full w-full translate-x-1/2 translate-y-1/2 transform flex-col items-stretch gap-4 overflow-hidden text-pretty bg-white text-center shadow-heavy md:bottom-1/2 md:max-h-[calc(100%-32px)] md:w-[960px] md:max-w-[calc(100%-32px)] md:translate-y-1/2 md:rounded-xl"
       >
         <Button
           className="absolute right-2 top-2 z-50 flex h-10 w-10 flex-col items-center justify-center rounded-full border border-gray-200 bg-white text-black hover:bg-gray-100 active:bg-gray-200 md:right-4 md:top-4"
@@ -64,14 +75,19 @@ export default function ImageModal({
             />
           </svg>
         </Button>
-
-        <img
-          key={selectedPhotoUri}
-          src={selectedPhotoUri}
-          alt="Location image"
-          className="h-full w-full min-w-[120px] rounded-xl bg-gray-300 object-cover"
-          onClick={() => setIsModalOpen(true)}
-        />
+        <div className="flex h-full w-full snap-x snap-mandatory flex-row overflow-x-scroll bg-black">
+          {photoUris.map((photoUri, index) => (
+            <img
+              key={photoUri}
+              src={photoUri}
+              alt="Location image"
+              ref={(el) => {
+                imageRefs.current[index] = el;
+              }}
+              className="h-full w-full shrink-0 snap-start bg-black object-contain"
+            />
+          ))}
+        </div>
       </motion.div>
     </Backdrop>
   );
