@@ -1,9 +1,8 @@
 import "./globals.css";
+
 import { Poppins } from "next/font/google";
 import { GeistSans } from "geist/font/sans";
 import { CSPostHogProvider } from "@/app/providers";
-
-import Navigation from "@/components/navigation";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -18,7 +17,11 @@ export const metadata = {
     "Love travel but hate planning? Plan your next adventure in seconds through the power of AI",
 };
 
-export default function RootLayout({ children }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <html lang="en">
       <head>
@@ -27,7 +30,6 @@ export default function RootLayout({ children }) {
       </head>
       <CSPostHogProvider>
         <body className={`${GeistSans.variable} ${poppins.variable}`}>
-          <Navigation />
           {children}
         </body>
       </CSPostHogProvider>
