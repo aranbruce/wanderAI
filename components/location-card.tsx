@@ -34,7 +34,7 @@ export default function LocationCard({
           <div className="flex w-full items-start gap-2 px-4 md:px-8">
             <div className="flex w-full flex-col gap-1 md:gap-2">
               {location?.day && (
-                <h3 className="text-sm font-semibold text-gray-800">
+                <h3 className="text-xs font-medium text-gray-800">
                   {`Day ${location?.day} - 
                   ${
                     location?.timeOfDay?.charAt(0).toUpperCase() +
@@ -42,23 +42,39 @@ export default function LocationCard({
                   }`}
                 </h3>
               )}
-              <h2 className="w-full text-lg font-semibold">
+              <h2 className="text-md w-full font-semibold">
                 {location?.title}
               </h2>
             </div>
             {location?.rating && (
-              <div className="flex items-center justify-end gap-1">
-                <p className="text-green-600 text-base font-semibold">
-                  {location?.rating}
-                </p>
-                <Image
-                  src="/assets/star.svg"
-                  alt="Star Icon"
-                  width={24}
-                  height={24}
-                  priority
-                />
-              </div>
+              <a
+                href={location?.googleMapsUri}
+                target="_blank"
+                rel="noreferrer"
+                className="cursor-pointer"
+              >
+                <div className="flex flex-col md:gap-1">
+                  <div className="flex items-center justify-end gap-1">
+                    <p className="text-green-600 text-sm font-semibold">
+                      {location?.rating}
+                    </p>
+                    <Image
+                      src="/assets/star.svg"
+                      alt="Star Icon"
+                      width={16}
+                      height={16}
+                      priority
+                    />
+                    <p className="w-auto cursor-pointer text-nowrap text-xs text-gray-800">
+                      ({new Intl.NumberFormat().format(location?.reviewCount)})
+                    </p>
+                  </div>
+
+                  <p className="w-auto cursor-pointer text-nowrap text-right text-xs font-semibold">
+                    {location?.priceLevel}
+                  </p>
+                </div>
+              </a>
             )}
           </div>
           <div className="flex min-h-0 w-full flex-col gap-4">
