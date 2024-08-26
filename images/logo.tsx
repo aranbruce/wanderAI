@@ -1,9 +1,9 @@
 interface LogoProps {
-  height?: number;
-  width?: number;
+  height?: string;
+  width?: string;
 }
 
-export default function Logo({ height = 32, width = 156 }: LogoProps) {
+export default function Logo({ height = "32", width = "156" }: LogoProps) {
   return (
     <svg
       width={width}
