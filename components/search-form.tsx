@@ -49,7 +49,7 @@ export default function SearchForm() {
 
   return (
     <>
-      <div className="mt-12 flex w-full flex-col items-center gap-8 rounded-3xl bg-[linear-gradient(180deg,rgba(0,0,0,0.10)0%,rgba(33,35,44,0.70)100%),url('/assets/mountains.jpg')] bg-cover bg-bottom px-6 py-16 shadow-heavy sm:px-10 sm:py-16 md:mt-0 md:px-12 md:py-48">
+      <div className="mt-12 flex w-full flex-col items-center gap-8 rounded-3xl bg-[linear-gradient(180deg,rgba(0,0,0,0.10)0%,rgba(33,35,44,0.70)100%),url('/assets/mountains.jpg')] bg-cover bg-bottom px-6 pb-8 pt-16 shadow-heavy sm:px-10 sm:pb-12 sm:pt-16 md:px-12 md:pb-24 md:pt-48">
         <div className="flex flex-col items-center gap-6 text-pretty text-center text-white">
           <h1 className="text-4xl md:text-7xl">Love travel, hate planning?</h1>
           <p className="text-lg font-normal">
@@ -83,6 +83,23 @@ export default function SearchForm() {
             />
             <Button type="submit">Plan trip</Button>
           </form>
+        </div>
+        <div className="flex flex-col items-center gap-2">
+          <h5 className="mt-4 text-center text-sm font-medium text-white">
+            Support us on Product Hunt
+          </h5>
+          <a
+            href="https://www.producthunt.com/posts/wanderai-2?embed=true&utm_source=badge-featured&utm_medium=badge&utm_souce=badge-wanderai&#0045;2"
+            target="_blank"
+          >
+            <img
+              src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=484286&theme=light"
+              alt="WanderAI - Plan&#0032;your&#0032;next&#0032;trip&#0032;in&#0032;seconds&#0032;with&#0032;the&#0032;power&#0032;of&#0032;AI | Product Hunt"
+              style={{ width: "185px", height: "40px" }}
+              width="185"
+              height="40"
+            />
+          </a>
         </div>
       </div>
       <SearchModal
