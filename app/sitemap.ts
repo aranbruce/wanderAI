@@ -15,7 +15,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.9,
     },
     {
-      url: "https://www.wanderaico.uk/sign-up",
+      url: "https://www.wanderai.co.uk/sign-up",
       lastModified: new Date(),
       changeFrequency: "monthly",
       priority: 0.3,
