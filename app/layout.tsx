@@ -16,6 +16,11 @@ export const metadata = {
   title: "WanderAI",
   description:
     "Love travel but hate planning? Plan your next adventure in seconds through the power of AI",
+  openGraph: {
+    title: "WanderAI",
+    description:
+      "Love travel but hate planning? Plan your next adventure in seconds through the power of AI",
+  },
 };
 
 export default function RootLayout({ children }) {
