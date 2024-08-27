@@ -126,17 +126,14 @@ export default function LocationCard({
           <Button onClick={increaseTimeOfDay}>Next</Button>
         </footer>
       </div>
-      {isImageModalOpen && (
-        <AnimatePresence>
-          <ImageModal
-            setIsModalOpen={setIsImageModalOpen}
-            photoUris={location.photoReferences}
-            selectedPhotoIndex={location.photoReferences.indexOf(
-              selectedPhotoUri,
-            )}
-          ></ImageModal>
-        </AnimatePresence>
-      )}
+      <ImageModal
+        isModalOpen={isImageModalOpen}
+        setIsModalOpen={setIsImageModalOpen}
+        photoUris={location?.photoReferences}
+        selectedPhotoIndex={location?.photoReferences?.indexOf(
+          selectedPhotoUri,
+        )}
+      ></ImageModal>
     </>
   );
 }

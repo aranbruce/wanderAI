@@ -44,8 +44,6 @@ export default function SearchForm() {
     e.preventDefault();
     if (destination && duration && duration !== "0") {
       setIsSearchModalOpen(true);
-      document.body.style.overflow = "hidden";
-      document.body.style.height = "100vh";
     }
   }
 
@@ -87,20 +85,16 @@ export default function SearchForm() {
           </form>
         </div>
       </div>
-
-      <AnimatePresence>
-        {isSearchModalOpen && (
-          <SearchModal
-            setIsSearchModalOpen={setIsSearchModalOpen}
-            destination={destination}
-            setSelectedDestination={handleDestinationChange}
-            duration={duration}
-            handleDurationChange={handleDurationChange}
-            preferences={preferences}
-            handlePreferenceChange={handlePreferenceChange}
-          />
-        )}
-      </AnimatePresence>
+      <SearchModal
+        isModalOpen={isSearchModalOpen}
+        setIsModalOpen={setIsSearchModalOpen}
+        destination={destination}
+        setSelectedDestination={handleDestinationChange}
+        duration={duration}
+        handleDurationChange={handleDurationChange}
+        preferences={preferences}
+        handlePreferenceChange={handlePreferenceChange}
+      />
     </>
   );
 }
