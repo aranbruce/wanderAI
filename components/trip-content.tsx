@@ -98,31 +98,27 @@ export default function TripContent() {
         <>
           <Map
             tripItinerary={
-              tripItinerary.length === 0 ? object?.locations : tripItinerary
+              !isLoading && tripItinerary.length > 0
+                ? tripItinerary
+                : object?.locations
             }
             currentItineraryItemIndex={currentItineraryItemIndex}
           />
-
           <LocationCard
             location={
-              tripItinerary.length === 0
-                ? object.locations[currentItineraryItemIndex]
-                : tripItinerary[currentItineraryItemIndex]
+              !isLoading && tripItinerary.length > 0
+                ? tripItinerary[currentItineraryItemIndex]
+                : object.locations[currentItineraryItemIndex]
             }
             increaseTimeOfDay={increaseTimeOfDay}
             decreaseTimeOfDay={decreaseTimeOfDay}
           />
         </>
       )}
-
-      <AnimatePresence>
-        {isSignUpModalOpen && (
-          <SignUpModal
-            setIsModalOpen={setIsSignUpModalOpen}
-            isModalOpen={isSignUpModalOpen}
-          />
-        )}
-      </AnimatePresence>
+      <SignUpModal
+        isModalOpen={isSignUpModalOpen}
+        setIsModalOpen={setIsSignUpModalOpen}
+      />
     </div>
   );
 }
