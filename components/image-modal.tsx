@@ -37,6 +37,12 @@ export default function ImageModal({
     }
   }, [currentIndex]);
 
+  useEffect(() => {
+    isInitialLoad.current = true;
+
+    setCurrentIndex(selectedPhotoIndex);
+  }, [selectedPhotoIndex]);
+
   const handleScroll = (event) => {
     if (scrollTimeout.current) {
       clearTimeout(scrollTimeout.current);
@@ -48,7 +54,7 @@ export default function ImageModal({
       if (newIndex !== currentIndex) {
         setCurrentIndex(newIndex);
       }
-    }, 50); // Adjust the debounce delay as needed
+    }, 100); // Adjust the debounce delay as needed
   };
 
   function handleModalClose() {
