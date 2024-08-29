@@ -18,10 +18,6 @@ export default function SearchForm() {
   const [preferences, setPreferences] = useLocalStorage("preferences", []);
   const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
 
-  useEffect(() => {
-    console.log("destination", destination);
-  }, [destination]);
-
   function handleDestinationChange(newDestination: Destination) {
     setDestination(newDestination);
   }

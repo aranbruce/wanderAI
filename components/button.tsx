@@ -5,6 +5,7 @@ interface ButtonProps extends React.HTMLAttributes<HTMLButtonElement> {
   variant?: "primary" | "secondary";
   size?: "small" | "medium";
   href?: string;
+  isCircular?: boolean;
 }
 
 export default function Button({
@@ -14,6 +15,7 @@ export default function Button({
   children,
   onClick,
   href,
+  isCircular,
   ...props
 }: ButtonProps) {
   const baseClasses =
@@ -22,8 +24,8 @@ export default function Button({
     "bg-green-400 text-white hover:bg-green-300 active:bg-green-500";
   const secondaryClasses =
     "bg-white text-black border border-gray-200 hover:bg-gray-100 active:bg-gray-200";
-  const smallClasses = "text-sm px-4 py-3";
-  const mediumClasses = "text-md px-5 py-3";
+  const smallClasses = `text-sm ${isCircular ? "px-1 py-1" : "px-4 py-3"}`;
+  const mediumClasses = `text-md ${isCircular ? "px-2 py-2" : "px-5 py-3"}`;
 
   const buttonClasses = `${baseClasses}, ${variant === "secondary" ? secondaryClasses : primaryClasses}, ${size === "small" ? smallClasses : mediumClasses}`;
 

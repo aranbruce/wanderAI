@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { experimental_useObject as useObject } from "ai/react";
-import { AnimatePresence } from "framer-motion";
 
 import { locationsSchema } from "@/app/api/trip/schema";
 
@@ -46,15 +45,10 @@ export default function TripContent() {
     api: "/api/trip",
     schema: locationsSchema,
     onFinish: (object) => {
-      const tripItineraryWithPhotos = object.object.locations.map(
-        async (location: LocationProps) => {
-          const photoReferences = await getPhotos(location.id);
-          return { ...location, photoReferences };
-        },
-      );
-      Promise.all(tripItineraryWithPhotos).then((tripItinerary) =>
-        setTripItinerary(tripItinerary),
-      );
+      handleItineraryResponse(object.object.locations);
+    },
+    onError: (error) => {
+      throw new Error(error.message);
     },
   });
 
@@ -71,6 +65,23 @@ export default function TripContent() {
     return response.json();
   }
 
+  async function handleItineraryResponse(locations: LocationProps[]) {
+    const tripItineraryWithPhotos = await Promise.all(
+      locations.map(async (location: LocationProps) => {
+        try {
+          const photoReferences = await getPhotos(location.id);
+          return { ...location, photoReferences };
+        } catch (error) {
+          console.error(
+            `Failed to fetch photos for location ${location.id}:`,
+            error,
+          );
+          return { ...location, photoReferences: [] };
+        }
+      }),
+    );
+    setTripItinerary(tripItineraryWithPhotos);
+  }
   function increaseTimeOfDay() {
     if (
       currentItineraryItemIndex === duration * 3 - 1 ||

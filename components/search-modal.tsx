@@ -1,6 +1,5 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useRouter } from "next/navigation";
-import { useMediaQuery } from "react-responsive";
 
 import Input from "@/components/input";
 import SearchInput, { Destination } from "@/components/search-input";
@@ -8,6 +7,7 @@ import Checkbox from "@/components/checkbox";
 import Button from "@/components/button";
 import Backdrop from "@/components/backdrop";
 import BackIcon from "@/images/icons/back-icon";
+import useIsLargeScreen from "@/hooks/useIsLargeScreen"; // Import the custom hook
 
 interface SearchModalProps {
   destination: Destination | null;
@@ -31,17 +31,28 @@ export default function SearchModal({
   setIsModalOpen,
 }: SearchModalProps) {
   const router = useRouter();
-  const isLargeScreen = useMediaQuery({ query: "(min-width: 768px)" });
+  const isLargeScreen = useIsLargeScreen(768);
+  const preferenceOptions = [
+    "Food",
+    "Culture",
+    "Outdoors",
+    "Indoors",
+    "Active",
+    "Relaxation",
+    "Pet friendly",
+    "Child friendly",
+    "Vegetarian",
+    "Vegan",
+    "Nightlife",
+  ];
 
   function handleModalClose() {
     setIsModalOpen(false);
   }
 
-  function handleSubmit(e) {
+  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     if (destination && duration) {
       e.preventDefault();
-      document.body.style.overflow = "auto";
-      document.body.style.height = "auto";
       const preferenceString = preferences
         .map((preference) => `preferences=${preference}`)
         .join("&");
@@ -119,61 +130,14 @@ export default function SearchModal({
                 <div className="flex flex-col gap-4">
                   <h4>Priorities</h4>
                   <div className="grid grid-cols-2 gap-2">
-                    <Checkbox
-                      label="Food"
-                      checked={preferences.includes("Food")}
-                      onChange={() => handlePreferenceChange("Food")}
-                    />
-                    <Checkbox
-                      label="Culture"
-                      checked={preferences.includes("Culture")}
-                      onChange={() => handlePreferenceChange("Culture")}
-                    />
-                    <Checkbox
-                      label="Outdoors"
-                      checked={preferences.includes("Outdoors")}
-                      onChange={() => handlePreferenceChange("Outdoors")}
-                    />
-                    <Checkbox
-                      label="Indoors"
-                      checked={preferences.includes("Indoors")}
-                      onChange={() => handlePreferenceChange("Indoors")}
-                    />
-                    <Checkbox
-                      label="Active"
-                      checked={preferences.includes("Active")}
-                      onChange={() => handlePreferenceChange("Active")}
-                    />
-                    <Checkbox
-                      label="Relaxation"
-                      checked={preferences.includes("Relaxation")}
-                      onChange={() => handlePreferenceChange("Relaxation")}
-                    />
-                    <Checkbox
-                      label="Pet friendly"
-                      checked={preferences.includes("Pet friendly")}
-                      onChange={() => handlePreferenceChange("Pet friendly")}
-                    />
-                    <Checkbox
-                      label="Child friendly"
-                      checked={preferences.includes("Child friendly")}
-                      onChange={() => handlePreferenceChange("Child friendly")}
-                    />
-                    <Checkbox
-                      label="Vegetarian"
-                      checked={preferences.includes("Vegetarian")}
-                      onChange={() => handlePreferenceChange("Vegetarian")}
-                    />
-                    <Checkbox
-                      label="Vegan"
-                      checked={preferences.includes("Vegan")}
-                      onChange={() => handlePreferenceChange("Vegan")}
-                    />
-                    <Checkbox
-                      label="Nightlife"
-                      checked={preferences.includes("Nightlife")}
-                      onChange={() => handlePreferenceChange("Nightlife")}
-                    />
+                    {preferenceOptions.map((preference) => (
+                      <Checkbox
+                        key={preference}
+                        label={preference}
+                        checked={preferences.includes(preference)}
+                        onChange={() => handlePreferenceChange(preference)}
+                      />
+                    ))}
                   </div>
                 </div>
               </div>
