@@ -1,5 +1,9 @@
 import { Suspense } from "react";
+import { ErrorBoundary } from "react-error-boundary";
 import TripContent from "@/components/trip-content";
+
+import Loading from "@/components/loading";
+import Error from "@/components/error";
 
 export const metadata = {
   title: "WanderAI | Trip",
@@ -12,8 +16,10 @@ export const metadata = {
 
 export default function Trip() {
   return (
-    <Suspense>
-      <TripContent />
+    <Suspense fallback={<Loading />}>
+      <ErrorBoundary fallback={<Error />}>
+        <TripContent />
+      </ErrorBoundary>
     </Suspense>
   );
 }

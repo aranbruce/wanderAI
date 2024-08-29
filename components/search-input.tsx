@@ -36,6 +36,8 @@ export default function SearchInput({
 
   const inputRef = useRef<HTMLInputElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  const suggestionContainerRef = useRef<HTMLDivElement>(null);
+  const suggestionRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   useEffect(() => {
     setQueryValue(selectedValue || "");
@@ -100,6 +102,65 @@ export default function SearchInput({
     }
   }
 
+  function handleFocus(queryValue: string) {
+    setQueryValue(queryValue);
+    if (queryValue.length > 0) {
+      setShowSuggestions(true);
+      console.log("queryValue: ", queryValue);
+      console.log("suggestions: ", suggestions);
+      if (suggestions?.length === 0 || !suggestions) {
+        console.log("searching for destinations...");
+        searchForDestinations(queryValue);
+      }
+    }
+  }
+
+  const handleBlur = () => {
+    setTimeout(() => {
+      const activeElement = document.activeElement;
+      if (
+        inputRef.current &&
+        suggestionContainerRef.current &&
+        (inputRef.current.contains(activeElement) ||
+          suggestionContainerRef.current.contains(activeElement))
+      ) {
+        return;
+      }
+      setShowSuggestions(false);
+    }, 0);
+  };
+
+  function handleInputKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      if (suggestions?.length > 0) {
+        suggestionRefs.current[0]?.focus();
+      }
+    }
+  }
+
+  function handleSuggestionsKeyDown(
+    e: React.KeyboardEvent<HTMLDivElement>,
+    suggestion: Destination,
+    index: number,
+  ) {
+    if (e.key === "Enter") {
+      handleOptionClick(suggestion);
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      if (index === 0) {
+        inputRef.current?.focus();
+      } else {
+        suggestionRefs.current[index - 1]?.focus();
+      }
+    } else if (e.key === "ArrowDown") {
+      e.preventDefault();
+      if (index < suggestions.length - 1) {
+        suggestionRefs.current[index + 1]?.focus();
+      }
+    }
+  }
+
   return (
     <div className="relative">
       <div className="flex flex-col gap-2" ref={containerRef}>
@@ -134,7 +195,9 @@ export default function SearchInput({
               ref={inputRef}
               value={queryValue}
               onChange={(event) => handleQueryChange(event.target.value)}
-              onFocus={() => setQueryValue(queryValue)}
+              onFocus={() => handleFocus(queryValue)}
+              onBlur={() => handleBlur()}
+              onKeyDown={(e) => handleInputKeyDown(e)}
               autoComplete="off"
               className="h-full w-full rounded-full bg-none py-3 pl-9 pr-4 placeholder:font-normal focus:outline-none"
               id={label}
@@ -144,17 +207,23 @@ export default function SearchInput({
             />
           </div>
           {showSuggestions && (
-            <div className="absolute z-50 mt-2 flex w-full flex-col gap-2 rounded-xl border border-gray-200 bg-white p-2 shadow-light">
+            <div
+              className="absolute z-50 mt-2 flex w-full flex-col gap-2 rounded-xl border border-gray-200 bg-white p-2 shadow-light"
+              ref={suggestionContainerRef}
+            >
               {suggestions?.length > 0 ? (
                 suggestions?.map((suggestion, index) => (
                   <div
                     key={index}
+                    ref={(el) => {
+                      suggestionRefs.current[index] = el;
+                    }}
                     className="w-full cursor-pointer rounded-lg p-2 outline-none hover:bg-gray-100 focus-visible:bg-gray-100 focus-visible:ring-2 focus-visible:ring-green-400/40"
                     onMouseDown={() => handleOptionClick(suggestion)}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") handleOptionClick(suggestion);
-                    }}
-                    tabIndex={0}
+                    onKeyDown={(e) =>
+                      handleSuggestionsKeyDown(e, suggestion, index)
+                    }
+                    tabIndex={-1}
                   >
                     {suggestion.text}
                   </div>

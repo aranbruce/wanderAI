@@ -1,24 +1,79 @@
 import { openai } from "@ai-sdk/openai";
-
+import { z } from "zod";
 import { streamObject } from "ai";
+import { NextRequest, NextResponse } from "next/server";
+import { kv } from "@vercel/kv";
+
 import { locationsSchema } from "./schema";
-import { NextRequest } from "next/server";
 
 // Allow streaming responses up to 120 seconds on edge runtime
 export const maxDuration = 120;
 export const runtime = "edge";
 
 export async function POST(request: NextRequest) {
-  let { destination, duration, preferences } = await request.json();
+  const tripSchema = z.object({
+    destination: z.string().min(1, "Destination is required"),
+    duration: z
+      .number()
+      .min(1, "Duration must be at least 1 day")
+      .max(14, "Duration cannot exceed 14 days"),
+    preferences: z
+      .array(
+        z.enum([
+          "Food",
+          "Culture",
+          "Outdoors",
+          "Indoors",
+          "Active",
+          "Relaxation",
+          "Pet friendly",
+          "Child friendly",
+          "Vegetarian",
+          "Vegan",
+          "Nightlife",
+        ]),
+      )
+      .optional(),
+  });
+
+  let requestData;
+  try {
+    requestData = await request.json();
+  } catch (error) {
+    throw new Error("Invalid JSON payload");
+  }
+
+  const validationResult = tripSchema.safeParse(requestData);
+
+  if (!validationResult.success) {
+    const errors = validationResult.error.errors
+      .map((err) => err.message)
+      .join(", ");
+    return NextResponse.json(
+      { error: `Validation failed: ${errors}` },
+      { status: 400 },
+    );
+  }
+
+  let { destination, duration, preferences } = validationResult.data;
+
+  // Create a cache key
+  const key = `trip:${destination}:${duration}:${preferences.join(",")}`;
+
+  // Check for cached result
+  const cached = await kv.get(key);
+  if (cached != null) {
+    return new Response(JSON.stringify(cached), {
+      status: 200,
+      headers: { "Content-Type": "text/plain" },
+    });
+  }
 
   console.log("Generating trip itinerary...");
   console.log("Destination: ", destination);
   console.log("Duration: ", duration);
   console.log("Preferences: ", preferences);
 
-  if (!destination || !duration || !preferences) {
-    throw new Error("Missing required fields.");
-  }
   if (duration > 2) {
     duration = 2;
   }
@@ -177,6 +232,10 @@ export async function POST(request: NextRequest) {
         `,
     prompt: "Generate the trip itinerary",
     schema: locationsSchema,
+    async onFinish({ object }) {
+      await kv.set(key, object);
+      await kv.expire(key, 60 * 60 * 24 * 7); // 7 days
+    },
   });
 
   return result.toTextStreamResponse();

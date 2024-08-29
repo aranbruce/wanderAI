@@ -47,36 +47,41 @@ export default function LocationCard({
               </h2>
             </div>
             {location?.rating && (
+              <div className="flex flex-col md:gap-1">
+                <div className="flex items-center justify-end gap-1">
+                  <p className="text-green-600 text-sm font-semibold">
+                    {location?.rating}
+                  </p>
+                  <Image
+                    src="/assets/star.svg"
+                    alt="Star Icon"
+                    width={16}
+                    height={16}
+                    priority
+                  />
+                  <p className="w-auto cursor-pointer text-nowrap text-xs text-gray-800">
+                    ({new Intl.NumberFormat().format(location?.reviewCount)})
+                  </p>
+                </div>
+                <p className="w-auto cursor-pointer text-nowrap text-right text-xs font-semibold">
+                  {location?.priceLevel}
+                </p>
+              </div>
+            )}
+          </div>
+          <div className="flex w-full px-4 md:px-8">
+            {location?.googleMapsUri && (
               <a
                 href={location?.googleMapsUri}
                 target="_blank"
                 rel="noreferrer"
-                className="cursor-pointer"
+                className="cursor-pointer text-xs font-semibold text-green-500 hover:text-green-400 active:text-green-300"
               >
-                <div className="flex flex-col md:gap-1">
-                  <div className="flex items-center justify-end gap-1">
-                    <p className="text-green-600 text-sm font-semibold">
-                      {location?.rating}
-                    </p>
-                    <Image
-                      src="/assets/star.svg"
-                      alt="Star Icon"
-                      width={16}
-                      height={16}
-                      priority
-                    />
-                    <p className="w-auto cursor-pointer text-nowrap text-xs text-gray-800">
-                      ({new Intl.NumberFormat().format(location?.reviewCount)})
-                    </p>
-                  </div>
-
-                  <p className="w-auto cursor-pointer text-nowrap text-right text-xs font-semibold">
-                    {location?.priceLevel}
-                  </p>
-                </div>
+                View on Google Maps
               </a>
             )}
           </div>
+
           <div className="flex min-h-0 w-full flex-col gap-4">
             {location?.description ? (
               <p className="px-4 leading-6 text-gray-800 md:px-8">
@@ -119,7 +124,7 @@ export default function LocationCard({
             </div>
           </div>
         </div>
-        <footer className="z-10 grid w-full grid-cols-[0fr_1fr] gap-4 bg-white px-4 py-3 md:px-8 md:py-4">
+        <footer className="z-10 grid w-full grid-cols-[0fr_1fr] gap-4 bg-white px-4 pb-3 pt-2 md:px-8 md:py-4">
           <Button variant="secondary" onClick={decreaseTimeOfDay}>
             <BackIcon height="24" width="24" />
           </Button>
