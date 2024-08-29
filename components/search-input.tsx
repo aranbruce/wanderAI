@@ -36,6 +36,7 @@ export default function SearchInput({
 
   const inputRef = useRef<HTMLInputElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  const suggestionContainerRef = useRef<HTMLDivElement>(null);
   const suggestionRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   useEffect(() => {
@@ -114,6 +115,21 @@ export default function SearchInput({
     }
   }
 
+  const handleBlur = () => {
+    setTimeout(() => {
+      const activeElement = document.activeElement;
+      if (
+        inputRef.current &&
+        suggestionContainerRef.current &&
+        (inputRef.current.contains(activeElement) ||
+          suggestionContainerRef.current.contains(activeElement))
+      ) {
+        return;
+      }
+      setShowSuggestions(false);
+    }, 0);
+  };
+
   function handleInputKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
     if (e.key === "ArrowDown") {
       e.preventDefault();
@@ -180,7 +196,7 @@ export default function SearchInput({
               value={queryValue}
               onChange={(event) => handleQueryChange(event.target.value)}
               onFocus={() => handleFocus(queryValue)}
-              onBlur={() => setShowSuggestions(false)}
+              onBlur={() => handleBlur()}
               onKeyDown={(e) => handleInputKeyDown(e)}
               autoComplete="off"
               className="h-full w-full rounded-full bg-none py-3 pl-9 pr-4 placeholder:font-normal focus:outline-none"
@@ -191,7 +207,10 @@ export default function SearchInput({
             />
           </div>
           {showSuggestions && (
-            <div className="absolute z-50 mt-2 flex w-full flex-col gap-2 rounded-xl border border-gray-200 bg-white p-2 shadow-light">
+            <div
+              className="absolute z-50 mt-2 flex w-full flex-col gap-2 rounded-xl border border-gray-200 bg-white p-2 shadow-light"
+              ref={suggestionContainerRef}
+            >
               {suggestions?.length > 0 ? (
                 suggestions?.map((suggestion, index) => (
                   <div
