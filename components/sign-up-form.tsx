@@ -31,7 +31,6 @@ export default function SignUpForm() {
   async function handleSubmit(e) {
     e.preventDefault();
     setIsSubmitting(true);
-    console.log("submitting");
     if (!email) {
       setEmailError("Enter your email");
     }
@@ -56,7 +55,6 @@ export default function SignUpForm() {
         setSubmitted(true);
         setError(null);
         posthog.capture("user_signed_up_for_wait_list", { email, fullName });
-        console.log("submitted");
       } else {
         throw new Error("Something went wrong. Please try again later.");
       }

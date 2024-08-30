@@ -19,8 +19,8 @@ export default function ThankYou({
           {`Thanks ${fullName} You're on the wait list`}
         </h1>
         <p className="text-gray-800">
-          {`Not long now! We'll send an email to ${(<strong>${email}</strong>)} as soon as you have access to
-            a WanderAI account`}
+          Not long now! We'll send an email to <strong>{email}</strong> as soon
+          as you have access to a WanderAI account
         </p>
       </div>
       <Button onClick={() => setSubmitted(false)}>Back to Sign Up</Button>
