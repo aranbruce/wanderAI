@@ -6,8 +6,10 @@ import {
   Head,
   Hr,
   Html,
+  Link,
   Img,
   Preview,
+  Row,
   Section,
   Text,
   Tailwind,
@@ -104,21 +106,38 @@ export const WaitListEmail = ({ fullName, email }: WaitListEmailProps) => (
             </Text>
             <Text className="text-black">
               We're working hard to bring you the best travel planning product
-              on the market and will send you an email at{" "}
+              on the market and will send you an email to{" "}
               <strong className="font-semibold">{email}</strong> as soon as
-              we're ready for you to start planning your next adventure.
+              we're able to set up an account for you.
             </Text>
             <Text className="text-black">
               In the meantime, feel free to check out our website to see what
-              other trips you can plan with WanderAI.
+              other trips you can plan with WanderAI or you can go to our page
+              on{" "}
+              <Link
+                className="font-semibold text-green-400"
+                href="https://www.producthunt.com/posts/wanderai-2"
+              >
+                Product Hunt
+              </Link>{" "}
+              to support us there.
             </Text>
-
-            <Button
-              className="rounded-full bg-green-400 px-6 py-3 font-medium text-white hover:bg-green-300 active:bg-green-500"
-              href="https://wanderai.co.uk"
-            >
-              Start planning
-            </Button>
+            <Container>
+              <Row>
+                <Button
+                  className="text-md mr-2 rounded-full bg-green-400 px-6 py-3 font-medium text-white hover:bg-green-300 active:bg-green-500"
+                  href="https://wanderai.co.uk"
+                >
+                  Start planning
+                </Button>
+                <Button
+                  className="text-md rounded-full bg-gray-200 px-6 py-3 font-medium text-black hover:bg-gray-100 active:bg-gray-300"
+                  href="https://www.producthunt.com/posts/wanderai-2"
+                >
+                  Support us
+                </Button>
+              </Row>
+            </Container>
           </Section>
           <Text className="text-black">
             All the Best,
