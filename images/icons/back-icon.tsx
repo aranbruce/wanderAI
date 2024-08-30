@@ -1,9 +1,12 @@
 interface BackIconProps {
-  height: string;
-  width: string;
+  height?: string;
+  width?: string;
 }
 
-export default function BackIcon({ height, width }: BackIconProps) {
+export default function BackIcon({
+  height = "24",
+  width = "24",
+}: BackIconProps) {
   return (
     <svg
       width={width}

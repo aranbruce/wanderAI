@@ -1,9 +1,12 @@
 interface CloseIconProps {
-  height: string;
-  width: string;
+  height?: string;
+  width?: string;
 }
 
-export default function CloseIcon({ height, width }: CloseIconProps) {
+export default function CloseIcon({
+  height = "24",
+  width = "24",
+}: CloseIconProps) {
   return (
     <svg
       width={width}
