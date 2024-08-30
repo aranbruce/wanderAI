@@ -1,51 +1,70 @@
 "use client";
 
 import { useState } from "react";
+import { usePostHog } from "posthog-js/react";
 
 import Button from "@/components/button";
 import Input from "@/components/input";
 import ThankYou from "./thank-you";
+import SpinnerIcon from "@/images/icons/spinner-icon";
+import posthog from "posthog-js";
 
 export default function SignUpForm() {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
-  const [error, setError] = useState("");
+  const [error, setError] = useState(null);
+  const [fullNameError, setFullNameError] = useState(null);
+  const [emailError, setEmailError] = useState(null);
 
   function handleEmailChange(e) {
+    setEmailError(null);
     setEmail(e.target.value);
   }
 
   function handleFullNameChange(e) {
+    setFullNameError(null);
     setFullName(e.target.value);
   }
 
   async function handleSubmit(e) {
     e.preventDefault();
+    setIsSubmitting(true);
     console.log("submitting");
+    if (!email) {
+      setEmailError("Enter your email");
+    }
+    if (!fullName) {
+      setFullNameError("Enter your full name");
+    }
     if (!email || !fullName) {
+      setIsSubmitting(false);
       return;
     }
 
     try {
-      const response = await fetch("https://formcarry.com/s/w4Ieb354Sc", {
+      const response = await fetch("/api/send-email", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Accept: "application/json",
         },
-        body: JSON.stringify({ fullName: fullName, email: email }),
+        body: JSON.stringify({ fullName, email }),
       });
 
-      const res = await response.json();
-
-      if (res.code === 200) {
+      if (response.status === 200) {
         setSubmitted(true);
+        setError(null);
+        posthog.capture("user_signed_up_for_wait_list", { email, fullName });
         console.log("submitted");
+      } else {
+        throw new Error("Something went wrong. Please try again later.");
       }
     } catch (error) {
       console.log("error:", error.message);
       setError(error.message);
+    } finally {
+      setIsSubmitting(false);
     }
   }
 
@@ -58,9 +77,9 @@ export default function SignUpForm() {
           setSubmitted={setSubmitted}
         />
       ) : (
-        <div className="flex w-full flex-col items-start gap-4">
+        <div className="flex w-full flex-col items-start gap-6">
           <h1 className="text-4xl md:text-5xl">
-            Create an account and join our wait list
+            Sign up now to join our wait list
           </h1>
           <p className="text-gray-800">
             Sign up now to get access to your full itinerary and plan your next
@@ -71,7 +90,7 @@ export default function SignUpForm() {
             className="flex w-full flex-col items-stretch gap-8"
             onSubmit={handleSubmit}
           >
-            <div className="flex w-full flex-col items-start gap-4">
+            <div className="flex w-full flex-col items-start gap-6">
               <Input
                 type="text"
                 inputMode="text"
@@ -80,6 +99,7 @@ export default function SignUpForm() {
                 placeholder="Enter your full name"
                 label="Full name"
                 showLabel
+                error={fullNameError}
                 required
               />
               <Input
@@ -90,11 +110,19 @@ export default function SignUpForm() {
                 placeholder="Enter your email"
                 label="Email"
                 showLabel
+                error={emailError}
                 required
               />
             </div>
             {error && <p className="text-red-300">{error}</p>}
-            <Button type="submit">Sign up</Button>
+            <Button type="submit">
+              {isSubmitting && (
+                <>
+                  <SpinnerIcon width="20" height="20" />
+                </>
+              )}
+              Sign up
+            </Button>
           </form>
         </div>
       )}

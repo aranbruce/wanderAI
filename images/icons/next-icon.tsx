@@ -1,9 +1,12 @@
 interface NextIconProps {
-  height: string;
-  width: string;
+  height?: string;
+  width?: string;
 }
 
-export default function NextIcon({ height, width }: NextIconProps) {
+export default function NextIcon({
+  height = "24",
+  width = "24",
+}: NextIconProps) {
   return (
     <svg
       width={width}
