@@ -1,5 +1,8 @@
-import { AnimatePresence, motion } from "framer-motion";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { AnimatePresence, motion } from "framer-motion";
+
+import { validateForm, ValidationErrors } from "@/utils/validation";
 
 import Input from "@/components/input";
 import SearchInput, { Destination } from "@/components/search-input";
@@ -30,6 +33,9 @@ export default function SearchModal({
   isModalOpen,
   setIsModalOpen,
 }: SearchModalProps) {
+  const [destinationError, setDestinationError] = useState<string | null>(null);
+  const [durationError, setDurationError] = useState<string | null>(null);
+
   const router = useRouter();
   const isLargeScreen = useIsLargeScreen(768);
   const preferenceOptions = [
@@ -51,12 +57,18 @@ export default function SearchModal({
   }
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    if (destination && duration) {
-      e.preventDefault();
+    e.preventDefault();
+    const { destinationError, durationError }: ValidationErrors = validateForm(
+      destination,
+      duration,
+    );
+    setDestinationError(destinationError);
+    setDurationError(durationError);
+    if (!destinationError && !durationError) {
       const preferenceString = preferences
         .map((preference) => `preferences=${preference}`)
         .join("&");
-      const url = `/trip?destination=${destination.text}&duration=${duration}&${preferenceString}`;
+      const url = `/trip?destination=${destination.text}&duration=${duration}${preferenceString ? "&" + preferenceString : ""}`;
       router.push(url);
     }
   }
@@ -114,6 +126,7 @@ export default function SearchModal({
                     showLabel
                     destinationValue={destination}
                     setDestinationValue={setSelectedDestination}
+                    error={destinationError}
                     required
                   />
                   <Input
@@ -124,6 +137,9 @@ export default function SearchModal({
                     placeholder="Enter your trip duration"
                     label="How many days is your trip?"
                     showLabel
+                    error={durationError}
+                    min={1}
+                    max={14}
                     required
                   />
                 </div>

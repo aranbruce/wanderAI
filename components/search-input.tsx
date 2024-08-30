@@ -9,6 +9,7 @@ interface SearchInputProps {
   destinationValue: Destination | null;
   setDestinationValue: (value: Destination) => void;
   required?: boolean;
+  error?: string;
 }
 
 export type Destination = {
@@ -23,6 +24,7 @@ export default function SearchInput({
   destinationValue,
   setDestinationValue,
   required,
+  error,
 }: SearchInputProps) {
   const [selectedValue, setSelectedValue] = useState<string>(
     destinationValue?.text || "",
@@ -38,6 +40,8 @@ export default function SearchInput({
   const containerRef = useRef<HTMLDivElement>(null);
   const suggestionContainerRef = useRef<HTMLDivElement>(null);
   const suggestionRefs = useRef<(HTMLDivElement | null)[]>([]);
+
+  const inputId = `input-${label.toLowerCase().replace(/\s+/g, "-")}`;
 
   useEffect(() => {
     setQueryValue(selectedValue || "");
@@ -165,15 +169,13 @@ export default function SearchInput({
     <div className="relative">
       <div className="flex flex-col gap-2" ref={containerRef}>
         {showLabel && (
-          <label className="text-sm font-medium leading-5" htmlFor={label}>
+          <label className="text-sm font-medium leading-5" htmlFor={inputId}>
             {label}
           </label>
         )}
         <div className="relative">
-          <div
-            className={`text-md relative flex h-12 w-full flex-col gap-2 rounded-full border border-gray-200 bg-white font-medium shadow-light outline-none transition default:border-gray-200 placeholder-shown:border-gray-200 autofill:bg-white focus-within:border-gray-300 focus-within:outline-none focus-within:ring-[3px] focus-within:ring-green-400/40 focus-within:ring-offset-1 focus-within:ring-offset-white`}
-          >
-            <div className="absolute left-2 top-2.5">
+          <div className="relative">
+            <div className="absolute left-3 top-3 z-10">
               <svg
                 width="24"
                 height="24"
@@ -189,22 +191,32 @@ export default function SearchInput({
                 />
               </svg>
             </div>
-            <input
-              type="text"
-              placeholder="Search for a destination"
-              ref={inputRef}
-              value={queryValue}
-              onChange={(event) => handleQueryChange(event.target.value)}
-              onFocus={() => handleFocus(queryValue)}
-              onBlur={() => handleBlur()}
-              onKeyDown={(e) => handleInputKeyDown(e)}
-              autoComplete="off"
-              className="h-full w-full rounded-full bg-none py-3 pl-9 pr-4 placeholder:font-normal focus:outline-none"
-              id={label}
-              name={label}
-              aria-label={label}
-              required={required}
-            />
+            <div className="relative flex w-full flex-col gap-1">
+              <input
+                id={inputId}
+                type="text"
+                placeholder="Search for a destination"
+                ref={inputRef}
+                value={queryValue}
+                onChange={(event) => handleQueryChange(event.target.value)}
+                onFocus={() => handleFocus(queryValue)}
+                onBlur={() => handleBlur()}
+                onKeyDown={(e) => handleInputKeyDown(e)}
+                autoComplete="off"
+                className={`${error ? "border-red-300" : "border-gray-200"} text-md flex w-full items-center justify-center gap-1 rounded-full border bg-white px-4 py-3 pl-9 font-medium shadow-light outline-none transition placeholder:font-normal autofill:bg-white focus-visible:ring-[3px] focus-visible:ring-offset-1 focus-visible:ring-offset-white`}
+                name={label}
+                aria-label={label}
+                required={required}
+              />
+              {error && (
+                <p
+                  id={`${inputId}-error`}
+                  className="absolute left-2 top-full mt-1 text-xs text-red-300 transition"
+                >
+                  {error}
+                </p>
+              )}
+            </div>
           </div>
           {showSuggestions && (
             <div
