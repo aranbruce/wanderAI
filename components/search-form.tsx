@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
+
 import useLocalStorage from "@/hooks/useLocalStorage";
-import { AnimatePresence } from "framer-motion";
+import { validateForm, ValidationErrors } from "@/utils/validation";
 
 import Button from "@/components/button";
 import Input from "@/components/input";
@@ -16,14 +17,18 @@ export default function SearchForm() {
   );
   const [duration, setDuration] = useLocalStorage("duration", "");
   const [preferences, setPreferences] = useLocalStorage("preferences", []);
+  const [destinationError, setDestinationError] = useState<string | null>(null);
+  const [durationError, setDurationError] = useState<string | null>(null);
   const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
 
   function handleDestinationChange(newDestination: Destination) {
     setDestination(newDestination);
+    setDestinationError(null);
   }
 
   function handleDurationChange(newDuration: string) {
     setDuration(newDuration);
+    setDurationError(null);
   }
 
   function handlePreferenceChange(changedPreference: string) {
@@ -36,9 +41,18 @@ export default function SearchForm() {
     }
   }
 
-  function handleSubmit(e) {
+  function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (destination && duration && duration !== "0") {
+
+    const { destinationError, durationError }: ValidationErrors = validateForm(
+      destination,
+      duration,
+    );
+
+    setDestinationError(destinationError);
+    setDurationError(durationError);
+
+    if (!destinationError && !durationError) {
       setIsSearchModalOpen(true);
     }
   }
@@ -52,7 +66,7 @@ export default function SearchForm() {
             Plan your next adventure in seconds through the power of AI
           </p>
         </div>
-        <div className="flex w-full max-w-3xl flex-col items-start gap-2 rounded-2xl bg-white p-4 shadow-heavy md:p-6">
+        <div className="flex w-full max-w-3xl flex-col items-start gap-2 rounded-2xl bg-white p-4 shadow-heavy md:p-6 md:pb-8">
           <form
             id="cardForm"
             className="flex w-full flex-col gap-x-4 gap-y-6 md:grid md:grid-cols-[1fr,1fr,120px] md:items-end md:gap-4"
@@ -63,6 +77,7 @@ export default function SearchForm() {
               showLabel
               destinationValue={destination}
               setDestinationValue={handleDestinationChange}
+              error={destinationError}
               required
             />
             <Input
@@ -72,6 +87,7 @@ export default function SearchForm() {
               onChange={(e) => handleDurationChange(e.target.value)}
               placeholder="Enter your trip duration"
               label="How many days is your trip?"
+              error={durationError}
               showLabel
               min={1}
               max={14}

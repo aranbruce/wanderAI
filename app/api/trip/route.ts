@@ -56,6 +56,14 @@ export async function POST(request: NextRequest) {
   }
 
   let { destination, duration, preferences } = validationResult.data;
+  console.log("Generating trip itinerary...");
+  console.log("Destination: ", destination);
+  console.log("Duration: ", duration);
+  console.log("Preferences: ", preferences);
+
+  if (duration > 2) {
+    duration = 2;
+  }
 
   // Create a cache key
   const key = `trip:${destination}:${duration}:${preferences.join(",")}`;
@@ -67,15 +75,6 @@ export async function POST(request: NextRequest) {
       status: 200,
       headers: { "Content-Type": "text/plain" },
     });
-  }
-
-  console.log("Generating trip itinerary...");
-  console.log("Destination: ", destination);
-  console.log("Duration: ", duration);
-  console.log("Preferences: ", preferences);
-
-  if (duration > 2) {
-    duration = 2;
   }
 
   async function getPlacesFromGoogle({ destination, preferences }) {
