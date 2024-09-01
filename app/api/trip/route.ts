@@ -1,41 +1,56 @@
 import { openai } from "@ai-sdk/openai";
-import { z } from "zod";
 import { streamObject } from "ai";
 import { NextRequest, NextResponse } from "next/server";
 import { kv } from "@vercel/kv";
 
-import { locationsSchema } from "./schema";
+import { locationsSchema, tripSchema } from "./schema";
 
 // Allow streaming responses up to 120 seconds on edge runtime
 export const maxDuration = 120;
 export const runtime = "edge";
 
-export async function POST(request: NextRequest) {
-  const tripSchema = z.object({
-    destination: z.string().min(1, "Destination is required"),
-    duration: z
-      .number()
-      .min(1, "Duration must be at least 1 day")
-      .max(14, "Duration cannot exceed 14 days"),
-    preferences: z
-      .array(
-        z.enum([
-          "Food",
-          "Culture",
-          "Outdoors",
-          "Indoors",
-          "Active",
-          "Relaxation",
-          "Pet friendly",
-          "Child friendly",
-          "Vegetarian",
-          "Vegan",
-          "Nightlife",
-        ]),
-      )
-      .optional(),
-  });
+type TripAdvisorLocation = {
+  location_id: string;
+  name: string;
+  description: string;
+  web_url?: string;
+  address_obj: {
+    street1: string;
+    street2: string;
+    city: string;
+    state: string;
+    country: string;
+    postalcode: string;
+    address_string: string;
+  };
+  ancestors: any[];
+  latitude: number;
+  longitude: number;
+  timezone: string;
+  email: string;
+  phone: string;
+  website: string;
+  write_review: string;
+  ranking_data: {
+    geo_location_id: string;
+    ranking_string: string;
+    geo_location_name: string;
+    ranking_out_of: number;
+    ranking: number;
+  };
+  rating?: number;
+  rating_image_url: string;
+  num_reviews: number;
+  review_rating_count: object;
+  subratings: object;
+  photo_count: number;
+  see_all_photos: string;
+  price_level?: "$" | "$$" | "$$$" | "$$$$";
+  hours: object;
+  photoUrls?: string[];
+};
 
+export async function POST(request: NextRequest) {
   let requestData;
   try {
     requestData = await request.json();
@@ -61,6 +76,10 @@ export async function POST(request: NextRequest) {
   console.log("Duration: ", duration);
   console.log("Preferences: ", preferences);
 
+  const destinationDetails = await fetchDestinationDetails();
+
+  const { latitude, longitude, name, fullName } = destinationDetails;
+
   if (duration > 2) {
     duration = 2;
   }
@@ -77,111 +96,228 @@ export async function POST(request: NextRequest) {
     });
   }
 
-  async function getPlacesFromGoogle({ destination, preferences }) {
-    console.log("Getting places from Google Places...");
-    let allPlacesData = [];
-    try {
-      const fetchPlaces = async (query) => {
-        const response = await fetch(
-          "https://places.googleapis.com/v1/places:searchText",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              "X-Goog-Api-Key": process.env.GOOGLE_PLACES_API_KEY,
-              "X-Goog-FieldMask": "places.id",
-            },
-            body: JSON.stringify({
-              textQuery: query,
-              languageCode: "en",
-              minRating: 4.5,
-            }),
-          },
-        );
-        if (!response.ok) {
-          throw new Error(`Google Places API error: ${response.statusText}`);
-        }
-        return response.json();
-      };
+  async function fetchDestinationDetails() {
+    // get latitude and longitude from the destination
+    const sessionToken = Math.random().toString(36).substring(2, 15);
 
-      if (preferences.length > 0) {
-        const placePromises = preferences.map((preference) => {
-          const query = `${preference} places in ${destination}`;
-          return fetchPlaces(query);
-        });
-
-        const allGooglePlacesData = await Promise.all(placePromises);
-
-        for (const googlePlacesData of allGooglePlacesData) {
-          if (googlePlacesData.places) {
-            allPlacesData.push(...googlePlacesData.places);
-          }
-        }
-      } else {
-        const query = `places in ${destination}`;
-        const googlePlacesData = await fetchPlaces(query);
-        if (googlePlacesData.places) {
-          allPlacesData.push(...googlePlacesData.places);
-        }
-      }
-      return allPlacesData;
-    } catch (error) {
-      console.log("Error:", error.message);
-      throw new Error("API call failed.");
-    }
-  }
-
-  async function getPlaceDetailsFromGoogle({ placeId }) {
-    "use server";
-    try {
-      const response = await fetch(
-        `https://places.googleapis.com/v1/places/${placeId}`,
-
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            "X-Goog-Api-Key": process.env.GOOGLE_PLACES_API_KEY,
-            "X-Goog-FieldMask":
-              "id,types,formattedAddress,location,rating,googleMapsUri,websiteUri,userRatingCount,displayName.text,editorialSummary,userRatingCount,allowsDogs,priceLevel,servesBrunch,servesLunch,servesDinner,servesVegetarianFood",
-            // "X-Goog-FieldMask": "*",
-            // accessibilityOptions
-            // currentOpeningHours
-            // regularOpeningHours
-            // reviews
-          },
+    const response = await fetch(
+      `https://api.mapbox.com/search/searchbox/v1/retrieve/${destination}?access_token=${process.env.MAPBOX_API_KEY}&session_token=${sessionToken}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
         },
-      );
-      if (!response.ok) {
-        throw new Error(
-          `Google Places Details API error: ${response.statusText}`,
-        );
-      }
-      const placeDetails = await response.json();
-      return placeDetails;
-    } catch (error) {
-      console.log("Error:", error.message, error);
-      throw new Error("API call failed.");
-    }
-  }
+      },
+    );
 
-  let googlePlacesResponseString = await getPlacesFromGoogle({
-    destination,
-    preferences,
-  });
+    const data = await response.json();
+    const latitude = data.features[0].properties.coordinates.latitude;
 
-  const placeDetailsPromises = googlePlacesResponseString.map((place) =>
-    getPlaceDetailsFromGoogle({ placeId: place.id }),
-  );
+    const longitude = data.features[0].properties.coordinates.longitude;
+    const name = data.features[0].properties.name;
+    const fullName =
+      name + data.features[0].properties.place_formatted
+        ? `, ${data.features[0].properties.place_formatted}`
+        : "";
 
-  const placeDetailsArray = await Promise.all(placeDetailsPromises);
-
-  for (let i = 0; i < googlePlacesResponseString.length; i++) {
-    googlePlacesResponseString[i] = {
-      ...googlePlacesResponseString[i],
-      ...placeDetailsArray[i],
+    return {
+      latitude,
+      longitude,
+      name,
+      fullName,
     };
   }
+
+  async function fetchTripAdvisorLocationIds(
+    query: string,
+    latitude: number | null,
+    longitude: number | null,
+    category: string | null,
+  ) {
+    try {
+      const url = new URL(
+        `https://api.content.tripadvisor.com/api/v1/location/search?key=${process.env.TRIPADVISOR_API_KEY}&searchQuery=${query}&language=en`,
+      );
+      if (latitude && longitude) {
+        url.searchParams.append("latLong", `${latitude},${longitude}`);
+      }
+      if (category) {
+        url.searchParams.append("category", category);
+      }
+
+      // Make a request to the TripAdvisor API
+      const response = await fetch(url, {
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+          "Accept-Encoding": "gzip",
+        },
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const result = await response.json();
+      const data = result.data;
+      const locations = data.map((location: any) => {
+        return {
+          location_id: location.location_id,
+        };
+      });
+      return locations;
+    } catch (error) {
+      console.log("Error: ", error);
+      throw new Error("Internal server error");
+    }
+  }
+
+  async function fetchTripAdvisorLocationDetails(locationId: any) {
+    try {
+      // Get details for each location
+      const url = new URL(
+        `https://api.content.tripadvisor.com/api/v1/location/${locationId}/details?language=en&key=${process.env.TRIPADVISOR_API_KEY}`,
+      );
+      const locationResponse = await fetch(url, {
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+          "Accept-Encoding": "gzip",
+        },
+      });
+      const locationResult = await locationResponse.json();
+      if (!locationResponse.ok) {
+        throw new Error(`HTTP error! status: ${locationResponse.status}`);
+      }
+      return locationResult;
+    } catch (error) {
+      console.log("Error: ", error);
+      throw new Error("Internal server error");
+    }
+  }
+
+  async function fetchTripAdvisorLocationPhotos(locationId: string) {
+    try {
+      const url = new URL(
+        `https://api.content.tripadvisor.com/api/v1/location/${locationId}/photos?key=${process.env.TRIPADVISOR_API_KEY}&language=en`,
+      );
+      const locationPhotosResponse = await fetch(url, {
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+          "Accept-Encoding": "gzip",
+        },
+      });
+      if (!locationPhotosResponse.ok) {
+        throw new Error(`HTTP error! status: ${locationPhotosResponse.status}`);
+      }
+      const locationPhotosResult = await locationPhotosResponse.json();
+      const data = locationPhotosResult.data;
+      let photoUrls = [];
+      for (let item of data) {
+        let originalImage = item.images.original;
+        photoUrls.push(originalImage.url);
+      }
+      return photoUrls;
+    } catch (error) {
+      // this line causes issues
+      return { error: "Internal server error" };
+    }
+  }
+
+  async function fetchTripAdvisorLocationDetailsAndPhotos(locationId: string) {
+    try {
+      // Fetch details and photos separately to handle errors individually
+      const locationDetailsPromise =
+        fetchTripAdvisorLocationDetails(locationId);
+      const locationPhotosPromise = fetchTripAdvisorLocationPhotos(locationId);
+
+      const locationDetails = await locationDetailsPromise.catch((error) => {
+        console.error("Error fetching location details: ", error);
+        return null; // or some default value
+      });
+
+      const locationPhotos = await locationPhotosPromise.catch((error) => {
+        console.error("Error fetching location photos: ", error);
+        return []; // or some default value
+      });
+
+      return {
+        ...locationDetails,
+        photoUrls: locationPhotos,
+      };
+    } catch (error) {
+      console.error("Error: ", error);
+      throw new Error("Internal server error");
+    }
+  }
+
+  async function fetchTripAdvisorLocations(preference: string | undefined) {
+    const query = `Places to visit in ${fullName}${preference ? ` for ${preference}` : ""}`;
+    const categories = ["attractions", "restaurants", "geos"];
+    // get the location Ids
+    let locationIds = [];
+    for (let category of categories) {
+      const ids = await fetchTripAdvisorLocationIds(
+        query,
+        latitude,
+        longitude,
+        category,
+      );
+      locationIds = locationIds.concat(ids);
+    }
+
+    // Create a promise for each location to fetch its details and photos in parallel
+    const locationPromises = locationIds.map((locationId: any) =>
+      fetchTripAdvisorLocationDetailsAndPhotos(locationId.location_id),
+    );
+
+    // Wait for all promises to resolve
+    const locations = await Promise.all(locationPromises);
+    return locations;
+  }
+  // for each preference, get the locations
+  async function fetchAllTripAdvisorLocations(
+    preferences: string[] | undefined,
+  ) {
+    if (preferences.length === 0) {
+      let tripAdvisorLocations = await fetchTripAdvisorLocations(undefined);
+      return tripAdvisorLocations;
+    } else {
+      let tripAdvisorLocations = await Promise.all(
+        preferences.map((preference) => fetchTripAdvisorLocations(preference)),
+      );
+      return tripAdvisorLocations;
+    }
+  }
+
+  let tripAdvisorLocations = await fetchAllTripAdvisorLocations(preferences);
+
+  // map the locations to the required format
+  tripAdvisorLocations = tripAdvisorLocations.flat().map((location: any) => {
+    return {
+      location_id: location.location_id,
+      name: location.name,
+      description: location.description,
+      tripAdvisorUrl: location.web_url,
+      // address_obj: location.address_obj,
+      latitude: location.latitude,
+      longitude: location.longitude,
+      // timezone: location.timezone,
+      // email: location.email,
+      // phone: location.phone,
+      websiteUrl: location.website,
+      // ranking_data: location.ranking_data,
+      rating: location.rating,
+      reviewCount: location.num_reviews,
+      // review_rating_count: location.review_rating_count,
+      // photo_count: location.photo_count,
+      // see_all_photos: location.see_all_photos,
+      priceLevel: location.price_level,
+      // hours: location.hours,
+      photoUrls: location.photoUrls,
+    };
+  });
+
+  console.log("TripAdvisor locations: ", tripAdvisorLocations);
 
   const result = await streamObject({
     model: openai("gpt-4o-mini", {
@@ -191,25 +327,30 @@ export async function POST(request: NextRequest) {
     mode: "json",
     maxRetries: 0,
     system: `
-        Plan a trip to ${destination} for ${duration} days. Include a variety of locations that match the following preferences: ${preferences.join(
+        Plan a trip to ${fullName} for ${duration} days. Include a variety of locations that match the following preferences: ${preferences.join(
           ", ",
         )}
-        Select appropriate locations by matching the types to the preferences.
-        Use some of the following locations from Google: 
+        Select appropriate locations by matching the type of location to the preferences.
+        Do not include locations that do not match the preferences.
+        Use some of the following locations from TripAdvisor:
         """
-        ${JSON.stringify(googlePlacesResponseString)}
-        """
+        ${JSON.stringify(tripAdvisorLocations)}
+        """ 
+        Only use locations provided by TripAdvisor.
         Describe each location in detail using 2 sentences.
         Do not include the rating in the description.
         Do not include the location in the description.
         Do not use the same location more than once.
         Group locations that are located closely together on the same day.
         Only return 1 location per time of day. For example if the duration is 3 days, only return 1 morning, 1 afternoon, and 1 evening location per day.
+        Do not repeat locations.
+        Make sure the id you return matches the id from TripAdvisor for that location.
+        Try to provide as many photoUrls as possible for each location.
         Provide the itinerary in the following format as valid JSON:
         """
         [
           {
-            id: "unique identifier",
+            id: "unique identifier for the location matching the id from TripAdvisor",
             "coordinates": {
               "latitude": 0.0,
               "longitude": 0.0
@@ -218,16 +359,16 @@ export async function POST(request: NextRequest) {
             "timeOfDay": "morning, afternoon, or evening",
             "title": "Location Name",
             "rating": "Rating of the location between 1 and 5 to 1 decimal place",
-            "reviewCount": "Number of reviews (the userRatingCount) from Google",
-            "googleMapsUri": "Google Maps URL (googleMapsUri) and not the websiteUri",
-            "priceLevel": "$, $$, $$$, or $$$$" (the priceLevel field from Google),
+            "reviewCount": "Number of reviews for the location from TripAdvisor",
+            "tripadvisorUrl": "The URL of the location on TripAdvisor",
+            "websiteUrl": "The URL of the location's website, if available",
+            "priceLevel": "$, $$, $$$, or $$$$" (the priceLevel field from TripAdvisor),
             "description": "Description of the location",
-            "photoReferences": [],
+            "photoUrls": ["URLs of the photos of the location from TripAdvisor"],
             "isLoaded": true,
           }
         ]
         """
-        Do not repeat locations.
         `,
     prompt: "Generate the trip itinerary",
     schema: locationsSchema,

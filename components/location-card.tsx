@@ -1,12 +1,12 @@
 import { useState } from "react";
 
 import Image from "next/image";
-import { AnimatePresence } from "framer-motion";
 
 import Button from "@/components/button";
 import BackIcon from "@/images/icons/back-icon";
 import { LocationProps } from "@/components/trip-content";
 import ImageModal from "./image-modal";
+import LocationImages from "./location-images";
 
 interface LocationCardProps {
   location: LocationProps;
@@ -59,25 +59,35 @@ export default function LocationCard({
                     height={16}
                     priority
                   />
-                  <p className="w-auto cursor-pointer text-nowrap text-xs text-gray-800">
+                  <p className="w-auto text-nowrap text-xs text-gray-800">
                     ({new Intl.NumberFormat().format(location?.reviewCount)})
                   </p>
                 </div>
-                <p className="w-auto cursor-pointer text-nowrap text-right text-xs font-semibold">
+                <p className="w-auto text-nowrap text-right text-xs font-semibold">
                   {location?.priceLevel}
                 </p>
               </div>
             )}
           </div>
-          <div className="flex w-full px-4 md:px-8">
-            {location?.googleMapsUri && (
+          <div className="flex w-full gap-4 px-4 md:px-8">
+            {location?.websiteUrl && (
               <a
-                href={location?.googleMapsUri}
+                href={location?.websiteUrl}
                 target="_blank"
                 rel="noreferrer"
                 className="cursor-pointer text-xs font-semibold text-green-500 hover:text-green-400 active:text-green-300"
               >
-                View on Google Maps
+                View website
+              </a>
+            )}
+            {location?.tripadvisorUrl && (
+              <a
+                href={location?.tripadvisorUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="cursor-pointer text-xs font-semibold text-green-500 hover:text-green-400 active:text-green-300"
+              >
+                View on TripAdvisor
               </a>
             )}
           </div>
@@ -93,35 +103,11 @@ export default function LocationCard({
                 <div className="h-5 w-3/4 animate-pulse rounded-md bg-gray-300" />
               </div>
             )}
-            <div className="flex w-full snap-x snap-mandatory scroll-pl-4 gap-4 overflow-x-scroll px-4 md:grid md:snap-y md:grid-cols-2 md:overflow-y-scroll md:px-8">
-              {location?.isLoaded &&
-              location?.photoReferences &&
-              location.photoReferences?.length > 0 ? (
-                location.photoReferences.map((photoUri) => (
-                  <div
-                    className="bg-gray-30 relative h-32 w-full min-w-32 snap-start overflow-hidden rounded-xl"
-                    key={photoUri}
-                  >
-                    <img
-                      key={photoUri}
-                      src={photoUri}
-                      alt="Location image"
-                      className="h-full w-full min-w-[120px] cursor-pointer rounded-xl bg-gray-300 object-cover"
-                      onClick={() => openModal(photoUri)}
-                    />
-                  </div>
-                ))
-              ) : (
-                <>
-                  {Array.from({ length: 4 }).map((_, i) => (
-                    <div
-                      key={i}
-                      className="h-32 w-full min-w-[128px] animate-pulse snap-start overflow-hidden rounded-xl bg-gray-300 object-cover"
-                    />
-                  ))}
-                </>
-              )}
-            </div>
+            <LocationImages
+              isLoaded={location?.isLoaded}
+              photoUrls={location?.photoUrls}
+              openModal={openModal}
+            />
           </div>
         </div>
         <footer className="z-10 grid w-full grid-cols-[0fr_1fr] gap-4 bg-white px-4 pb-3 pt-2 md:px-8 md:py-4">
@@ -134,10 +120,8 @@ export default function LocationCard({
       <ImageModal
         isModalOpen={isImageModalOpen}
         setIsModalOpen={setIsImageModalOpen}
-        photoUris={location?.photoReferences}
-        selectedPhotoIndex={location?.photoReferences?.indexOf(
-          selectedPhotoUri,
-        )}
+        photoUrls={location?.photoUrls}
+        selectedPhotoIndex={location?.photoUrls?.indexOf(selectedPhotoUri)}
       ></ImageModal>
     </>
   );

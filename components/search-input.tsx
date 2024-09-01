@@ -16,9 +16,10 @@ interface SearchInputProps {
 }
 
 export type Destination = {
-  place: string;
-  placeId: string;
-  text: string;
+  name: string;
+  fullName: string;
+  mapboxId: string;
+  address: string;
 };
 
 export default function SearchInput({
@@ -30,10 +31,10 @@ export default function SearchInput({
   error,
 }: SearchInputProps) {
   const [selectedValue, setSelectedValue] = useState<string>(
-    destinationValue?.text || "",
+    destinationValue?.fullName || "",
   );
   const [queryValue, setQueryValue] = useState<string>(
-    destinationValue?.text || "",
+    destinationValue?.fullName || "",
   );
   const [suggestions, setSuggestions] = useState<Destination[]>(null);
   const [showSuggestions, setShowSuggestions] = useState(false);
@@ -72,7 +73,6 @@ export default function SearchInput({
       `/api/places-autocomplete?placeString=${input}`,
     );
     const data = await response.json();
-    console.log("data: ", data);
     if (data.length === 0) {
       setSuggestions([]);
       return;
@@ -98,9 +98,9 @@ export default function SearchInput({
 
   function handleOptionClick(suggestion: Destination) {
     setDestinationValue(suggestion);
-    setSelectedValue(suggestion.text);
+    setSelectedValue(suggestion.fullName);
 
-    setQueryValue(suggestion.text);
+    setQueryValue(suggestion.fullName);
     setIsSuggestionSelected(true);
     setShowSuggestions(false);
 
@@ -113,8 +113,6 @@ export default function SearchInput({
     setQueryValue(queryValue);
     if (queryValue.length > 0) {
       setShowSuggestions(true);
-      console.log("queryValue: ", queryValue);
-      console.log("suggestions: ", suggestions);
       if (suggestions?.length === 0 || !suggestions) {
         console.log("searching for destinations...");
         searchForDestinations(queryValue);
@@ -227,7 +225,7 @@ export default function SearchInput({
                     }
                     tabIndex={-1}
                   >
-                    {suggestion.text}
+                    {suggestion.fullName}
                   </div>
                 ))
               ) : (

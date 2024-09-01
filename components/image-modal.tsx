@@ -10,14 +10,14 @@ import CloseIcon from "@/images/icons/close-icon";
 interface ImageModalProps {
   isModalOpen: boolean;
   setIsModalOpen: (isOpen: boolean) => void;
-  photoUris: string[];
+  photoUrls: string[];
   selectedPhotoIndex: number;
 }
 
 export default function ImageModal({
   isModalOpen,
   setIsModalOpen,
-  photoUris,
+  photoUrls,
   selectedPhotoIndex,
 }: ImageModalProps) {
   const [currentIndex, setCurrentIndex] = useState(selectedPhotoIndex);
@@ -62,11 +62,11 @@ export default function ImageModal({
   }
 
   function handleBackClick() {
-    setCurrentIndex((prev) => (prev === 0 ? photoUris.length - 1 : prev - 1));
+    setCurrentIndex((prev) => (prev === 0 ? photoUrls.length - 1 : prev - 1));
   }
 
   function handleNextClick() {
-    setCurrentIndex((prev) => (prev === photoUris.length - 1 ? 0 : prev + 1));
+    setCurrentIndex((prev) => (prev === photoUrls.length - 1 ? 0 : prev + 1));
   }
 
   return (
@@ -114,7 +114,7 @@ export default function ImageModal({
               className="flex h-full w-full snap-x snap-mandatory flex-row overflow-x-scroll bg-black"
               onScroll={handleScroll}
             >
-              {photoUris.map((photoUri, index) => (
+              {photoUrls.map((photoUri, index) => (
                 <img
                   key={photoUri}
                   src={photoUri}

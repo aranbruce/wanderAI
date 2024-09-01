@@ -1,14 +1,14 @@
 import { NextRequest } from "next/server";
-import { text } from "stream/consumers";
 
 export async function GET(request: NextRequest) {
   const url = new URL(request.url);
   const searchParams = new URLSearchParams(url.searchParams);
   const placeString = searchParams.get("placeString");
 
-  console.log("placeString: ", placeString);
+  const sessionToken = Math.random().toString(36).substring(2, 15);
+  const types = ["place", "locality", "neighborhood"];
 
-  if (!process.env.GOOGLE_PLACES_API_KEY) {
+  if (!process.env.MAPBOX_API_KEY) {
     return new Response(JSON.stringify({ error: "API key is missing." }), {
       status: 500,
     });
@@ -20,37 +20,28 @@ export async function GET(request: NextRequest) {
     });
   }
 
+  console.log(
+    "url: ",
+    `https://api.mapbox.com/search/searchbox/v1/suggest?q=${placeString}&access_token=${process.env.MAPBOX_API_KEY}&language=en&limit=5&session_token=${sessionToken}&types=${types.join(
+      ",",
+    )}`,
+  );
+
   try {
     const response = await fetch(
-      `https://places.googleapis.com/v1/places:autocomplete?fields=*`,
+      `https://api.mapbox.com/search/searchbox/v1/suggest?q=${placeString}&access_token=${process.env.MAPBOX_API_KEY}&language=en&limit=5&session_token=${sessionToken}&types=${types.join(
+        ",",
+      )}`,
       {
-        method: "POST",
+        method: "GET",
         headers: {
-          "Content-Type": "application/json",
-          "X-Goog-Api-Key": process.env.GOOGLE_PLACES_API_KEY,
-          // "X-Goog-FieldMask": "placeId",
+          "Content-Type": "application",
         },
-        body: JSON.stringify({
-          input: placeString,
-          includedPrimaryTypes: [
-            // "administrative_area_level_1",
-            // "administrative_area_level_2",
-            // "administrative_area_level_3",
-            "administrative_area_level_4",
-            "administrative_area_level_5",
-            "administrative_area_level_6",
-            "administrative_area_level_7",
-            "locality",
-          ],
-          languageCode: "en",
-        }),
       },
     );
 
     if (!response.ok) {
-      throw new Error(
-        `Google Places Details API error: ${response.statusText}`,
-      );
+      throw new Error(`Mapbox Suggest API error: ${response.statusText}`);
     }
 
     const data = await response.json();
@@ -61,9 +52,10 @@ export async function GET(request: NextRequest) {
     }
     const suggestions = data.suggestions.map((prediction) => {
       return {
-        place: prediction.placePrediction.place,
-        placeId: prediction.placePrediction.placeId,
-        text: prediction.placePrediction.text.text,
+        name: prediction.name,
+        fullName: `${prediction.name}${prediction.place_formatted ? `, ${prediction.place_formatted}` : ""}`,
+        mapboxId: prediction.mapbox_id,
+        address: prediction.full_address,
       };
     });
     return new Response(JSON.stringify(suggestions));

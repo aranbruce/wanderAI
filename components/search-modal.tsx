@@ -68,7 +68,7 @@ export default function SearchModal({
       const preferenceString = preferences
         .map((preference) => `preferences=${preference}`)
         .join("&");
-      const url = `/trip?destination=${destination.text}&duration=${duration}${preferenceString ? "&" + preferenceString : ""}`;
+      const url = `/trip?destination=${destination.mapboxId}&duration=${duration}${preferenceString ? "&" + preferenceString : ""}`;
       router.push(url);
     }
   }
