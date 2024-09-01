@@ -20,7 +20,7 @@ type TripAdvisorLocation = {
     city: string;
     state: string;
     country: string;
-    postalcode: string;
+    postalCode: string;
     address_string: string;
   };
   ancestors: any[];
@@ -42,7 +42,7 @@ type TripAdvisorLocation = {
   rating_image_url: string;
   num_reviews: number;
   review_rating_count: object;
-  subratings: object;
+  subRatings: object;
   photo_count: number;
   see_all_photos: string;
   price_level?: "$" | "$$" | "$$$" | "$$$$";
@@ -76,10 +76,6 @@ export async function POST(request: NextRequest) {
   console.log("Duration: ", duration);
   console.log("Preferences: ", preferences);
 
-  const destinationDetails = await fetchDestinationDetails();
-
-  const { latitude, longitude, name, fullName } = destinationDetails;
-
   if (duration > 2) {
     duration = 2;
   }
@@ -88,44 +84,52 @@ export async function POST(request: NextRequest) {
   const key = `trip:${destination}:${duration}:${preferences.join(",")}`;
 
   // Check for cached result
-  // const cached = await kv.get(key);
-  // if (cached != null) {
-  //   return new Response(JSON.stringify(cached), {
-  //     status: 200,
-  //     headers: { "Content-Type": "text/plain" },
-  //   });
-  // }
+  const cached = await kv.get(key);
+  if (cached != null) {
+    return new Response(JSON.stringify(cached), {
+      status: 200,
+      headers: { "Content-Type": "text/plain" },
+    });
+  }
+
+  const destinationDetails = await fetchDestinationDetails();
+
+  const { latitude, longitude, name, fullName } = destinationDetails;
 
   async function fetchDestinationDetails() {
     // get latitude and longitude from the destination
     const sessionToken = Math.random().toString(36).substring(2, 15);
-
-    const response = await fetch(
-      `https://api.mapbox.com/search/searchbox/v1/retrieve/${destination}?access_token=${process.env.MAPBOX_API_KEY}&session_token=${sessionToken}`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
+    try {
+      const response = await fetch(
+        `https://api.mapbox.com/search/searchbox/v1/retrieve/${destination}?access_token=${process.env.MAPBOX_API_KEY}&session_token=${sessionToken}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
         },
-      },
-    );
+      );
 
-    const data = await response.json();
-    const latitude = data.features[0].properties.coordinates.latitude;
+      const data = await response.json();
+      const latitude = data.features[0].properties.coordinates.latitude;
 
-    const longitude = data.features[0].properties.coordinates.longitude;
-    const name = data.features[0].properties.name;
-    const fullName =
-      name + data.features[0].properties.place_formatted
-        ? `, ${data.features[0].properties.place_formatted}`
-        : "";
+      const longitude = data.features[0].properties.coordinates.longitude;
+      const name = data.features[0].properties.name;
+      const fullName =
+        name + data.features[0].properties.place_formatted
+          ? `, ${data.features[0].properties.place_formatted}`
+          : "";
 
-    return {
-      latitude,
-      longitude,
-      name,
-      fullName,
-    };
+      return {
+        latitude,
+        longitude,
+        name,
+        fullName,
+      };
+    } catch (error) {
+      console.log("Error: ", error);
+      throw new Error("Failed to fetch destination name and coordinates");
+    }
   }
 
   async function fetchTripAdvisorLocationIds(
@@ -166,7 +170,7 @@ export async function POST(request: NextRequest) {
       return locations;
     } catch (error) {
       console.log("Error: ", error);
-      throw new Error("Internal server error");
+      throw new Error("Failed to fetch location IDs");
     }
   }
 
@@ -190,7 +194,7 @@ export async function POST(request: NextRequest) {
       return locationResult;
     } catch (error) {
       console.log("Error: ", error);
-      throw new Error("Internal server error");
+      throw new Error("Failed to fetch location details");
     }
   }
 
@@ -219,7 +223,8 @@ export async function POST(request: NextRequest) {
       return photoUrls;
     } catch (error) {
       // this line causes issues
-      return { error: "Internal server error" };
+      console.log("Error: ", error);
+      throw new Error("Failed to fetch location photos");
     }
   }
 
@@ -246,7 +251,7 @@ export async function POST(request: NextRequest) {
       };
     } catch (error) {
       console.error("Error: ", error);
-      throw new Error("Internal server error");
+      throw new Error("Failed to fetch location details and photos");
     }
   }
 
@@ -278,55 +283,64 @@ export async function POST(request: NextRequest) {
   async function fetchAllTripAdvisorLocations(
     preferences: string[] | undefined,
   ) {
-    if (preferences.length === 0) {
-      let tripAdvisorLocations = await fetchTripAdvisorLocations(undefined);
-      return tripAdvisorLocations;
-    } else {
-      let tripAdvisorLocations = await Promise.all(
-        preferences.map((preference) => fetchTripAdvisorLocations(preference)),
-      );
-      return tripAdvisorLocations;
+    try {
+      if (preferences.length === 0) {
+        let tripAdvisorLocations = await fetchTripAdvisorLocations(undefined);
+        return tripAdvisorLocations;
+      } else {
+        let tripAdvisorLocations = await Promise.all(
+          preferences.map((preference) =>
+            fetchTripAdvisorLocations(preference),
+          ),
+        );
+        return tripAdvisorLocations;
+      }
+    } catch (error) {
+      console.error("Error: ", error);
+      throw new Error("Failed to fetch locations");
     }
   }
+  try {
+    let tripAdvisorLocations = await fetchAllTripAdvisorLocations(preferences);
 
-  let tripAdvisorLocations = await fetchAllTripAdvisorLocations(preferences);
+    // map the locations to the required format
+    tripAdvisorLocations = tripAdvisorLocations
+      .flat()
+      .map((location: TripAdvisorLocation) => {
+        return {
+          location_id: location.location_id,
+          name: location.name,
+          description: location.description,
+          tripAdvisorUrl: location.web_url,
+          // address_obj: location.address_obj,
+          latitude: location.latitude,
+          longitude: location.longitude,
+          // timezone: location.timezone,
+          // email: location.email,
+          // phone: location.phone,
+          websiteUrl: location.website,
+          // ranking_data: location.ranking_data,
+          rating: location.rating,
+          reviewCount: location.num_reviews,
+          // review_rating_count: location.review_rating_count,
+          // photo_count: location.photo_count,
+          // see_all_photos: location.see_all_photos,
+          priceLevel: location.price_level,
+          // hours: location.hours,
+          photoUrls: location.photoUrls,
+        };
+      });
 
-  // map the locations to the required format
-  tripAdvisorLocations = tripAdvisorLocations.flat().map((location: any) => {
-    return {
-      location_id: location.location_id,
-      name: location.name,
-      description: location.description,
-      tripAdvisorUrl: location.web_url,
-      // address_obj: location.address_obj,
-      latitude: location.latitude,
-      longitude: location.longitude,
-      // timezone: location.timezone,
-      // email: location.email,
-      // phone: location.phone,
-      websiteUrl: location.website,
-      // ranking_data: location.ranking_data,
-      rating: location.rating,
-      reviewCount: location.num_reviews,
-      // review_rating_count: location.review_rating_count,
-      // photo_count: location.photo_count,
-      // see_all_photos: location.see_all_photos,
-      priceLevel: location.price_level,
-      // hours: location.hours,
-      photoUrls: location.photoUrls,
-    };
-  });
+    console.log("TripAdvisor locations: ", tripAdvisorLocations);
 
-  console.log("TripAdvisor locations: ", tripAdvisorLocations);
+    const result = await streamObject({
+      model: openai("gpt-4o-mini", {
+        structuredOutputs: true,
+      }),
 
-  const result = await streamObject({
-    model: openai("gpt-4o-mini", {
-      structuredOutputs: true,
-    }),
-
-    mode: "json",
-    maxRetries: 0,
-    system: `
+      mode: "json",
+      maxRetries: 0,
+      system: `
         Plan a trip to ${fullName} for ${duration} days. Include a variety of locations that match the following preferences: ${preferences.join(
           ", ",
         )}
@@ -370,13 +384,17 @@ export async function POST(request: NextRequest) {
         ]
         """
         `,
-    prompt: "Generate the trip itinerary",
-    schema: locationsSchema,
-    async onFinish({ object }) {
-      await kv.set(key, object);
-      await kv.expire(key, 60 * 60 * 24 * 7); // 7 days
-    },
-  });
+      prompt: "Generate the trip itinerary",
+      schema: locationsSchema,
+      async onFinish({ object }) {
+        await kv.set(key, object);
+        await kv.expire(key, 60 * 60 * 24 * 7); // 7 days
+      },
+    });
 
-  return result.toTextStreamResponse();
+    return result.toTextStreamResponse();
+  } catch (error) {
+    console.error("Error: ", error);
+    return NextResponse.json("Failed to fetch locations", { status: 500 });
+  }
 }
