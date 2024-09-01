@@ -20,7 +20,8 @@ export interface LocationProps {
   title?: string;
   rating?: number;
   reviewCount?: number;
-  googleMapsUri?: string;
+  tripadvisorUrl?: string;
+  websiteUrl?: string;
   priceLevel?: "$" | "$$" | "$$$" | "$$$$";
   description?: string;
   coordinates?: {
@@ -28,7 +29,7 @@ export interface LocationProps {
     longitude?: number;
   };
 
-  photoReferences?: string[];
+  photoUrls?: string[];
   isLoaded?: boolean;
 }
 
@@ -45,7 +46,7 @@ export default function TripContent() {
     api: "/api/trip",
     schema: locationsSchema,
     onFinish: (object) => {
-      handleItineraryResponse(object.object.locations);
+      setTripItinerary(object.object.locations);
     },
     onError: (error) => {
       throw new Error(error.message);
@@ -57,31 +58,6 @@ export default function TripContent() {
     submit({ destination, duration, preferences });
   }, []);
 
-  async function getPhotos(placeId: string) {
-    const response = await fetch(`/api/photos?placeId=${placeId}`);
-    if (!response.ok) {
-      throw new Error(`Failed to fetch photos: ${response.statusText}`);
-    }
-    return response.json();
-  }
-
-  async function handleItineraryResponse(locations: LocationProps[]) {
-    const tripItineraryWithPhotos = await Promise.all(
-      locations.map(async (location: LocationProps) => {
-        try {
-          const photoReferences = await getPhotos(location.id);
-          return { ...location, photoReferences };
-        } catch (error) {
-          console.error(
-            `Failed to fetch photos for location ${location.id}:`,
-            error,
-          );
-          return { ...location, photoReferences: [] };
-        }
-      }),
-    );
-    setTripItinerary(tripItineraryWithPhotos);
-  }
   function increaseTimeOfDay() {
     if (
       currentItineraryItemIndex === duration * 3 - 1 ||
