@@ -47,7 +47,6 @@ export default function TripContent() {
     schema: locationsSchema,
     onFinish: (object) => {
       setTripItinerary(object.object.locations);
-      console.log("Trip itinerary: ", object.object.locations);
     },
     onError: (error) => {
       throw new Error(error.message);

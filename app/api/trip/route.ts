@@ -88,13 +88,13 @@ export async function POST(request: NextRequest) {
   const key = `trip:${destination}:${duration}:${preferences.join(",")}`;
 
   // Check for cached result
-  const cached = await kv.get(key);
-  if (cached != null) {
-    return new Response(JSON.stringify(cached), {
-      status: 200,
-      headers: { "Content-Type": "text/plain" },
-    });
-  }
+  // const cached = await kv.get(key);
+  // if (cached != null) {
+  //   return new Response(JSON.stringify(cached), {
+  //     status: 200,
+  //     headers: { "Content-Type": "text/plain" },
+  //   });
+  // }
 
   async function fetchDestinationDetails() {
     // get latitude and longitude from the destination
