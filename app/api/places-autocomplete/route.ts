@@ -9,7 +9,7 @@ export async function GET(request: NextRequest) {
   const searchParams = new URLSearchParams(url.searchParams);
   const placeString = searchParams.get("placeString");
 
-  const sessionToken = sessionId;
+  const sessionToken = sessionId || Math.random().toString(36).substring(2);
   const types = ["place", "locality", "neighborhood"];
 
   if (!process.env.MAPBOX_API_KEY) {

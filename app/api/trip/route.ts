@@ -102,7 +102,7 @@ export async function POST(request: NextRequest) {
 
   async function fetchDestinationDetails() {
     // get latitude and longitude from the destination
-    const sessionToken = sessionId;
+    const sessionToken = sessionId || Math.random().toString(36).substring(2);
     try {
       const response = await fetch(
         `https://api.mapbox.com/search/searchbox/v1/retrieve/${destination}?access_token=${process.env.MAPBOX_API_KEY}&session_token=${sessionToken}`,
