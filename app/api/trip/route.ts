@@ -1,6 +1,7 @@
 import { openai } from "@ai-sdk/openai";
 import { streamObject } from "ai";
 import { NextRequest, NextResponse } from "next/server";
+import { cookies } from "next/headers";
 import { kv } from "@vercel/kv";
 
 import { locationsSchema, tripSchema } from "./schema";
@@ -70,6 +71,9 @@ export async function POST(request: NextRequest) {
     );
   }
 
+  const cookieStore = cookies();
+  const sessionId = cookieStore.get("sessionid").value;
+
   let { destination, duration, preferences } = validationResult.data;
   console.log("Generating trip itinerary...");
   console.log("Destination: ", destination);
@@ -98,7 +102,7 @@ export async function POST(request: NextRequest) {
 
   async function fetchDestinationDetails() {
     // get latitude and longitude from the destination
-    const sessionToken = Math.random().toString(36).substring(2, 15);
+    const sessionToken = sessionId || Math.random().toString(36).substring(2);
     try {
       const response = await fetch(
         `https://api.mapbox.com/search/searchbox/v1/retrieve/${destination}?access_token=${process.env.MAPBOX_API_KEY}&session_token=${sessionToken}`,
@@ -331,7 +335,7 @@ export async function POST(request: NextRequest) {
         };
       });
 
-    console.log("TripAdvisor locations: ", tripAdvisorLocations);
+    // console.log("TripAdvisor locations: ", tripAdvisorLocations);
 
     const result = await streamObject({
       model: openai("gpt-4o-mini", {

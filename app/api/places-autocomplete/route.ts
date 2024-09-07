@@ -1,11 +1,15 @@
 import { NextRequest } from "next/server";
+import { cookies } from "next/headers";
 
 export async function GET(request: NextRequest) {
+  const cookieStore = cookies();
+  const sessionId = cookieStore.get("sessionid").value;
+  console.log("sessionId: ", sessionId);
   const url = new URL(request.url);
   const searchParams = new URLSearchParams(url.searchParams);
   const placeString = searchParams.get("placeString");
 
-  const sessionToken = Math.random().toString(36).substring(2, 15);
+  const sessionToken = sessionId || Math.random().toString(36).substring(2);
   const types = ["place", "locality", "neighborhood"];
 
   if (!process.env.MAPBOX_API_KEY) {
@@ -19,13 +23,6 @@ export async function GET(request: NextRequest) {
       status: 400,
     });
   }
-
-  console.log(
-    "url: ",
-    `https://api.mapbox.com/search/searchbox/v1/suggest?q=${placeString}&access_token=${process.env.MAPBOX_API_KEY}&language=en&limit=5&session_token=${sessionToken}&types=${types.join(
-      ",",
-    )}`,
-  );
 
   try {
     const response = await fetch(
