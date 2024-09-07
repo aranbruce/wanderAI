@@ -3,13 +3,16 @@ import { cookies } from "next/headers";
 
 export async function GET(request: NextRequest) {
   const cookieStore = cookies();
-  const sessionId = cookieStore.get("sessionid").value;
-  console.log("sessionId: ", sessionId);
+  const sessionCookie = cookieStore.get("sessionid");
+  const sessionId = sessionCookie
+    ? sessionCookie.value
+    : Math.random().toString(36).substring(2);
+  const sessionToken = sessionId;
+
   const url = new URL(request.url);
   const searchParams = new URLSearchParams(url.searchParams);
   const placeString = searchParams.get("placeString");
 
-  const sessionToken = sessionId || Math.random().toString(36).substring(2);
   const types = ["place", "locality", "neighborhood"];
 
   if (!process.env.MAPBOX_API_KEY) {
