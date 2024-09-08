@@ -56,7 +56,7 @@ export default function SearchModal({
     setIsModalOpen(false);
   }
 
-  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const { destinationError, durationError }: ValidationErrors = validateForm(
       destination,
@@ -65,12 +65,30 @@ export default function SearchModal({
     setDestinationError(destinationError);
     setDurationError(durationError);
     if (!destinationError && !durationError) {
-      const preferenceString = preferences
-        .map((preference) => `preferences=${preference}`)
-        .join("&");
-      const url = `/trip?destination=${destination.mapboxId}&duration=${duration}${preferenceString ? "&" + preferenceString : ""}`;
+      const result = await createTrip(destination, duration, preferences);
+      const tripId = result.tripId;
+      const url = `/trips/${encodeURIComponent(tripId)}`;
+      console.log(url);
       router.push(url);
     }
+  }
+
+  async function createTrip(
+    destination: Destination,
+    duration: string,
+    preferences: string[],
+  ) {
+    const result = await fetch("/api/trips/new", {
+      method: "POST",
+      body: JSON.stringify({
+        destination,
+        duration: Number(duration),
+        preferences,
+      }),
+    });
+    const data = await result.json();
+    console.log(data);
+    return data;
   }
 
   const animation = isLargeScreen

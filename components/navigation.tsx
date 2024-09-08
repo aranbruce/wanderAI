@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import Button from "@/components/button";
-import useScrollHandler from "@/hooks/useScrollHandler";
 import Logo from "@/images/logo";
 
 export default function Navigation() {

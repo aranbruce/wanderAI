@@ -191,7 +191,7 @@ export default function SearchInput({
                 onBlur={() => handleBlur()}
                 onKeyDown={(e) => handleInputKeyDown(e)}
                 autoComplete="off"
-                className={`${error ? "border-red-300" : "border-gray-200"} text-md flex w-full items-center justify-center gap-1 rounded-full border bg-white px-4 py-3 pl-9 font-medium shadow-light outline-none transition placeholder:font-normal autofill:bg-white focus-visible:ring-[3px] focus-visible:ring-offset-1 focus-visible:ring-offset-white`}
+                className={`${error ? "border-red-300" : "border-gray-200"} text-md flex w-full items-center justify-center gap-1 rounded-full border bg-white px-4 py-3 pl-9 font-medium shadow-light outline-none transition placeholder:font-normal autofill:bg-white focus-visible:ring-[3px] focus-visible:ring-green-400/40 focus-visible:ring-offset-1 focus-visible:ring-offset-white`}
                 name={label}
                 aria-label={label}
                 required={required}

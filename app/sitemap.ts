@@ -9,7 +9,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 1,
     },
     {
-      url: "https://www.wanderai.co.uk/trip",
+      url: "https://www.wanderai.co.uk/trips",
       lastModified: new Date(),
       changeFrequency: "monthly",
       priority: 0.9,

@@ -37,7 +37,12 @@ export const locationsSchema = z.object({
 });
 
 export const tripSchema = z.object({
-  destination: z.string().min(1, "Destination is required"),
+  // destination: z.string().min(1, "Destination is required"),
+  destination: z.object({
+    name: z.string().min(1, "Destination is required"),
+    fullName: z.string().min(1, "Destination is required"),
+    mapboxId: z.string().min(1, "Destination is required"),
+  }),
   duration: z
     .number()
     .min(1, "Duration must be at least 1 day")
@@ -59,4 +64,5 @@ export const tripSchema = z.object({
       ]),
     )
     .optional(),
+  trip: z.any().optional(),
 });

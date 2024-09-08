@@ -14,11 +14,11 @@ export const metadata = {
   },
 };
 
-export default function Trip() {
+export default function Trip({ params }: { params: { tripId: string } }) {
   return (
     <Suspense fallback={<Loading />}>
       <ErrorBoundary fallback={<Error />}>
-        <TripContent />
+        <TripContent tripId={params.tripId} />
       </ErrorBoundary>
     </Suspense>
   );

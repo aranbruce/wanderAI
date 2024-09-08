@@ -1,12 +1,11 @@
 import { NextRequest } from "next/server";
 import { cookies } from "next/headers";
+import { generateId } from "ai";
 
 export async function GET(request: NextRequest) {
   const cookieStore = cookies();
   const sessionCookie = cookieStore.get("sessionid");
-  const sessionId = sessionCookie
-    ? sessionCookie.value
-    : Math.random().toString(36).substring(2);
+  const sessionId = sessionCookie ? sessionCookie.value : generateId();
   const sessionToken = sessionId;
 
   const url = new URL(request.url);

@@ -2,11 +2,10 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+
 import { experimental_useObject as useObject } from "ai/react";
 
-import { locationsSchema } from "@/app/api/trip/schema";
-
-import useGetNewSearchParams from "@/hooks/useGetNewSearchParams";
+import { locationsSchema } from "@/app/api/trips/schema";
 
 import Map from "@/components/map";
 import SignUpModal from "@/components/sign-up-modal";
@@ -33,17 +32,18 @@ export interface LocationProps {
   isLoaded?: boolean;
 }
 
-export default function TripContent() {
+export default function TripContent({ tripId }: { tripId: string }) {
+  const [destination, setDestination] = useState<any>(null);
+  const [duration, setDuration] = useState(0);
+  const [preferences, setPreferences] = useState<string[]>([]);
   const [tripItinerary, setTripItinerary] = useState<LocationProps[]>([]);
   const [currentItineraryItemIndex, setCurrentItineraryItemIndex] = useState(0);
   const [isSignUpModalOpen, setIsSignUpModalOpen] = useState(false);
 
-  const getNewSearchParams = useGetNewSearchParams();
-  const { destination, duration, preferences } = getNewSearchParams();
   const router = useRouter();
 
   const { object, submit, stop, isLoading } = useObject({
-    api: "/api/trip",
+    api: "/api/trips",
     schema: locationsSchema,
     onFinish: (object) => {
       setTripItinerary(object.object.locations);
@@ -54,9 +54,24 @@ export default function TripContent() {
   });
 
   useEffect(() => {
+    getTripSearch();
     stop();
-    submit({ destination, duration, preferences });
+    submit({ tripId });
   }, []);
+
+  async function getTripSearch() {
+    const response = await fetch(`/api/trips?tripId=${tripId}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    const data = await response.json();
+    const { destination, duration, preferences } = data;
+    setDestination(destination);
+    setDuration(duration);
+    setPreferences(preferences);
+  }
 
   function increaseTimeOfDay() {
     if (
@@ -84,6 +99,9 @@ export default function TripContent() {
       ) : (
         <>
           <Map
+            destination={destination}
+            duration={duration}
+            preferences={preferences}
             tripItinerary={
               !isLoading && tripItinerary.length > 0
                 ? tripItinerary

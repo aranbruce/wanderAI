@@ -23,7 +23,7 @@ export default function Input({
       )}
       <div className="relative flex w-full flex-col gap-1">
         <input
-          className={`${error ? "border-red-300" : "border-gray-200"} text-md flex w-full items-center justify-center gap-1 rounded-full border bg-white px-4 py-3 font-medium shadow-light outline-none transition placeholder:font-normal autofill:bg-white focus-visible:ring-[3px] focus-visible:ring-offset-1 focus-visible:ring-offset-white`}
+          className={`${error ? "border-red-300" : "border-gray-200"} text-md flex w-full items-center justify-center gap-1 rounded-full border bg-white px-4 py-3 font-medium shadow-light outline-none transition placeholder:font-normal autofill:bg-white focus-visible:ring-[3px] focus-visible:ring-green-400/40 focus-visible:ring-offset-1 focus-visible:ring-offset-white`}
           id={inputId}
           name={label}
           aria-label={label}

@@ -1,14 +1,10 @@
 import { openai } from "@ai-sdk/openai";
-import { streamObject } from "ai";
+import { streamObject, generateId } from "ai";
 import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { kv } from "@vercel/kv";
 
 import { locationsSchema, tripSchema } from "./schema";
-
-// Allow streaming responses up to 120 seconds on edge runtime
-export const maxDuration = 120;
-export const runtime = "edge";
 
 type TripAdvisorLocation = {
   location_id: string;
@@ -51,64 +47,92 @@ type TripAdvisorLocation = {
   photoUrls?: string[];
 };
 
+// Allow streaming responses up to 120 seconds on edge runtime
+export const maxDuration = 120;
+export const runtime = "edge";
+
+export async function GET(request: NextRequest) {
+  console.log("GET /api/trips");
+  const url = new URL(request.url);
+  const searchParams = new URLSearchParams(url.searchParams);
+  const tripId = searchParams.get("tripId");
+  if (!tripId) {
+    return NextResponse.json({ error: "Trip ID is missing" }, { status: 400 });
+  }
+
+  // Check for cached result
+  const cached = await kv.get(tripId);
+  if (!cached) {
+    return (
+      new NextResponse("No trip found"),
+      {
+        status: 404,
+        headers: { "Content-Type": "text/plain" },
+      }
+    );
+  }
+  return NextResponse.json(cached);
+}
+
 export async function POST(request: NextRequest) {
+  console.log("POST /api/trips");
+  // get the request data
   let requestData;
   try {
     requestData = await request.json();
   } catch (error) {
-    throw new Error("Invalid JSON payload");
+    return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
   }
-
-  const validationResult = tripSchema.safeParse(requestData);
-
-  if (!validationResult.success) {
-    const errors = validationResult.error.errors
-      .map((err) => err.message)
-      .join(", ");
-    return NextResponse.json(
-      { error: `Validation failed: ${errors}` },
-      { status: 400 },
-    );
-  }
+  const tripId = requestData.tripId;
 
   const cookieStore = cookies();
   const sessionCookie = cookieStore.get("sessionid");
-  const sessionId = sessionCookie
-    ? sessionCookie.value
-    : Math.random().toString(36).substring(2);
+  const sessionId = sessionCookie ? sessionCookie.value : generateId();
 
-  let { destination, duration, preferences } = validationResult.data;
-  console.log("Generating trip itinerary...");
+  // Check for cached result
+  const cached = await kv.get(tripId);
+  if (!cached) {
+    console.log("No trip found");
+    return (
+      new NextResponse("No trip found"),
+      {
+        status: 404,
+        headers: { "Content-Type": "text/plain" },
+      }
+    );
+  }
+
+  // Validate and parse the cached data using the schema
+  const parsedData = tripSchema.safeParse(cached);
+  if (!parsedData.success) {
+    return new NextResponse("Invalid trip data", {
+      status: 500,
+      headers: { "Content-Type": "text/plain" },
+    });
+  }
+
+  let { destination, duration, preferences, trip } = parsedData.data;
   console.log("Destination: ", destination);
   console.log("Duration: ", duration);
   console.log("Preferences: ", preferences);
+
+  if (trip) {
+    return NextResponse.json(trip);
+  }
 
   if (duration > 2) {
     duration = 2;
   }
 
-  // Create a cache key
-  const key = `trip:${destination}:${duration}:${preferences.join(",")}`;
-
-  // Check for cached result
-  const cached = await kv.get(key);
-  if (cached != null) {
-    return new Response(JSON.stringify(cached), {
-      status: 200,
-      headers: { "Content-Type": "text/plain" },
-    });
-  }
-
   const destinationDetails = await fetchDestinationDetails();
 
-  const { latitude, longitude, name, fullName } = destinationDetails;
+  const { latitude, longitude, fullName } = destinationDetails;
 
   async function fetchDestinationDetails() {
     // get latitude and longitude from the destination
-    const sessionToken = sessionId;
     try {
       const response = await fetch(
-        `https://api.mapbox.com/search/searchbox/v1/retrieve/${destination}?access_token=${process.env.MAPBOX_API_KEY}&session_token=${sessionToken}`,
+        `https://api.mapbox.com/search/searchbox/v1/retrieve/${destination?.mapboxId}?access_token=${process.env.MAPBOX_API_KEY}&session_token=${sessionId}`,
         {
           method: "GET",
           headers: {
@@ -338,8 +362,6 @@ export async function POST(request: NextRequest) {
         };
       });
 
-    // console.log("TripAdvisor locations: ", tripAdvisorLocations);
-
     const result = await streamObject({
       model: openai("gpt-4o-mini", {
         structuredOutputs: true,
@@ -394,8 +416,13 @@ export async function POST(request: NextRequest) {
       prompt: "Generate the trip itinerary",
       schema: locationsSchema,
       async onFinish({ object }) {
-        await kv.set(key, object);
-        await kv.expire(key, 60 * 60 * 24 * 7); // 7 days
+        await kv.set(tripId, {
+          destination,
+          duration,
+          preferences,
+          trip: object,
+        });
+        await kv.expire(tripId, 60 * 60 * 24 * 7); // 7 days
       },
     });
 
