@@ -3,7 +3,8 @@ import { useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 
 import { validateForm, ValidationErrors } from "@/utils/validation";
-import useIsLargeScreen from "@/hooks/useIsLargeScreen"; // Import the custom hook
+import useIsLargeScreen from "@/hooks/useIsLargeScreen";
+import { useTrip } from "@/app/providers/trip-context";
 
 import Input from "@/components/input";
 import SearchInput, { Destination } from "@/components/search-input";
@@ -12,28 +13,19 @@ import Button from "@/components/button";
 import Backdrop from "@/components/backdrop";
 import BackIcon from "@/images/icons/back-icon";
 import SpinnerIcon from "@/images/icons/spinner-icon";
+import SearchIcon from "@/images/icons/search-icon";
 
 interface SearchModalProps {
-  destination: Destination | null;
-  setSelectedDestination: (destination: Destination) => void;
-  duration: string;
-  handleDurationChange: (duration: string) => void;
-  preferences: string[];
-  handlePreferenceChange: (preference: string) => void;
   isModalOpen: boolean;
   setIsModalOpen: (isOpen: boolean) => void;
 }
 
 export default function SearchModal({
-  destination,
-  setSelectedDestination,
-  duration,
-  handleDurationChange,
-  preferences,
-  handlePreferenceChange,
   isModalOpen,
   setIsModalOpen,
 }: SearchModalProps) {
+  const { tripQuery, setTripQuery } = useTrip();
+
   const [destinationError, setDestinationError] = useState<string | null>(null);
   const [durationError, setDurationError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -58,18 +50,50 @@ export default function SearchModal({
     setIsModalOpen(false);
   }
 
+  function setSelectedDestination(destination: Destination) {
+    setTripQuery((prevTripQuery) => ({
+      ...prevTripQuery,
+      destination,
+    }));
+    setDestinationError(null);
+  }
+
+  function handleDurationChange(duration: number) {
+    setTripQuery((prevTripQuery) => ({
+      ...prevTripQuery,
+      duration: duration,
+    }));
+    setDurationError(null);
+  }
+
+  function handlePreferenceChange(preference: string) {
+    setTripQuery((prevTripQuery) => {
+      const newPreferences = prevTripQuery.preferences.includes(preference)
+        ? prevTripQuery.preferences.filter((p) => p !== preference)
+        : [...prevTripQuery.preferences, preference];
+      return {
+        ...prevTripQuery,
+        preferences: newPreferences,
+      };
+    });
+  }
+
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (isLoading) return;
     setIsLoading(true);
     const { destinationError, durationError }: ValidationErrors = validateForm(
-      destination,
-      duration,
+      tripQuery?.destination,
+      tripQuery?.duration,
     );
     setDestinationError(destinationError);
     setDurationError(durationError);
     if (!destinationError && !durationError) {
-      const result = await createTrip(destination, duration, preferences);
+      const result = await createTrip(
+        tripQuery?.destination,
+        tripQuery?.duration,
+        tripQuery?.preferences,
+      );
       const tripId = result.tripId;
       const url = `/trips/${encodeURIComponent(tripId)}`;
       setIsLoading(false);
@@ -79,7 +103,7 @@ export default function SearchModal({
 
   async function createTrip(
     destination: Destination,
-    duration: string,
+    duration: number,
     preferences: string[],
   ) {
     const result = await fetch("/api/trips/query", {
@@ -146,7 +170,7 @@ export default function SearchModal({
                   <SearchInput
                     label="Where do you want to go?"
                     showLabel
-                    destinationValue={destination}
+                    destinationValue={tripQuery?.destination}
                     setDestinationValue={setSelectedDestination}
                     error={destinationError}
                     required
@@ -154,8 +178,10 @@ export default function SearchModal({
                   <Input
                     type="number"
                     inputMode="numeric"
-                    value={duration}
-                    onChange={(e) => handleDurationChange(e.target.value)}
+                    value={tripQuery?.duration}
+                    onChange={(e) =>
+                      handleDurationChange(Number(e.target.value))
+                    }
                     placeholder="Enter your trip duration"
                     label="How many days is your trip?"
                     showLabel
@@ -172,7 +198,7 @@ export default function SearchModal({
                       <Checkbox
                         key={preference}
                         label={preference}
-                        checked={preferences.includes(preference)}
+                        checked={tripQuery?.preferences.includes(preference)}
                         onChange={() => handlePreferenceChange(preference)}
                       />
                     ))}
@@ -191,7 +217,12 @@ export default function SearchModal({
                 </div>
                 <div className="flex w-full flex-grow flex-col">
                   <Button type="submit" aria-disabled={isLoading}>
-                    {isLoading && <SpinnerIcon height="20" width="20" />}Plan
+                    {isLoading ? (
+                      <SpinnerIcon height="20" width="20" />
+                    ) : (
+                      <SearchIcon width="20" height="20" />
+                    )}
+                    Plan
                   </Button>
                 </div>
               </div>

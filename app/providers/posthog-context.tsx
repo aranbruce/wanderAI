@@ -1,7 +1,8 @@
 "use client";
 
+import React from "react";
 import posthog from "posthog-js";
-import { PostHogProvider } from "posthog-js/react";
+import { PostHogProvider as PHProvider } from "posthog-js/react";
 
 if (typeof window !== "undefined") {
   posthog.init(process.env.NEXT_PUBLIC_POSTHOG_KEY || "", {
@@ -11,6 +12,6 @@ if (typeof window !== "undefined") {
   });
 }
 
-export function CSPostHogProvider({ children }: { children: React.ReactNode }) {
-  return <PostHogProvider client={posthog}>{children}</PostHogProvider>;
+export function PostHogProvider({ children }: { children: React.ReactNode }) {
+  return <PHProvider client={posthog}>{children}</PHProvider>;
 }

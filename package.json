@@ -16,6 +16,7 @@
     "@formcarry/react": "^1.0.4",
     "@react-email/components": "0.0.24",
     "@react-email/tailwind": "0.1.0",
+    "@types/mapbox-gl": "^3.4.0",
     "@vercel/kv": "^2.0.0",
     "ai": "^3.3.30",
     "eslint": "^9.10.0",

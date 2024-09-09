@@ -8,9 +8,9 @@ import SearchForm from "@/components/search-form";
 export default function Home() {
   return (
     <main className="min-h-screen">
-      <Section isHero>
+      <div className="w-full px-8 py-12">
         <SearchForm />
-      </Section>
+      </div>
       <Section>
         <div className="flex flex-col items-center gap-2 text-center">
           <h5 className="leading-5 text-green-400">How it works</h5>

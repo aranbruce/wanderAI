@@ -1,9 +1,7 @@
 import "./globals.css";
 import { Poppins } from "next/font/google";
 import { GeistSans } from "geist/font/sans";
-import { CSPostHogProvider } from "@/app/providers";
-
-import Navigation from "@/components/navigation";
+import { Provider } from "@/app/providers/index";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -30,12 +28,11 @@ export default function RootLayout({ children }) {
         <link rel="icon" href="/favicon.ico" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       </head>
-      <CSPostHogProvider>
+      <Provider>
         <body className={`${GeistSans.variable} ${poppins.variable}`}>
-          <Navigation />
           {children}
         </body>
-      </CSPostHogProvider>
+      </Provider>
     </html>
   );
 }

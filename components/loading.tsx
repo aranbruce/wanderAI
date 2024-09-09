@@ -28,7 +28,7 @@ export default function Loading() {
   };
 
   return (
-    <div className="flex h-screen items-center justify-center">
+    <div className="z-20 flex h-screen items-center justify-center bg-white">
       <div className="flex w-full flex-col items-center gap-4">
         <LogoIcon height="120" width="120" pulse />
         {activeTextIndex === 0 ? (

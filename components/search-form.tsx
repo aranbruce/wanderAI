@@ -2,51 +2,60 @@
 
 import { useState } from "react";
 
-import useLocalStorage from "@/hooks/useLocalStorage";
+import { useTrip } from "@/app/providers/trip-context";
 import { validateForm, ValidationErrors } from "@/utils/validation";
 
 import Button from "@/components/button";
 import Input from "@/components/input";
 import SearchModal from "@/components/search-modal";
 import SearchInput, { Destination } from "@/components/search-input";
+import SearchIcon from "@/images/icons/search-icon";
 
 export default function SearchForm() {
-  const [destination, setDestination] = useLocalStorage<Destination | null>(
-    "destination",
-    null,
-  );
-  const [duration, setDuration] = useLocalStorage("duration", "");
-  const [preferences, setPreferences] = useLocalStorage("preferences", []);
+  const { tripQuery, setTripQuery } = useTrip();
+
   const [destinationError, setDestinationError] = useState<string | null>(null);
   const [durationError, setDurationError] = useState<string | null>(null);
   const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
 
-  function handleDestinationChange(newDestination: Destination) {
-    setDestination(newDestination);
+  function setSelectedDestination(newDestination: Destination) {
+    setTripQuery((prevTripQuery) => ({
+      ...prevTripQuery,
+      destination: newDestination,
+    }));
     setDestinationError(null);
   }
 
-  function handleDurationChange(newDuration: string) {
-    setDuration(newDuration);
+  function handleDurationChange(newDuration: number) {
+    setTripQuery((prevTripQuery) => ({
+      ...prevTripQuery,
+      duration: newDuration,
+    }));
     setDurationError(null);
   }
 
-  function handlePreferenceChange(changedPreference: string) {
-    if (preferences.includes(changedPreference)) {
-      setPreferences(
-        preferences.filter((preference) => preference !== changedPreference),
-      );
-    } else {
-      setPreferences([...preferences, changedPreference]);
-    }
-  }
+  // function handlePreferenceChange(changedPreference: string) {
+  //   setTripQuery((prevTripQuery) => {
+  //     const newPreferences = prevTripQuery.preferences.includes(
+  //       changedPreference,
+  //     )
+  //       ? prevTripQuery.preferences.filter(
+  //           (preference) => preference !== changedPreference,
+  //         )
+  //       : [...prevTripQuery.preferences, changedPreference];
+  //     return {
+  //       ...prevTripQuery,
+  //       preferences: newPreferences,
+  //     };
+  //   });
+  // }
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
 
     const { destinationError, durationError }: ValidationErrors = validateForm(
-      destination,
-      duration,
+      tripQuery.destination,
+      tripQuery.duration,
     );
 
     setDestinationError(destinationError);
@@ -69,22 +78,22 @@ export default function SearchForm() {
         <div className="flex w-full max-w-3xl flex-col items-start gap-2 rounded-2xl bg-white p-4 shadow-heavy md:p-6 md:pb-8">
           <form
             id="cardForm"
-            className="flex w-full flex-col gap-x-4 gap-y-6 md:grid md:grid-cols-[1fr,1fr,120px] md:items-end md:gap-4"
+            className="flex w-full flex-col gap-x-4 gap-y-6 md:grid md:grid-cols-[1fr,1fr,130px] md:items-end md:gap-4"
             onSubmit={handleSubmit}
           >
             <SearchInput
               label="Where do you want to go?"
               showLabel
-              destinationValue={destination}
-              setDestinationValue={handleDestinationChange}
+              destinationValue={tripQuery?.destination}
+              setDestinationValue={setSelectedDestination}
               error={destinationError}
               required
             />
             <Input
               type="number"
               inputMode="numeric"
-              value={duration}
-              onChange={(e) => handleDurationChange(e.target.value)}
+              value={tripQuery?.duration}
+              onChange={(e) => handleDurationChange(Number(e.target.value))}
               placeholder="Enter your trip duration"
               label="How many days is your trip?"
               error={durationError}
@@ -93,7 +102,10 @@ export default function SearchForm() {
               max={14}
               required
             />
-            <Button type="submit">Plan trip</Button>
+            <Button type="submit">
+              <SearchIcon height="20" width="20" />
+              Plan trip
+            </Button>
           </form>
         </div>
         <div className="flex flex-col items-center gap-2">
@@ -117,12 +129,6 @@ export default function SearchForm() {
       <SearchModal
         isModalOpen={isSearchModalOpen}
         setIsModalOpen={setIsSearchModalOpen}
-        destination={destination}
-        setSelectedDestination={handleDestinationChange}
-        duration={duration}
-        handleDurationChange={handleDurationChange}
-        preferences={preferences}
-        handlePreferenceChange={handlePreferenceChange}
       />
     </>
   );

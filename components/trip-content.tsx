@@ -1,16 +1,18 @@
 "use client";
 
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import { experimental_useObject as useObject } from "ai/react";
 
+import { useTrip } from "@/app/providers/trip-context";
 import { locationsSchema } from "@/app/api/trips/schema";
 
 import Map from "@/components/map";
 import SignUpModal from "@/components/sign-up-modal";
 import LocationCard from "@/components/location-card";
 import Loading from "@/components/loading";
+import { set } from "zod";
 
 export interface LocationProps {
   id?: string;
@@ -33,10 +35,14 @@ export interface LocationProps {
 }
 
 export default function TripContent({ tripId }: { tripId: string }) {
-  const [destination, setDestination] = useState<any>(null);
-  const [duration, setDuration] = useState(0);
-  const [preferences, setPreferences] = useState<string[]>([]);
-  const [tripItinerary, setTripItinerary] = useState<LocationProps[]>([]);
+  const {
+    tripQuery,
+    setTripQuery,
+    tripItinerary,
+    setTripItinerary,
+    tripItineraryIsLoading,
+    setTripItineraryIsLoading,
+  } = useTrip();
   const [currentItineraryItemIndex, setCurrentItineraryItemIndex] = useState(0);
   const [isSignUpModalOpen, setIsSignUpModalOpen] = useState(false);
 
@@ -54,11 +60,15 @@ export default function TripContent({ tripId }: { tripId: string }) {
   });
 
   useEffect(() => {
-    console.log("tripItinerary", tripItinerary);
-  }, [tripItinerary]);
+    if (object?.locations) {
+      setTripItineraryIsLoading(false);
+    }
+  }, [object]);
 
   useEffect(() => {
+    setTripItineraryIsLoading(true);
     getTripSearch();
+    setTripItinerary([]);
     stop();
     submit({ tripId });
   }, []);
@@ -72,40 +82,44 @@ export default function TripContent({ tripId }: { tripId: string }) {
     });
     const data = await response.json();
     const { destination, duration, preferences } = data;
-    setDestination(destination);
-    setDuration(duration);
-    setPreferences(preferences);
+    setTripQuery({
+      destination,
+      duration,
+      preferences,
+      tripId,
+    });
   }
 
   function increaseTimeOfDay() {
-    if (
-      currentItineraryItemIndex === duration * 3 - 1 ||
-      currentItineraryItemIndex >= 3 * 2 - 1
-    ) {
-      setIsSignUpModalOpen(true);
-    } else {
-      setCurrentItineraryItemIndex(currentItineraryItemIndex + 1);
-    }
+    const duration = tripQuery?.duration;
+    setCurrentItineraryItemIndex((prevIndex) => {
+      // Ensure the index does not exceed the length of the itinerary
+      if (prevIndex < duration * 3 - 1) {
+        return prevIndex + 1;
+      } else {
+        setIsSignUpModalOpen(true);
+        return prevIndex;
+      }
+    });
   }
 
   function decreaseTimeOfDay() {
     if (currentItineraryItemIndex === 0) {
       router.push("/");
     } else {
-      setCurrentItineraryItemIndex(currentItineraryItemIndex - 1);
+      setCurrentItineraryItemIndex((prevIndex) => prevIndex - 1);
     }
   }
 
   return (
     <div className="relative flex h-svh max-h-dvh w-full flex-col overflow-hidden">
       {!object?.locations && tripItinerary.length === 0 ? (
-        <Loading />
+        <>
+          <Loading />
+        </>
       ) : (
         <>
           <Map
-            destination={destination}
-            duration={duration}
-            preferences={preferences}
             tripItinerary={
               !isLoading && tripItinerary.length > 0
                 ? tripItinerary
@@ -117,7 +131,7 @@ export default function TripContent({ tripId }: { tripId: string }) {
             location={
               !isLoading && tripItinerary.length > 0
                 ? tripItinerary[currentItineraryItemIndex]
-                : object.locations[currentItineraryItemIndex]
+                : object?.locations[currentItineraryItemIndex]
             }
             increaseTimeOfDay={increaseTimeOfDay}
             decreaseTimeOfDay={decreaseTimeOfDay}

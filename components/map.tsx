@@ -5,21 +5,13 @@ import "mapbox-gl/dist/mapbox-gl.css";
 mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_API_KEY;
 
 import { LocationProps } from "@/components/trip-content";
-import Button from "./button";
-import SearchIcon from "@/images/icons/search-icon";
 
 interface MapProps {
-  destination: any;
-  duration: number;
-  preferences: string[];
   tripItinerary: LocationProps[];
   currentItineraryItemIndex: number;
 }
 
 export default function Map({
-  destination,
-  duration,
-  preferences,
   tripItinerary,
   currentItineraryItemIndex,
 }: MapProps) {
@@ -170,35 +162,6 @@ export default function Map({
 
   return (
     <div className="relative ml-auto h-[calc(100%-300px)] w-full md:absolute md:right-0 md:h-screen md:w-[calc(100%-384px)] lg:w-[calc(100%-420px)]">
-      <div className="margin-x-auto absolute left-0 right-0 top-2 flex w-full flex-col items-center">
-        <div
-          onClick={() => {
-            console.log("Book trip");
-          }}
-          className="z-50 flex min-w-48 cursor-pointer flex-row items-center justify-between gap-2 rounded-full border border-gray-300 bg-white py-1 pl-3 pr-1 text-sm font-medium shadow-medium"
-        >
-          <div>{destination?.name}</div>
-          <div className="h-5 w-[1px] min-w-[1px] border-l border-gray-300"></div>
-          <div>
-            {duration} {duration === 1 ? "day" : "days"}
-          </div>
-          <div className="h-5 w-[1px] min-w-[1px] border-r border-gray-300"></div>
-
-          <div>
-            {preferences?.length}{" "}
-            {preferences?.length > 1 ? "preferences" : "preference"}
-          </div>
-          <Button
-            isCircular
-            size="small"
-            onClick={() => {
-              console.log("Book trip");
-            }}
-          >
-            <SearchIcon height="24" width="24" />
-          </Button>
-        </div>
-      </div>
       <div ref={mapContainer} className={`h-full w-full`} />
     </div>
   );

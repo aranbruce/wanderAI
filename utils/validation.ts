@@ -9,7 +9,7 @@ export interface ValidationErrors {
 
 export function validateForm(
   destination: Destination | null,
-  duration: string,
+  duration: number | null,
 ): ValidationErrors {
   let destinationError: string | null = null;
   let durationError: string | null = null;

@@ -20,6 +20,9 @@ importers:
       '@react-email/tailwind':
         specifier: 0.1.0
         version: 0.1.0(react@18.3.1)
+      '@types/mapbox-gl':
+        specifier: ^3.4.0
+        version: 3.4.0
       '@vercel/kv':
         specifier: ^2.0.0
         version: 2.0.0
