@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import { experimental_useObject as useObject } from "ai/react";
@@ -43,7 +43,7 @@ export default function TripContent({ tripId }: { tripId: string }) {
   const router = useRouter();
 
   const { object, submit, stop, isLoading } = useObject({
-    api: "/api/trips",
+    api: "/api/trips/results",
     schema: locationsSchema,
     onFinish: (object) => {
       setTripItinerary(object.object.locations);
@@ -54,13 +54,17 @@ export default function TripContent({ tripId }: { tripId: string }) {
   });
 
   useEffect(() => {
+    console.log("tripItinerary", tripItinerary);
+  }, [tripItinerary]);
+
+  useEffect(() => {
     getTripSearch();
     stop();
     submit({ tripId });
   }, []);
 
   async function getTripSearch() {
-    const response = await fetch(`/api/trips?tripId=${tripId}`, {
+    const response = await fetch(`/api/trips/query?tripId=${tripId}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",

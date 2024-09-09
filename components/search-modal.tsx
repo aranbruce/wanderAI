@@ -3,6 +3,7 @@ import { useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 
 import { validateForm, ValidationErrors } from "@/utils/validation";
+import useIsLargeScreen from "@/hooks/useIsLargeScreen"; // Import the custom hook
 
 import Input from "@/components/input";
 import SearchInput, { Destination } from "@/components/search-input";
@@ -10,7 +11,7 @@ import Checkbox from "@/components/checkbox";
 import Button from "@/components/button";
 import Backdrop from "@/components/backdrop";
 import BackIcon from "@/images/icons/back-icon";
-import useIsLargeScreen from "@/hooks/useIsLargeScreen"; // Import the custom hook
+import SpinnerIcon from "@/images/icons/spinner-icon";
 
 interface SearchModalProps {
   destination: Destination | null;
@@ -35,6 +36,7 @@ export default function SearchModal({
 }: SearchModalProps) {
   const [destinationError, setDestinationError] = useState<string | null>(null);
   const [durationError, setDurationError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const router = useRouter();
   const isLargeScreen = useIsLargeScreen(768);
@@ -58,6 +60,8 @@ export default function SearchModal({
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    if (isLoading) return;
+    setIsLoading(true);
     const { destinationError, durationError }: ValidationErrors = validateForm(
       destination,
       duration,
@@ -68,7 +72,7 @@ export default function SearchModal({
       const result = await createTrip(destination, duration, preferences);
       const tripId = result.tripId;
       const url = `/trips/${encodeURIComponent(tripId)}`;
-      console.log(url);
+      setIsLoading(false);
       router.push(url);
     }
   }
@@ -78,7 +82,7 @@ export default function SearchModal({
     duration: string,
     preferences: string[],
   ) {
-    const result = await fetch("/api/trips/new", {
+    const result = await fetch("/api/trips/query", {
       method: "POST",
       body: JSON.stringify({
         destination,
@@ -186,7 +190,9 @@ export default function SearchModal({
                   </Button>
                 </div>
                 <div className="flex w-full flex-grow flex-col">
-                  <Button type="submit">Plan</Button>
+                  <Button type="submit" aria-disabled={isLoading}>
+                    {isLoading && <SpinnerIcon height="20" width="20" />}Plan
+                  </Button>
                 </div>
               </div>
             </form>

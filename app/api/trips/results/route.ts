@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { kv } from "@vercel/kv";
 
-import { locationsSchema, tripSchema } from "./schema";
+import { locationsSchema, tripSchema } from "../schema";
 
 type TripAdvisorLocation = {
   location_id: string;
@@ -51,37 +51,17 @@ type TripAdvisorLocation = {
 export const maxDuration = 120;
 export const runtime = "edge";
 
-export async function GET(request: NextRequest) {
-  console.log("GET /api/trips");
-  const url = new URL(request.url);
-  const searchParams = new URLSearchParams(url.searchParams);
-  const tripId = searchParams.get("tripId");
-  if (!tripId) {
-    return NextResponse.json({ error: "Trip ID is missing" }, { status: 400 });
-  }
-
-  // Check for cached result
-  const cached = await kv.get(tripId);
-  if (!cached) {
-    return (
-      new NextResponse("No trip found"),
-      {
-        status: 404,
-        headers: { "Content-Type": "text/plain" },
-      }
-    );
-  }
-  return NextResponse.json(cached);
-}
-
-export async function POST(request: NextRequest) {
-  console.log("POST /api/trips");
+export async function POST(request: NextRequest): Promise<Response> {
+  console.log("Received POST request for /api/trips/results");
   // get the request data
   let requestData;
   try {
     requestData = await request.json();
   } catch (error) {
-    return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
+    return NextResponse.json(
+      { error: "Invalid JSON body" },
+      { status: 400, headers: { "Content-Type": "application/json" } },
+    );
   }
   const tripId = requestData.tripId;
 
@@ -93,22 +73,19 @@ export async function POST(request: NextRequest) {
   const cached = await kv.get(tripId);
   if (!cached) {
     console.log("No trip found");
-    return (
-      new NextResponse("No trip found"),
-      {
-        status: 404,
-        headers: { "Content-Type": "text/plain" },
-      }
+    return NextResponse.json(
+      { error: "No trip found" },
+      { status: 404, headers: { "Content-Type": "application/json" } },
     );
   }
 
   // Validate and parse the cached data using the schema
   const parsedData = tripSchema.safeParse(cached);
   if (!parsedData.success) {
-    return new NextResponse("Invalid trip data", {
-      status: 500,
-      headers: { "Content-Type": "text/plain" },
-    });
+    return NextResponse.json(
+      { error: "Invalid trip data" },
+      { status: 500, headers: { "Content-Type": "text/plain" } },
+    );
   }
 
   let { destination, duration, preferences, trip } = parsedData.data;
@@ -117,7 +94,10 @@ export async function POST(request: NextRequest) {
   console.log("Preferences: ", preferences);
 
   if (trip) {
-    return NextResponse.json(trip);
+    return NextResponse.json(trip, {
+      status: 200,
+      headers: { "Content-Type": "application/json" },
+    });
   }
 
   if (duration > 2) {
@@ -429,6 +409,9 @@ export async function POST(request: NextRequest) {
     return result.toTextStreamResponse();
   } catch (error) {
     console.error("Error: ", error);
-    return NextResponse.json("Failed to fetch locations", { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to fetch locations" },
+      { status: 500, headers: { "Content-Type": "application/json" } },
+    );
   }
 }

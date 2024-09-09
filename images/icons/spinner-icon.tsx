@@ -27,7 +27,7 @@ export default function SpinnerIcon({
           fill="currentFill"
         />
       </svg>
-      <span className="sr-only hidden">Loading...</span>
+      <span className="sr-only">Loading...</span>
     </div>
   );
 }

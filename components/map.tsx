@@ -186,7 +186,7 @@ export default function Map({
 
           <div>
             {preferences?.length}{" "}
-            {preferences.length > 1 ? "preferences" : "preference"}
+            {preferences?.length > 1 ? "preferences" : "preference"}
           </div>
           <Button
             isCircular
