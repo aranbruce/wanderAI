@@ -12,7 +12,7 @@ import Map from "@/components/map";
 import SignUpModal from "@/components/sign-up-modal";
 import LocationCard from "@/components/location-card";
 import Loading from "@/components/loading";
-import { set } from "zod";
+import RefineSearch from "@/components/refine-search";
 
 export interface LocationProps {
   id?: string;
@@ -119,14 +119,22 @@ export default function TripContent({ tripId }: { tripId: string }) {
         </>
       ) : (
         <>
-          <Map
-            tripItinerary={
-              !isLoading && tripItinerary.length > 0
-                ? tripItinerary
-                : object?.locations
-            }
-            currentItineraryItemIndex={currentItineraryItemIndex}
-          />
+          <div className="relative ml-auto h-[calc(100%-300px)] w-full md:absolute md:right-0 md:h-screen md:w-[calc(100%-384px)] lg:w-[calc(100%-420px)]">
+            <div className="absolute bottom-0 z-10 mx-auto hidden w-full flex-col items-center px-4 pb-6 md:flex">
+              <RefineSearch
+                destination={tripQuery.destination}
+                duration={tripQuery.duration}
+              />
+            </div>
+            <Map
+              tripItinerary={
+                !isLoading && tripItinerary.length > 0
+                  ? tripItinerary
+                  : object?.locations
+              }
+              currentItineraryItemIndex={currentItineraryItemIndex}
+            />
+          </div>
           <LocationCard
             location={
               !isLoading && tripItinerary.length > 0

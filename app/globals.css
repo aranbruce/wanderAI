@@ -29,13 +29,13 @@ input:not(:placeholder-shown):not(:focus):invalid {
   /* *:focus-visible {
     @apply outline-none;
     @apply ring-1;
-    @apply ring-green-400/20;
+    @apply ring-green-400/40;
     @apply ring-offset-1;
     @apply ring-offset-white;
   } */
   a:focus-visible {
     @apply ring-2;
-    @apply ring-green-400/20;
+    @apply ring-green-400/40;
     @apply ring-offset-1;
     @apply ring-offset-white;
     @apply outline-none;

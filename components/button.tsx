@@ -19,7 +19,7 @@ export default function Button({
   ...props
 }: ButtonProps) {
   const baseClasses =
-    "transition inline-flex items-center justify-center gap-2 rounded-full font-medium tracking-wide cursor-pointer outline-none flex-shrink-0 text-nowrap focus-visible:ring-[3px] focus-visible:ring-green-400/40 focus-visible:ring-offset-1 focus-visible:ring-offset-white focus-visible:outline-none";
+    "transition inline-flex items-center justify-center gap-2 rounded-full font-medium cursor-pointer outline-none flex-shrink-0 text-nowrap focus-visible:ring-[3px] focus-visible:ring-green-400/40 focus-visible:ring-offset-1 focus-visible:ring-offset-white focus-visible:outline-none";
   const primaryClasses =
     "bg-green-400 text-white hover:bg-green-300 active:bg-green-500";
   const secondaryClasses =

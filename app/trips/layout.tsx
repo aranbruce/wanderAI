@@ -1,4 +1,4 @@
-import Navigation from "@/components/navigation/trips";
+import Navigation from "@/components/navigation-trips";
 
 export default function TripLayout({
   children,

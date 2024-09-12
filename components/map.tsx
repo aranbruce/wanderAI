@@ -160,9 +160,5 @@ export default function Map({
     updateMarkerColor();
   }, [currentItineraryItemIndex]);
 
-  return (
-    <div className="relative ml-auto h-[calc(100%-300px)] w-full md:absolute md:right-0 md:h-screen md:w-[calc(100%-384px)] lg:w-[calc(100%-420px)]">
-      <div ref={mapContainer} className={`h-full w-full`} />
-    </div>
-  );
+  return <div ref={mapContainer} className={`h-full w-full`} />;
 }

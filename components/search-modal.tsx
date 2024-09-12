@@ -38,9 +38,10 @@ export default function SearchModal({
     "Outdoors",
     "Indoors",
     "Active",
-    "Relaxation",
+    "Relaxing",
     "Pet friendly",
     "Child friendly",
+    "LGBTQ+ friendly",
     "Vegetarian",
     "Vegan",
     "Nightlife",
@@ -165,7 +166,7 @@ export default function SearchModal({
               className="w-full overflow-y-auto"
               onSubmit={handleSubmit}
             >
-              <div className="flex flex-col gap-8 overflow-y-auto p-6 pb-32">
+              <div className="flex flex-col gap-6 overflow-y-auto p-6 pb-28">
                 <div className="flex flex-col gap-4">
                   <SearchInput
                     label="Where do you want to go?"
@@ -192,8 +193,8 @@ export default function SearchModal({
                   />
                 </div>
                 <div className="flex flex-col gap-4">
-                  <h4>Priorities</h4>
-                  <div className="grid grid-cols-2 gap-2">
+                  <h4 className="font-medium">Priorities</h4>
+                  <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
                     {preferenceOptions.map((preference) => (
                       <Checkbox
                         key={preference}

@@ -34,22 +34,6 @@ export default function SearchForm() {
     setDurationError(null);
   }
 
-  // function handlePreferenceChange(changedPreference: string) {
-  //   setTripQuery((prevTripQuery) => {
-  //     const newPreferences = prevTripQuery.preferences.includes(
-  //       changedPreference,
-  //     )
-  //       ? prevTripQuery.preferences.filter(
-  //           (preference) => preference !== changedPreference,
-  //         )
-  //       : [...prevTripQuery.preferences, changedPreference];
-  //     return {
-  //       ...prevTripQuery,
-  //       preferences: newPreferences,
-  //     };
-  //   });
-  // }
-
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
 
@@ -117,7 +101,7 @@ export default function SearchForm() {
             target="_blank"
           >
             <img
-              src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=484286&theme=light"
+              src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=484286&theme=neutral"
               alt="WanderAI - Plan&#0032;your&#0032;next&#0032;trip&#0032;in&#0032;seconds&#0032;with&#0032;the&#0032;power&#0032;of&#0032;AI | Product Hunt"
               style={{ width: "185px", height: "40px" }}
               width="185"

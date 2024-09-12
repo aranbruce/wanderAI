@@ -5,6 +5,7 @@ import { useState, useEffect, useRef } from "react";
 import debounce from "@/utils/debounce";
 
 import SearchIcon from "@/images/icons/search-icon";
+import CloseIcon from "@/images/icons/close-icon";
 
 interface SearchInputProps {
   label: string;
@@ -166,6 +167,15 @@ export default function SearchInput({
     }
   }
 
+  function handleClearInput() {
+    setQueryValue("");
+    setSelectedValue("");
+    setSuggestions([]);
+    setShowSuggestions(false);
+    setDestinationValue(null);
+    inputRef.current?.focus();
+  }
+
   return (
     <div className="relative">
       <div className="flex flex-col gap-2" ref={containerRef}>
@@ -176,7 +186,7 @@ export default function SearchInput({
         )}
         <div className="relative">
           <div className="relative">
-            <div className="absolute left-3 top-[0.9rem] z-10">
+            <div className="absolute left-3 top-[0.9rem] z-10 text-gray-800">
               <SearchIcon height="20" width="20" />
             </div>
             <div className="relative flex w-full flex-col gap-1">
@@ -191,11 +201,20 @@ export default function SearchInput({
                 onBlur={() => handleBlur()}
                 onKeyDown={(e) => handleInputKeyDown(e)}
                 autoComplete="off"
-                className={`${error ? "border-red-300" : "border-gray-200"} text-md flex w-full items-center justify-center gap-1 rounded-full border bg-white px-4 py-3 pl-9 font-medium outline-none transition placeholder:font-normal autofill:bg-white focus-visible:ring-[3px] focus-visible:ring-green-400/40 focus-visible:ring-offset-1 focus-visible:ring-offset-white`}
+                className={`${error ? "border-red-300" : "border-gray-200"} text-md flex w-full items-center justify-center gap-1 rounded-full border bg-white py-3 pl-9 pr-10 font-medium outline-none transition placeholder:font-normal autofill:bg-white focus-visible:ring-[3px] focus-visible:ring-green-400/40 focus-visible:ring-offset-1 focus-visible:ring-offset-white`}
                 name={label}
                 aria-label={label}
                 required={required}
               />
+              {queryValue && (
+                <button
+                  type="button"
+                  onClick={handleClearInput}
+                  className="absolute right-2 top-3 z-10 rounded-full bg-white p-0.5 text-gray-800 hover:bg-gray-100 focus-visible:bg-gray-100 focus-visible:ring-2 focus-visible:ring-green-400/40 focus-visible:ring-offset-1 focus-visible:ring-offset-white"
+                >
+                  <CloseIcon height="24" width="24" />
+                </button>
+              )}
               {error && (
                 <p
                   id={`${inputId}-error`}
@@ -218,7 +237,7 @@ export default function SearchInput({
                     ref={(el) => {
                       suggestionRefs.current[index] = el;
                     }}
-                    className="w-full cursor-pointer rounded-lg p-2 outline-none hover:bg-gray-100 focus-visible:bg-gray-100 focus-visible:ring-2 focus-visible:ring-green-400/40"
+                    className="line-clamp-1 w-full cursor-pointer rounded-lg px-2 py-1 leading-8 outline-none hover:bg-gray-100 focus-visible:bg-gray-100 focus-visible:ring-2 focus-visible:ring-green-400/40"
                     onMouseDown={() => handleOptionClick(suggestion)}
                     onKeyDown={(e) =>
                       handleSuggestionsKeyDown(e, suggestion, index)
