@@ -2,7 +2,7 @@ import { NextRequest } from "next/server";
 import { cookies } from "next/headers";
 
 export async function GET(request: NextRequest) {
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   const sessionCookie = cookieStore.get("sessionid");
   const sessionId = sessionCookie
     ? sessionCookie.value

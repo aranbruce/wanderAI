@@ -71,7 +71,7 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   const sessionCookie = cookieStore.get("sessionid");
   const sessionId = sessionCookie
     ? sessionCookie.value
