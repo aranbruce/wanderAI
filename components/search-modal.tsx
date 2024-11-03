@@ -1,16 +1,17 @@
-import { useState } from "react";
+import { AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
-import { AnimatePresence, motion } from "framer-motion";
+import { useState } from "react";
 
 import { validateForm, ValidationErrors } from "@/utils/validation";
 
+import Backdrop from "@/components/backdrop";
+import Button from "@/components/button";
+import Checkbox from "@/components/checkbox";
 import Input from "@/components/input";
 import SearchInput, { Destination } from "@/components/search-input";
-import Checkbox from "@/components/checkbox";
-import Button from "@/components/button";
-import Backdrop from "@/components/backdrop";
-import BackIcon from "@/images/icons/back-icon";
 import useIsLargeScreen from "@/hooks/useIsLargeScreen"; // Import the custom hook
+import BackIcon from "@/images/icons/back-icon";
+import { MotionDiv } from "./motion";
 
 interface SearchModalProps {
   destination: Destination | null;
@@ -92,7 +93,7 @@ export default function SearchModal({
       <Backdrop onClick={() => handleModalClose()} isModalOpen={isModalOpen} />
       <AnimatePresence>
         {isModalOpen && (
-          <motion.div
+          <MotionDiv
             key="search-modal"
             initial={{
               opacity: 0,
@@ -172,7 +173,7 @@ export default function SearchModal({
                 </div>
               </div>
             </form>
-          </motion.div>
+          </MotionDiv>
         )}
       </AnimatePresence>
     </>

@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
 import LogoIcon from "@/images/icons/logo-icon";
+import { useEffect, useState } from "react";
+import { MotionDiv } from "./motion";
 
 export default function Loading() {
   const [activeTextIndex, setActiveTextIndex] = useState(0);
@@ -32,17 +32,17 @@ export default function Loading() {
       <div className="flex w-full flex-col items-center gap-4">
         <LogoIcon height="120" width="120" pulse />
         {activeTextIndex === 0 ? (
-          <motion.div className="opacity-0" animate={animation}>
+          <MotionDiv className="opacity-0" animate={animation}>
             <h4>Searching the internet for locations</h4>
-          </motion.div>
+          </MotionDiv>
         ) : activeTextIndex === 1 ? (
-          <motion.div className="opacity-0" animate={animation}>
+          <MotionDiv className="opacity-0" animate={animation}>
             <h4>Checking them for suitability</h4>
-          </motion.div>
+          </MotionDiv>
         ) : activeTextIndex === 2 ? (
-          <motion.div className="opacity-0" animate={animation}>
+          <MotionDiv className="opacity-0" animate={animation}>
             <h4>Creating your trip itinerary</h4>
-          </motion.div>
+          </MotionDiv>
         ) : null}
       </div>
     </div>
