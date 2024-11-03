@@ -1,6 +1,7 @@
-import Button from "@/components/button";
 import Backdrop from "@/components/backdrop";
-import { AnimatePresence, motion } from "framer-motion";
+import Button from "@/components/button";
+import { AnimatePresence } from "framer-motion";
+import { MotionDiv } from "./motion";
 
 interface SignUpModalProps {
   isModalOpen: boolean;
@@ -20,7 +21,7 @@ export default function SignUpModal({
       <Backdrop onClick={handleModalClose} isModalOpen={isModalOpen} />
       <AnimatePresence>
         {isModalOpen && (
-          <motion.div
+          <MotionDiv
             key="sign-up-modal"
             initial={{
               opacity: 0,
@@ -53,7 +54,7 @@ export default function SignUpModal({
             <div className="flex flex-col gap-4">
               <Button href="/sign-up">Sign up</Button>
             </div>
-          </motion.div>
+          </MotionDiv>
         )}
       </AnimatePresence>
     </>

@@ -1,9 +1,9 @@
-import Section from "@/components/section";
-import TextAndImage from "@/components/text-and-image";
-import SignUpCard from "@/components/sign-up-card";
 import ExampleTripCard from "@/components/example-trip-card";
-import TestimonialCard from "@/components/testimonial-card";
 import SearchForm from "@/components/search-form";
+import Section from "@/components/section";
+import SignUpCard from "@/components/sign-up-card";
+import TestimonialCard from "@/components/testimonial-card";
+import TextAndImage from "@/components/text-and-image";
 
 export default function Home() {
   return (
@@ -40,21 +40,25 @@ export default function Home() {
         <div className="grid w-full grid-cols-1 gap-8 md:grid-cols-2">
           <ExampleTripCard
             location="New York"
+            locationId="dXJuOm1ieHBsYzpEZTVJN0E"
             imgSrc="/assets/newYork.png"
             imgAlt="New York skyscrapers"
           />
           <ExampleTripCard
             location="London"
+            locationId="dXJuOm1ieHBsYzphaWhQ"
             imgSrc="/assets/london.png"
             imgAlt="London and the River Thames"
           />
           <ExampleTripCard
             location="Dubai"
+            locationId="dXJuOm1ieHBsYzpCYWdE"
             imgSrc="/assets/dubai.png"
             imgAlt="Dubai"
           />
           <ExampleTripCard
             location="Santorini"
+            locationId="dXJuOm1ieHBsYzpBd2ZvV3c"
             imgSrc="/assets/santorini.png"
             imgAlt="Cliffs of Santorini"
           />

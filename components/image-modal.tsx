@@ -1,11 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 
-import Button from "@/components/button";
 import Backdrop from "@/components/backdrop";
-import { AnimatePresence, motion } from "framer-motion";
+import Button from "@/components/button";
 import BackIcon from "@/images/icons/back-icon";
-import NextIcon from "@/images/icons/next-icon";
 import CloseIcon from "@/images/icons/close-icon";
+import NextIcon from "@/images/icons/next-icon";
+import { AnimatePresence } from "framer-motion";
+import { MotionDiv } from "./motion";
 
 interface ImageModalProps {
   isModalOpen: boolean;
@@ -74,7 +75,7 @@ export default function ImageModal({
       <Backdrop onClick={handleModalClose} isModalOpen={isModalOpen} />
       <AnimatePresence>
         {isModalOpen && (
-          <motion.div
+          <MotionDiv
             key="image-modal"
             initial={{
               opacity: 0,
@@ -147,7 +148,7 @@ export default function ImageModal({
                 <NextIcon height="24" width="24" />
               </Button>
             </div>
-          </motion.div>
+          </MotionDiv>
         )}
       </AnimatePresence>
     </>

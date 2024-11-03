@@ -1,5 +1,6 @@
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence } from "framer-motion";
 import { useEffect } from "react";
+import { MotionDiv } from "./motion";
 
 interface BackdropProps {
   isModalOpen: boolean;
@@ -20,7 +21,7 @@ export default function Backdrop({ isModalOpen, onClick }: BackdropProps) {
   return (
     <AnimatePresence>
       {isModalOpen && (
-        <motion.div
+        <MotionDiv
           key="backdrop"
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/25"
           onClick={onClick}
