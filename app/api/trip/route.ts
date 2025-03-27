@@ -23,10 +23,11 @@ export async function POST(request: NextRequest) {
     const errors = validationResult.error.errors
       .map((err) => err.message)
       .join(", ");
-    return NextResponse.json(
+    const errorResponse = NextResponse.json(
       { error: `Validation failed: ${errors}` },
       { status: 400 },
     );
+    return errorResponse;
   }
 
   const cookieStore = await cookies();
@@ -160,11 +161,31 @@ export async function POST(request: NextRequest) {
         kv.expire(key, 60 * 60 * 24 * 7); // 7 days
       },
     });
-    // console.log(result.providerMetadata);
 
-    return result.toTextStreamResponse();
+    // Get the streaming response
+    const streamResponse = result.toTextStreamResponse();
+
+    // Create a new Response with the same body and status
+    const response = new Response(streamResponse.body, {
+      status: streamResponse.status,
+      statusText: streamResponse.statusText,
+      headers: streamResponse.headers,
+    });
+
+    // Set the cookie on the response
+    response.headers.set(
+      "Set-Cookie",
+      `sessionid=${sessionId}; Path=/; HttpOnly; SameSite=Strict`,
+    );
+
+    return response;
   } catch (error) {
     console.error("Error: ", error);
-    return NextResponse.json("Failed to fetch locations", { status: 500 });
+    const errorResponse = NextResponse.json("Failed to fetch locations", {
+      status: 500,
+    });
+    // Set cookie even in error case
+    errorResponse.cookies.set("sessionid", sessionId);
+    return errorResponse;
   }
 }
