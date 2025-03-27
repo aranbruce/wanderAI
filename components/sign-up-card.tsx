@@ -3,7 +3,7 @@ import Image from "next/image";
 
 export default function SignUpCard() {
   return (
-    <div className="shadow-heavy group relative w-full max-w-screen-lg overflow-hidden rounded-3xl bg-gray-300 p-8 text-white md:p-16 lg:p-24">
+    <div className="shadow-heavy group relative w-full max-w-(--breakpoint-lg) overflow-hidden rounded-3xl bg-gray-300 p-8 text-white md:p-16 lg:p-24">
       <div className="relative z-10 flex flex-col items-stretch gap-8 md:items-start">
         <div className="flex flex-col gap-4">
           <h2 className="text-2xl md:text-4xl">

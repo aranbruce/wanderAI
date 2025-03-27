@@ -43,7 +43,7 @@ export default function SignUpModal({
             }}
             transition={{ duration: 0.2 }}
             onClick={(e) => e.stopPropagation()} // Prevent click from closing modal
-            className="fixed bottom-0 left-1/2 z-50 flex h-fit max-h-screen w-full max-w-[calc(100%-48px)] -translate-x-1/2 translate-y-1/2 transform flex-col items-stretch gap-4 overflow-hidden text-pretty rounded-xl bg-white p-6 text-center shadow-heavy md:bottom-1/2 md:w-[440px] md:translate-y-1/2"
+            className="fixed bottom-0 left-1/2 z-50 flex h-fit max-h-screen w-full max-w-[calc(100%-48px)] transform flex-col items-stretch gap-4 overflow-hidden text-pretty rounded-xl bg-white p-6 text-center shadow-heavy md:w-[440px]"
           >
             <h3 className="text-lg">
               Create an account to read more and refine

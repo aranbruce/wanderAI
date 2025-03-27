@@ -29,7 +29,7 @@ export default function LocationCard({
 
   return (
     <>
-      <div className="fixed bottom-0 z-30 flex w-full flex-col items-center gap-2 rounded-t-lg bg-white pt-4 shadow-top md:h-screen md:w-96 md:justify-between md:gap-4 md:rounded-none md:pt-20 md:shadow-medium lg:w-[420px]">
+      <div className="shadow-top md:shadow-medium fixed bottom-0 z-30 flex w-full flex-col items-center gap-2 rounded-t-lg bg-white pt-4 md:h-screen md:w-96 md:justify-between md:gap-4 md:rounded-none md:pt-20 lg:w-[420px]">
         <div className="flex min-h-0 w-full flex-col gap-2 md:gap-3">
           <div className="flex w-full items-start gap-2 px-4 md:px-8">
             <div className="flex w-full flex-col gap-1 md:gap-2">
@@ -49,8 +49,8 @@ export default function LocationCard({
             {location?.rating && (
               <div className="flex flex-col md:gap-1">
                 <div className="flex items-center justify-end gap-1">
-                  <p className="text-green-600 text-sm font-semibold">
-                    {location?.rating}
+                  <p className="text-sm font-semibold text-green-600">
+                    {location?.rating ? location.rating.toFixed(1) : ""}
                   </p>
                   <Image
                     src="/assets/star.svg"
@@ -59,13 +59,17 @@ export default function LocationCard({
                     height={16}
                     priority
                   />
-                  <p className="w-auto text-nowrap text-xs text-gray-800">
-                    ({new Intl.NumberFormat().format(location?.reviewCount)})
-                  </p>
+                  {location?.reviewCount && (
+                    <p className="w-auto text-xs text-nowrap text-gray-800">
+                      ({new Intl.NumberFormat().format(location?.reviewCount)})
+                    </p>
+                  )}
                 </div>
-                <p className="w-auto text-nowrap text-right text-xs font-semibold">
-                  {location?.priceLevel}
-                </p>
+                {location?.priceLevel && (
+                  <p className="w-auto text-right text-xs font-semibold text-nowrap">
+                    {location?.priceLevel}
+                  </p>
+                )}
               </div>
             )}
           </div>
@@ -110,7 +114,7 @@ export default function LocationCard({
             />
           </div>
         </div>
-        <footer className="z-10 grid w-full grid-cols-[0fr_1fr] gap-4 bg-white px-4 pb-3 pt-2 md:px-8 md:py-4">
+        <footer className="z-10 grid w-full grid-cols-[0fr_1fr] gap-4 bg-white px-4 pt-2 pb-3 md:px-8 md:py-4">
           <Button variant="secondary" onClick={decreaseTimeOfDay}>
             <BackIcon height="24" width="24" />
           </Button>

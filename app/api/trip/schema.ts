@@ -14,10 +14,6 @@ export const locationsSchema = z.object({
         .describe("The time of day"),
       title: z.string().describe("The title of the location"),
       rating: z.number().describe("The rating of the location"),
-      reviewCount: z.number().describe("The number of reviews of the location"),
-      tripadvisorUrl: z
-        .string()
-        .describe("The URL of the location on TripAdvisor"),
       websiteUrl: z
         .string()
         .describe("The URL of the location's website, if available"),
@@ -27,10 +23,9 @@ export const locationsSchema = z.object({
           "The price level of the location indicated by the priceLevel field from Google",
         ),
       description: z.string().describe("The description of the location"),
-      photoUrls: z
-        .array(z.string())
-        .describe("The URLs of the photos of the location from TripAdvisor"),
-
+      // photoUrls: z
+      //   .array(z.string())
+      //   .describe("The URLs of the photos of the location from TripAdvisor"),
       isLoaded: z.boolean().describe("A flag that is always true"),
     }),
   ),

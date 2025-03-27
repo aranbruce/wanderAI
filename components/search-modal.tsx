@@ -110,7 +110,7 @@ export default function SearchModal({
             }}
             transition={{ duration: 0.2 }}
             onClick={(e) => e.stopPropagation()} // Prevent click from closing modal
-            className="fixed bottom-0 left-0 z-50 flex h-fit max-h-screen w-full flex-col items-start overflow-hidden rounded-t-xl bg-white shadow-heavy md:bottom-1/2 md:left-1/2 md:w-[568px] md:-translate-x-1/2 md:-translate-y-1/2 md:transform md:rounded-xl"
+            className="fixed bottom-0 left-0 z-50 flex h-fit max-h-screen w-full flex-col items-start overflow-hidden rounded-t-xl bg-white shadow-heavy md:w-[568px] md:rounded-xl"
           >
             <header className="sticky top-0 w-full border-b border-gray-200 bg-white px-6 py-4">
               <h3 className="text-lg">Your trip details</h3>
@@ -168,7 +168,7 @@ export default function SearchModal({
                     <BackIcon height="24" width="24" />
                   </Button>
                 </div>
-                <div className="flex w-full flex-grow flex-col">
+                <div className="flex w-full grow flex-col">
                   <Button type="submit">Plan</Button>
                 </div>
               </div>

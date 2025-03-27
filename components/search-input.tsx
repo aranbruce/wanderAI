@@ -191,7 +191,7 @@ export default function SearchInput({
                 onBlur={() => handleBlur()}
                 onKeyDown={(e) => handleInputKeyDown(e)}
                 autoComplete="off"
-                className={`${error ? "border-red-300" : "border-gray-200"} text-md flex w-full items-center justify-center gap-1 rounded-full border bg-white px-4 py-3 pl-9 font-medium shadow-light outline-none transition placeholder:font-normal autofill:bg-white focus-visible:ring-[3px] focus-visible:ring-offset-1 focus-visible:ring-offset-white`}
+                className={`${error ? "border-red-300" : "border-gray-200"} text-md flex w-full items-center justify-center gap-1 rounded-full border bg-white px-4 py-3 pl-9 font-medium shadow-light outline-hidden transition placeholder:font-normal autofill:bg-white focus-visible:ring-[3px] focus-visible:ring-offset-1 focus-visible:ring-offset-white`}
                 name={label}
                 aria-label={label}
                 required={required}
@@ -218,7 +218,7 @@ export default function SearchInput({
                     ref={(el) => {
                       suggestionRefs.current[index] = el;
                     }}
-                    className="w-full cursor-pointer rounded-lg p-2 outline-none hover:bg-gray-100 focus-visible:bg-gray-100 focus-visible:ring-2 focus-visible:ring-green-400/40"
+                    className="w-full cursor-pointer rounded-lg p-2 outline-hidden hover:bg-gray-100 focus-visible:bg-gray-100 focus-visible:ring-2 focus-visible:ring-green-400/40"
                     onMouseDown={() => handleOptionClick(suggestion)}
                     onKeyDown={(e) =>
                       handleSuggestionsKeyDown(e, suggestion, index)
