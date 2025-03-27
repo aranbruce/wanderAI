@@ -2,8 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { experimental_useObject as useObject } from "ai/react";
-
+import { experimental_useObject as useObject } from "@ai-sdk/react";
 import { locationsSchema } from "@/app/api/trip/schema";
 
 import useGetNewSearchParams from "@/hooks/useGetNewSearchParams";
