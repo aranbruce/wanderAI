@@ -1,9 +1,10 @@
 import { google, GoogleGenerativeAIProviderMetadata } from "@ai-sdk/google";
-import { streamObject } from "ai";
+import { generateText, streamObject } from "ai";
 import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { kv } from "@vercel/kv";
 import { locationsSchema, tripSchema } from "./schema";
+import { openai } from "@ai-sdk/openai";
 
 // Allow streaming responses up to 120 seconds on edge runtime
 export const maxDuration = 120;
@@ -102,60 +103,38 @@ export async function POST(request: NextRequest) {
 
   try {
     const result = streamObject({
-      model: google("gemini-2.5-pro-exp-03-25", {
-        // model: google("gemini-2.0-flash-001", {
+      // model: openai.responses("gpt-4o-mini"),
+      model: google("gemini-2.5-flash-preview-04-17", {
         useSearchGrounding: true,
-        structuredOutputs: true,
       }),
+      mode: "json",
+      maxRetries: 2,
+      prompt: `Plan a trip to ${name} ${fullName} near latitude: ${latitude} and longitude: ${longitude} for ${duration} days. Include a variety of locations that match the following preferences: ${preferences.join(
+        ", ",
+      )}
+            Search the web and select appropriate locations by matching the type of location to the preferences.
+            Do not include locations that do not match the preferences.
+            
+            Describe each location in detail using 4 sentences.
+            Include a morning, afternoon, and evening location for each day.
+            Do not include the rating in the description.
+            Do not include the location in the description.
+            Do not use the same location more than once.
+            Group locations that are located closely together on the same day.
+            Find the website URL of each location and include it in the description.
+            Only return 1 location per time of day. For example if the duration is 3 days, only return 1 morning, 1 afternoon, and 1 evening location per day.
+            Do not repeat locations.
+            Include the latitude and longitude of each location.
+            Make sure to search the web for the most up-to-date information.`,
 
-      // mode: "json",
-      maxRetries: 0,
-      system: `
-        Plan a trip to ${name} ${fullName} near latitude: ${latitude} and longitude: ${longitude} for ${duration} days. Include a variety of locations that match the following preferences: ${preferences.join(
-          ", ",
-        )}
-        Select appropriate locations by matching the type of location to the preferences.
-        Do not include locations that do not match the preferences.
-        
-        Only use locations provided by TripAdvisor.
-        Describe each location in detail using 2 sentences.
-        Do not include the rating in the description.
-        Do not include the location in the description.
-        Do not use the same location more than once.
-        Group locations that are located closely together on the same day.
-        Only return 1 location per time of day. For example if the duration is 3 days, only return 1 morning, 1 afternoon, and 1 evening location per day.
-        Do not repeat locations.
-        Make sure the id you return matches the id from TripAdvisor for that location.
-        Try to provide as many photoUrls as possible for each location.
-        Provide the itinerary as valid JSON:
-        `,
-      prompt: "Generate the trip itinerary",
       schema: locationsSchema,
       onFinish({ object, usage, providerMetadata, response, error }) {
+        console.log("Generation finished");
         // Log errors if they occurred
         if (error) {
           console.error("Generation error:", error);
           return;
         }
-        // Log metadata
-        console.log("Token usage:", usage);
-
-        if (response) {
-          console.log("Response ID:", response.id);
-          console.log("Model used:", response.modelId);
-          console.log("Timestamp:", response.timestamp);
-        }
-
-        if (providerMetadata) {
-          const metadata = providerMetadata?.google as unknown as
-            | GoogleGenerativeAIProviderMetadata
-            | undefined;
-          const groundingMetadata = metadata?.groundingMetadata;
-          const safetyRatings = metadata?.safetyRatings;
-          console.log("Grounding metadata:", groundingMetadata);
-          console.log("Safety ratings:", safetyRatings);
-        }
-
         // Still save to KV as in your original code
         kv.set(key, object);
         kv.expire(key, 60 * 60 * 24 * 7); // 7 days
@@ -164,6 +143,7 @@ export async function POST(request: NextRequest) {
 
     // Get the streaming response
     const streamResponse = result.toTextStreamResponse();
+    console.log("Stream response: ", streamResponse);
 
     // Create a new Response with the same body and status
     const response = new Response(streamResponse.body, {

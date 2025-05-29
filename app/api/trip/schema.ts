@@ -14,9 +14,9 @@ export const locationsSchema = z.object({
         .describe("The time of day"),
       title: z.string().describe("The title of the location"),
       rating: z.number().describe("The rating of the location"),
-      websiteUrl: z
-        .string()
-        .describe("The URL of the location's website, if available"),
+      // websiteUrl: z
+      //   .string()
+      //   .describe("The URL of the location's website, if available"),
       priceLevel: z
         .enum(["$", "$$", "$$$", "$$$$"])
         .describe(
