@@ -4,7 +4,7 @@ import { NextRequest } from "next/server";
 import { kv } from "@vercel/kv";
 import { tripSchema, locationItemSchema } from "./schema";
 
-export const maxDuration = 120;
+export const maxDuration = 60;
 
 async function fetchDestinationDetails(destination: string, sessionId: string) {
   try {
