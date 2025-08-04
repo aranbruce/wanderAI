@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 
 import debounce from "@/utils/debounce";
+import { useMapboxSession } from "@/hooks/useMapboxSession";
 
 import SearchIcon from "@/images/icons/search-icon";
 
@@ -40,6 +41,8 @@ export default function SearchInput({
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [, setIsSuggestionSelected] = useState(false);
 
+  const { sessionToken } = useMapboxSession();
+
   const inputRef = useRef<HTMLInputElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const suggestionContainerRef = useRef<HTMLDivElement>(null);
@@ -69,8 +72,10 @@ export default function SearchInput({
   }, [selectedValue]);
 
   async function searchForDestinations(input: string) {
+    if (!sessionToken) return; // Wait for session token to be available
+
     const response = await fetch(
-      `/api/places-autocomplete?placeString=${input}`,
+      `/api/places-autocomplete?placeString=${input}&sessionToken=${sessionToken}`,
     );
     const data = await response.json();
     if (data.length === 0) {
@@ -170,13 +175,13 @@ export default function SearchInput({
     <div className="relative">
       <div className="flex flex-col gap-2" ref={containerRef}>
         {showLabel && (
-          <label className="text-sm font-medium leading-5" htmlFor={inputId}>
+          <label className="text-sm leading-5 font-medium" htmlFor={inputId}>
             {label}
           </label>
         )}
         <div className="relative">
           <div className="relative">
-            <div className="absolute left-3 top-3 z-10">
+            <div className="absolute top-3 left-3 z-10">
               <SearchIcon />
             </div>
             <div className="relative flex w-full flex-col gap-1">
@@ -191,7 +196,7 @@ export default function SearchInput({
                 onBlur={() => handleBlur()}
                 onKeyDown={(e) => handleInputKeyDown(e)}
                 autoComplete="off"
-                className={`${error ? "border-red-300" : "border-gray-200"} text-md flex w-full items-center justify-center gap-1 rounded-full border bg-white px-4 py-3 pl-9 font-medium shadow-light outline-hidden transition placeholder:font-normal autofill:bg-white focus-visible:ring-[3px] focus-visible:ring-offset-1 focus-visible:ring-offset-white`}
+                className={`${error ? "border-red-300" : "border-gray-200"} text-md shadow-light flex w-full items-center justify-center gap-1 rounded-full border bg-white px-4 py-3 pl-9 font-medium outline-hidden transition placeholder:font-normal autofill:bg-white focus-visible:ring-[3px] focus-visible:ring-offset-1 focus-visible:ring-offset-white`}
                 name={label}
                 aria-label={label}
                 required={required}
@@ -199,7 +204,7 @@ export default function SearchInput({
               {error && (
                 <p
                   id={`${inputId}-error`}
-                  className="absolute left-2 top-full mt-1 text-xs text-red-300 transition"
+                  className="absolute top-full left-2 mt-1 text-xs text-red-300 transition"
                 >
                   {error}
                 </p>
@@ -208,7 +213,7 @@ export default function SearchInput({
           </div>
           {showSuggestions && (
             <div
-              className="absolute z-50 mt-2 flex w-full flex-col gap-2 rounded-xl border border-gray-200 bg-white p-2 shadow-light"
+              className="shadow-light absolute z-50 mt-2 flex w-full flex-col gap-2 rounded-xl border border-gray-200 bg-white p-2"
               ref={suggestionContainerRef}
             >
               {suggestions?.length > 0 ? (

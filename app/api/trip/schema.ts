@@ -1,34 +1,23 @@
 import { z } from "zod";
 
+// Simplified location schema for array output
+export const locationItemSchema = z.object({
+  id: z.string(),
+  coordinates: z.object({
+    latitude: z.number(),
+    longitude: z.number(),
+  }),
+  day: z.number(),
+  timeOfDay: z.enum(["morning", "afternoon", "evening"]),
+  title: z.string(),
+  rating: z.number(),
+  priceLevel: z.enum(["$", "$$", "$$$", "$$$$"]),
+  description: z.string(),
+  isLoaded: z.boolean(),
+});
+
 export const locationsSchema = z.object({
-  locations: z.array(
-    z.object({
-      id: z.string().describe("The id of the location"),
-      coordinates: z.object({
-        latitude: z.number().describe("The latitude of the location"),
-        longitude: z.number().describe("The longitude of the location"),
-      }),
-      day: z.number().describe("The day of the trip"),
-      timeOfDay: z
-        .enum(["morning", "afternoon", "evening"])
-        .describe("The time of day"),
-      title: z.string().describe("The title of the location"),
-      rating: z.number().describe("The rating of the location"),
-      // websiteUrl: z
-      //   .string()
-      //   .describe("The URL of the location's website, if available"),
-      priceLevel: z
-        .enum(["$", "$$", "$$$", "$$$$"])
-        .describe(
-          "The price level of the location indicated by the priceLevel field from Google",
-        ),
-      description: z.string().describe("The description of the location"),
-      // photoUrls: z
-      //   .array(z.string())
-      //   .describe("The URLs of the photos of the location from TripAdvisor"),
-      isLoaded: z.boolean().describe("A flag that is always true"),
-    }),
-  ),
+  locations: z.array(locationItemSchema),
 });
 
 export const tripSchema = z.object({
@@ -54,4 +43,5 @@ export const tripSchema = z.object({
       ]),
     )
     .optional(),
+  sessionToken: z.string().optional(),
 });

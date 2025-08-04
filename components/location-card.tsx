@@ -1,12 +1,17 @@
 import { useState } from "react";
+import dynamic from "next/dynamic";
 
 import Image from "next/image";
 
 import Button from "@/components/button";
 import BackIcon from "@/images/icons/back-icon";
 import { LocationProps } from "@/components/trip-content";
-import ImageModal from "./image-modal";
 import LocationImages from "./location-images";
+
+// Lazy load the ImageModal component
+const ImageModal = dynamic(() => import("./image-modal"), {
+  ssr: false,
+});
 
 interface LocationCardProps {
   location: LocationProps;
@@ -22,14 +27,14 @@ export default function LocationCard({
   const [isImageModalOpen, setIsImageModalOpen] = useState(false);
   const [selectedPhotoUri, setSelectedPhotoUri] = useState<string | null>(null);
 
-  const openModal = (photoUri) => {
+  const openModal = (photoUri: string) => {
     setSelectedPhotoUri(photoUri);
     setIsImageModalOpen(true);
   };
 
   return (
     <>
-      <div className="shadow-top md:shadow-medium fixed bottom-0 z-30 flex w-full flex-col items-center gap-2 rounded-t-lg bg-white pt-4 md:h-screen md:w-96 md:justify-between md:gap-4 md:rounded-none md:pt-20 lg:w-[420px]">
+      <div className="shadow-top md:shadow-medium bottom-0 z-30 flex w-full flex-col items-center gap-2 rounded-t-lg bg-white pt-4 md:order-1 md:h-screen md:justify-between md:gap-4 md:rounded-none md:pt-20">
         <div className="flex min-h-0 w-full flex-col gap-2 md:gap-3">
           <div className="flex w-full items-start gap-2 px-4 md:px-8">
             <div className="flex w-full flex-col gap-1 md:gap-2">

@@ -110,7 +110,7 @@ export default function SearchModal({
             }}
             transition={{ duration: 0.2 }}
             onClick={(e) => e.stopPropagation()} // Prevent click from closing modal
-            className="fixed bottom-0 left-0 z-50 flex h-fit max-h-screen w-full flex-col items-start overflow-hidden rounded-t-xl bg-white shadow-heavy md:w-[568px] md:rounded-xl"
+            className="shadow-heavy fixed bottom-0 left-0 z-50 flex h-fit max-h-screen w-full flex-col items-start overflow-hidden rounded-t-xl bg-white md:w-[568px] md:rounded-xl"
           >
             <header className="sticky top-0 w-full border-b border-gray-200 bg-white px-6 py-4">
               <h3 className="text-lg">Your trip details</h3>

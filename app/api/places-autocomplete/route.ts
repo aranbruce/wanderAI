@@ -1,18 +1,18 @@
 import { NextRequest, NextResponse } from "next/server";
-import { cookies } from "next/headers";
 
 export async function GET(request: NextRequest) {
-  const cookieStore = await cookies();
-  const sessionCookie = cookieStore.get("sessionid");
-
-  const sessionId = sessionCookie
-    ? sessionCookie.value
-    : Math.random().toString(36).substring(2);
-  const sessionToken = sessionId;
-
   const url = new URL(request.url);
   const searchParams = new URLSearchParams(url.searchParams);
   const placeString = searchParams.get("placeString");
+  const sessionToken = searchParams.get("sessionToken");
+
+  // Fallback to generating a session token if not provided (e.g., direct API calls)
+  if (!sessionToken) {
+    console.warn("No session token provided, generating fallback token");
+  }
+  const sessionId = sessionToken || Math.random().toString(36).substring(2);
+
+  console.log("Session Token: ", sessionId);
 
   const types = ["place", "locality", "neighborhood"];
 
@@ -29,7 +29,7 @@ export async function GET(request: NextRequest) {
 
   try {
     const response = await fetch(
-      `https://api.mapbox.com/search/searchbox/v1/suggest?q=${placeString}&access_token=${process.env.MAPBOX_API_KEY}&language=en&limit=5&session_token=${sessionToken}&types=${types.join(
+      `https://api.mapbox.com/search/searchbox/v1/suggest?q=${placeString}&access_token=${process.env.MAPBOX_API_KEY}&language=en&limit=5&session_token=${sessionId}&types=${types.join(
         ",",
       )}`,
       {
@@ -46,10 +46,7 @@ export async function GET(request: NextRequest) {
 
     const data = await response.json();
     if (!data.suggestions) {
-      const emptyResponse = NextResponse.json([]);
-      // Set the cookie in the response
-      emptyResponse.cookies.set("sessionid", sessionId);
-      return emptyResponse;
+      return NextResponse.json([]);
     }
 
     const suggestions = data.suggestions.map((prediction) => {
@@ -62,20 +59,9 @@ export async function GET(request: NextRequest) {
     });
 
     // Create response with the suggestions data
-    const nextResponse = NextResponse.json(suggestions);
-
-    // Set the cookie in the response
-    nextResponse.cookies.set("sessionid", sessionId);
-
-    return nextResponse;
+    return NextResponse.json(suggestions);
   } catch (error) {
     console.error("Error:", error.message);
-    const errorResponse = NextResponse.json(
-      { error: "API call failed." },
-      { status: 500 },
-    );
-    // Still set the cookie even in case of error
-    errorResponse.cookies.set("sessionid", sessionId);
-    return errorResponse;
+    return NextResponse.json({ error: "API call failed." }, { status: 500 });
   }
 }

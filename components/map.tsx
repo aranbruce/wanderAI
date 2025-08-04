@@ -30,6 +30,7 @@ export default function Map({
   useEffect(() => {
     setLng(initialLng);
     setLat(initialLat);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentItineraryItemIndex, tripItinerary]);
 
   useEffect(() => {
@@ -40,6 +41,7 @@ export default function Map({
       center: [lng, lat],
       zoom: zoom,
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -154,16 +156,18 @@ export default function Map({
 
   useEffect(() => {
     updateMapCenter();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialLng, initialLat]);
 
   useEffect(() => {
     updateMarkerColor();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentItineraryItemIndex]);
 
   return (
     <div
       ref={mapContainer}
-      className={`ml-auto h-[calc(100%-300px)] w-full md:absolute md:right-0 md:h-screen md:w-[calc(100%-384px)] lg:w-[calc(100%-420px)]`}
+      className={`mb-[-8px] ml-auto h-full w-full md:order-2 md:mb-0`}
     />
   );
 }

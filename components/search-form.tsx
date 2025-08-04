@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 
 import useLocalStorage from "@/hooks/useLocalStorage";
 import { validateForm, ValidationErrors } from "@/utils/validation";
@@ -59,14 +60,14 @@ export default function SearchForm() {
 
   return (
     <>
-      <div className="mt-12 flex w-full flex-col items-center gap-8 rounded-3xl bg-[linear-gradient(180deg,rgba(0,0,0,0.10)0%,rgba(33,35,44,0.70)100%),url('/assets/mountains.jpg')] bg-cover bg-bottom px-6 pb-8 pt-16 shadow-heavy sm:px-10 sm:pb-12 sm:pt-16 md:px-12 md:pb-24 md:pt-48">
-        <div className="flex flex-col items-center gap-6 text-pretty text-center text-white">
+      <div className="shadow-heavy mt-12 flex w-full flex-col items-center gap-8 rounded-3xl bg-[linear-gradient(180deg,rgba(0,0,0,0.10)0%,rgba(33,35,44,0.70)100%),url('/assets/mountains.jpg')] bg-cover bg-bottom px-6 pt-16 pb-8 sm:px-10 sm:pt-16 sm:pb-12 md:px-12 md:pt-48 md:pb-24">
+        <div className="flex flex-col items-center gap-6 text-center text-pretty text-white">
           <h1 className="text-4xl md:text-7xl">Love travel, hate planning?</h1>
           <p className="text-lg font-normal">
             Plan your next adventure in seconds through the power of AI
           </p>
         </div>
-        <div className="flex w-full max-w-3xl flex-col items-start gap-2 rounded-2xl bg-white p-4 shadow-heavy md:p-6 md:pb-8">
+        <div className="shadow-heavy flex w-full max-w-3xl flex-col items-start gap-2 rounded-2xl bg-white p-4 md:p-6 md:pb-8">
           <form
             id="cardForm"
             className="flex w-full flex-col gap-x-4 gap-y-6 md:grid md:grid-cols-[1fr_1fr_120px] md:items-end md:gap-4"
@@ -104,12 +105,12 @@ export default function SearchForm() {
             href="https://www.producthunt.com/posts/wanderai-2?embed=true&utm_source=badge-featured&utm_medium=badge&utm_souce=badge-wanderai&#0045;2"
             target="_blank"
           >
-            <img
+            <Image
               src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=484286&theme=light"
-              alt="WanderAI - Plan&#0032;your&#0032;next&#0032;trip&#0032;in&#0032;seconds&#0032;with&#0032;the&#0032;power&#0032;of&#0032;AI | Product Hunt"
+              alt="WanderAI - Plan your next trip in seconds with the power of AI | Product Hunt"
               style={{ width: "185px", height: "40px" }}
-              width="185"
-              height="40"
+              width={185}
+              height={40}
             />
           </a>
         </div>

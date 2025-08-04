@@ -11,9 +11,7 @@ export default function Loading() {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      activeTextIndex === 2
-        ? setActiveTextIndex(0)
-        : setActiveTextIndex(activeTextIndex + 1);
+      setActiveTextIndex(activeTextIndex === 2 ? 0 : activeTextIndex + 1);
     }, animationTime * 1000);
     return () => clearInterval(interval);
   }, [activeTextIndex]);

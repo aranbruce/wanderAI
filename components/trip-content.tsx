@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { experimental_useObject as useObject } from "@ai-sdk/react";
-import { locationsSchema } from "@/app/api/trip/schema";
+import { z } from "zod";
 
 import useGetNewSearchParams from "@/hooks/useGetNewSearchParams";
+import { useMapboxSession } from "@/hooks/useMapboxSession";
 
 import Map from "@/components/map";
 import SignUpModal from "@/components/sign-up-modal";
@@ -33,29 +34,49 @@ export interface LocationProps {
 }
 
 export default function TripContent() {
-  const [tripItinerary, setTripItinerary] = useState<LocationProps[]>([]);
   const [currentItineraryItemIndex, setCurrentItineraryItemIndex] = useState(0);
   const [isSignUpModalOpen, setIsSignUpModalOpen] = useState(false);
+  const hasSubmitted = useRef(false);
 
   const getNewSearchParams = useGetNewSearchParams();
   const { destination, duration, preferences } = getNewSearchParams();
+  const { sessionToken } = useMapboxSession();
   const router = useRouter();
 
-  const { object, submit, stop, isLoading } = useObject({
+  // Use useObject hook for streaming object generation
+  const { object, submit, isLoading } = useObject({
     api: "/api/trip",
-    schema: locationsSchema,
-    onFinish: (object) => {
-      setTripItinerary(object.object.locations);
-    },
-    onError: (error) => {
-      throw new Error(error.message);
-    },
+    schema: z.array(
+      z.object({
+        id: z.string(),
+        coordinates: z.object({
+          latitude: z.number(),
+          longitude: z.number(),
+        }),
+        day: z.number(),
+        timeOfDay: z.enum(["morning", "afternoon", "evening"]),
+        title: z.string(),
+        rating: z.number(),
+        priceLevel: z.enum(["$", "$$", "$$$", "$$$$"]),
+        description: z.string(),
+        isLoaded: z.boolean(),
+      }),
+    ),
   });
 
   useEffect(() => {
-    stop();
-    submit({ destination, duration, preferences });
-  }, []);
+    if (!sessionToken || hasSubmitted.current) return;
+
+    console.log("Submitting trip request:", {
+      destination,
+      duration,
+      preferences,
+      sessionToken,
+    });
+    submit({ destination, duration, preferences, sessionToken });
+    hasSubmitted.current = true;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sessionToken]); // Only depend on sessionToken
 
   function increaseTimeOfDay() {
     if (
@@ -78,28 +99,30 @@ export default function TripContent() {
 
   return (
     <div className="relative flex h-svh max-h-dvh w-full flex-col overflow-hidden">
-      {!object?.locations && tripItinerary.length === 0 ? (
-        <Loading />
+      {object && object.length > 0 ? (
+        (() => {
+          const currentIndex = Math.min(
+            currentItineraryItemIndex,
+            object.length - 1,
+          );
+          const currentLocation = object[currentIndex];
+
+          return (
+            <div className="flex h-full w-full flex-col md:grid md:grid-cols-[384px_1fr] lg:grid-cols-[420px_1fr]">
+              <Map
+                tripItinerary={object || []}
+                currentItineraryItemIndex={currentIndex}
+              />
+              <LocationCard
+                location={currentLocation}
+                increaseTimeOfDay={increaseTimeOfDay}
+                decreaseTimeOfDay={decreaseTimeOfDay}
+              />
+            </div>
+          );
+        })()
       ) : (
-        <>
-          <Map
-            tripItinerary={
-              !isLoading && tripItinerary.length > 0
-                ? tripItinerary
-                : object?.locations
-            }
-            currentItineraryItemIndex={currentItineraryItemIndex}
-          />
-          <LocationCard
-            location={
-              !isLoading && tripItinerary.length > 0
-                ? tripItinerary[currentItineraryItemIndex]
-                : object.locations[currentItineraryItemIndex]
-            }
-            increaseTimeOfDay={increaseTimeOfDay}
-            decreaseTimeOfDay={decreaseTimeOfDay}
-          />
-        </>
+        <Loading />
       )}
       <SignUpModal
         isModalOpen={isSignUpModalOpen}

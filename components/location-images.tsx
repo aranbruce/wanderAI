@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 interface LocationImagesProps {
   isLoaded: boolean;
   photoUrls: string[];
@@ -23,12 +25,14 @@ export default function LocationImages({
               className="bg-gray-30 relative h-32 w-full min-w-32 snap-start overflow-hidden rounded-xl"
               key={photoUri}
             >
-              <img
+              <Image
                 key={photoUri}
                 src={photoUri}
                 alt="Location image"
                 className="h-full w-full min-w-[120px] cursor-pointer rounded-xl bg-gray-300 object-cover"
                 onClick={() => openModal(photoUri)}
+                fill
+                sizes="120px"
               />
             </div>
           ))}

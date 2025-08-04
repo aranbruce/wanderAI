@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { usePostHog } from "posthog-js/react";
 
 import Button from "@/components/button";
 import Input from "@/components/input";
