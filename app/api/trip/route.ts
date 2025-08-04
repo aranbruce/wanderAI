@@ -5,7 +5,6 @@ import { kv } from "@vercel/kv";
 import { tripSchema, locationItemSchema } from "./schema";
 
 export const maxDuration = 120;
-export const runtime = "edge";
 
 async function fetchDestinationDetails(destination: string, sessionId: string) {
   try {

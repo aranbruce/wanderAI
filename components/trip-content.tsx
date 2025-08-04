@@ -44,7 +44,7 @@ export default function TripContent() {
   const router = useRouter();
 
   // Use useObject hook for streaming object generation
-  const { object, submit, isLoading } = useObject({
+  const { object, submit } = useObject({
     api: "/api/trip",
     schema: z.array(
       z.object({
@@ -66,13 +66,6 @@ export default function TripContent() {
 
   useEffect(() => {
     if (!sessionToken || hasSubmitted.current) return;
-
-    console.log("Submitting trip request:", {
-      destination,
-      duration,
-      preferences,
-      sessionToken,
-    });
     submit({ destination, duration, preferences, sessionToken });
     hasSubmitted.current = true;
     // eslint-disable-next-line react-hooks/exhaustive-deps
