@@ -12,44 +12,50 @@
     "format:fix": "prettier --write --ignore-path .gitignore ."
   },
   "dependencies": {
-    "@ai-sdk/google": "^2.0.1",
-    "@ai-sdk/openai": "^2.0.2",
-    "@ai-sdk/react": "^2.0.2",
+    "@ai-sdk/google": "^2.0.17",
+    "@ai-sdk/openai": "^2.0.40",
+    "@ai-sdk/react": "^2.0.57",
     "@formcarry/react": "^1.0.4",
-    "@react-email/components": "0.4.0",
+    "@react-email/components": "0.5.5",
     "@react-email/tailwind": "1.2.2",
     "@vercel/kv": "^3.0.0",
-    "ai": "^5.0.2",
-    "eslint": "^9.32.0",
-    "framer-motion": "^12.23.12",
-    "geist": "^1.4.2",
-    "mapbox-gl": "^3.14.0",
-    "next": "15.4.5",
-    "posthog-js": "^1.258.5",
+    "ai": "^5.0.57",
+    "eslint": "^9.36.0",
+    "framer-motion": "^12.23.22",
+    "geist": "^1.5.1",
+    "mapbox-gl": "^3.15.0",
+    "next": "15.5.4",
+    "posthog-js": "^1.268.8",
     "react": "19.1.1",
     "react-dom": "19.1.1",
     "react-error-boundary": "^6.0.0",
     "react-map-gl": "^8.0.4",
-    "resend": "^4.8.0",
-    "sharp": "^0.34.3",
-    "zod": "^4.0.14"
+    "resend": "^6.1.1",
+    "sharp": "^0.34.4",
+    "zod": "^4.1.11"
   },
   "devDependencies": {
-    "@tailwindcss/postcss": "^4.1.11",
+    "@tailwindcss/postcss": "^4.1.13",
     "@types/eslint": "^9.6.1",
-    "@types/node": "24.2.0",
+    "@types/node": "24.5.2",
     "@types/react": "npm:types-react@19.0.0-rc.1",
-    "@typescript-eslint/parser": "^8.39.0",
-    "eslint-config-next": "15.4.5",
+    "@typescript-eslint/parser": "^8.45.0",
+    "eslint-config-next": "15.5.4",
     "postcss": "^8.5.6",
     "prettier": "^3.6.2",
     "prettier-plugin-tailwindcss": "^0.6.14",
-    "react-email": "4.2.7",
-    "tailwindcss": "^4.1.11"
+    "react-email": "4.2.12",
+    "tailwindcss": "^4.1.13"
   },
   "pnpm": {
     "overrides": {
       "@types/react": "npm:types-react@19.0.0-rc.1"
-    }
+    },
+    "onlyBuiltDependencies": [
+      "@tailwindcss/oxide",
+      "core-js",
+      "esbuild",
+      "sharp"
+    ]
   }
 }

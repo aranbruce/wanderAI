@@ -8,7 +8,9 @@ export default function Section({ children, isHero }: SectionProps) {
     <section className="flex flex-col items-center justify-center px-6 py-12 sm:px-12 sm:py-16 md:p-20 lg:p-24">
       <div
         className={`flex w-full flex-col items-center justify-center gap-8 ${
-          isHero ? "pt-18" : "max-w-(--breakpoint-lg)"
+          isHero
+            ? "max-w-[var(--breakpoint-hero)] pt-18"
+            : "max-w-[var(--breakpoint-lg)]"
         }`}
       >
         {children}

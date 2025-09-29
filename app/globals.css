@@ -20,6 +20,9 @@
 
   --font-sans: var(--font-geist-sans);
 
+  --breakpoint-lg: 1024px;
+  --breakpoint-hero: 1440px;
+
   --shadow-light: 0 2px 4px 0px rgba(0, 0, 0, 0.04);
   --shadow-medium: 0 4px 12px 0px rgba(0, 0, 0, 0.08);
   --shadow-heavy: 0 4px 24px 0px rgba(0, 0, 0, 0.32);
