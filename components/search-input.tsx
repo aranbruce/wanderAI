@@ -47,11 +47,18 @@ export default function SearchInput({
   const containerRef = useRef<HTMLDivElement>(null);
   const suggestionContainerRef = useRef<HTMLDivElement>(null);
   const suggestionRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const prevSelectedValue = useRef(selectedValue);
 
   const inputId = `input-${label.toLowerCase().replace(/\s+/g, "-")}`;
 
+  // Sync queryValue with selectedValue changes
+  // This is necessary to keep the input in sync with the selected destination
   useEffect(() => {
-    setQueryValue(selectedValue || "");
+    if (prevSelectedValue.current !== selectedValue) {
+      prevSelectedValue.current = selectedValue;
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- Syncing state with prop changes
+      setQueryValue(selectedValue || "");
+    }
   }, [selectedValue]);
 
   useEffect(() => {

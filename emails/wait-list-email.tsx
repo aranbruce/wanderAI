@@ -29,7 +29,7 @@ const baseUrl = process.env.VERCEL_URL
 export const WaitListEmail = ({ fullName, email }: WaitListEmailProps) => (
   <Html>
     <Head>
-      <title>WanderAI - You're on the wait list!</title>
+      <title>WanderAI - You&apos;re on the wait list!</title>
       <Font
         fontFamily="Poppins"
         fallbackFontFamily={["Helvetica", "Arial", "sans-serif"]}
@@ -95,20 +95,20 @@ export const WaitListEmail = ({ fullName, email }: WaitListEmailProps) => (
               className="mx-auto"
             />
             <Heading className="text-center text-2xl font-semibold text-black">
-              You're on the wait list!
+              You&apos;re on the wait list!
             </Heading>
           </Section>
           <Section>
             <Text className="text-black">Hi {fullName},</Text>
             <Text className="text-black">
-              Thanks for joining the wait list! We're excited to have you on
+              Thanks for joining the wait list! We&apos;re excited to have you on
               board.
             </Text>
             <Text className="text-black">
-              We're working hard to bring you the best travel planning product
+              We&apos;re working hard to bring you the best travel planning product
               on the market and will send you an email to{" "}
               <strong className="font-semibold">{email}</strong> as soon as
-              we're able to set up an account for you.
+              we&apos;re able to set up an account for you.
             </Text>
             <Text className="text-black">
               In the meantime, feel free to check out our website to see what

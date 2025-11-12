@@ -23,6 +23,7 @@ export default function ImageModal({
   selectedPhotoIndex,
 }: ImageModalProps) {
   const [currentIndex, setCurrentIndex] = useState(selectedPhotoIndex);
+  const prevSelectedPhotoIndex = useRef(selectedPhotoIndex);
 
   const imageRefs = useRef<(HTMLDivElement | null)[]>([]);
   const isInitialLoad = useRef(true);
@@ -39,10 +40,15 @@ export default function ImageModal({
     }
   }, [currentIndex]);
 
+  // Sync currentIndex with selectedPhotoIndex prop changes
+  // This is necessary to keep the displayed image in sync with the selected photo
   useEffect(() => {
-    isInitialLoad.current = true;
-
-    setCurrentIndex(selectedPhotoIndex);
+    if (prevSelectedPhotoIndex.current !== selectedPhotoIndex) {
+      isInitialLoad.current = true;
+      prevSelectedPhotoIndex.current = selectedPhotoIndex;
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- Syncing state with prop changes
+      setCurrentIndex(selectedPhotoIndex);
+    }
   }, [selectedPhotoIndex]);
 
   const handleScroll = (event) => {
