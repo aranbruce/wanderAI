@@ -101,12 +101,12 @@ export const WaitListEmail = ({ fullName, email }: WaitListEmailProps) => (
           <Section>
             <Text className="text-black">Hi {fullName},</Text>
             <Text className="text-black">
-              Thanks for joining the wait list! We&apos;re excited to have you on
-              board.
+              Thanks for joining the wait list! We&apos;re excited to have you
+              on board.
             </Text>
             <Text className="text-black">
-              We&apos;re working hard to bring you the best travel planning product
-              on the market and will send you an email to{" "}
+              We&apos;re working hard to bring you the best travel planning
+              product on the market and will send you an email to{" "}
               <strong className="font-semibold">{email}</strong> as soon as
               we&apos;re able to set up an account for you.
             </Text>
