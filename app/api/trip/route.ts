@@ -96,18 +96,22 @@ export async function POST(request: NextRequest) {
     // Check cache first to avoid API calls
     try {
       const cached = await kv.get<{
-        locations: Array<z.infer<typeof locationItemSchema>>;
+        locations?: Array<z.infer<typeof locationItemSchema>>;
+        elements?: Array<z.infer<typeof locationItemSchema>>;
       }>(key);
-      if (
-        cached &&
-        Array.isArray(cached.locations) &&
-        cached.locations.length > 0
-      ) {
-        console.log(
-          `Returning cached trip with ${cached.locations.length} locations`,
-        );
-        // Return cached data as a stream-compatible response
-        return Response.json({ locations: cached.locations }, { status: 200 });
+      if (cached) {
+        // Handle both old format (locations) and new format (elements)
+        const locationsArray = cached.elements || cached.locations;
+        if (
+          Array.isArray(locationsArray) &&
+          locationsArray.length > 0
+        ) {
+          console.log(
+            `Returning cached trip with ${locationsArray.length} locations`,
+          );
+          // Return cached data in the format expected by Output.array(): { elements: [...] }
+          return Response.json({ elements: locationsArray }, { status: 200 });
+        }
       }
     } catch (error) {
       console.warn("Error checking cache, proceeding with API call:", error);
@@ -167,30 +171,93 @@ Return an array of location objects with: id, coordinates {latitude, longitude},
         });
       },
       onFinish: async () => {
-        try {
-          // Access the object from the stream result for structured output
-          // When using Output.array(), result.object is a Promise that resolves to the array
-          // TypeScript doesn't infer the object property correctly, so we use type assertion
-          type ResultWithObject = {
-            object: Promise<Array<z.infer<typeof locationItemSchema>>>;
-          };
-          const object = await (result as unknown as ResultWithObject).object;
+        // onFinish is called when streaming completes
+        // We'll handle caching asynchronously after the response is sent
+        console.log("Stream finished, will cache result if valid");
+      },
+    });
 
-          if (Array.isArray(object) && object.length > 0) {
-            const wrappedObject = { locations: object };
+    // Handle caching asynchronously after response is sent
+    // In AI SDK v6, Output.array() provides elementStream, but we can also access the full array
+    // via result.object (Promise) or collect from elementStream
+    (async () => {
+      try {
+        // In AI SDK v6, result.object should still be available as a Promise
+        // that resolves to the full array when streaming completes
+        type ResultWithObject = {
+          object?: Promise<Array<z.infer<typeof locationItemSchema>>>;
+          elementStream?: AsyncIterable<z.infer<typeof locationItemSchema>>;
+        };
+
+        const resultTyped = result as unknown as ResultWithObject;
+        let locationsArray: Array<z.infer<typeof locationItemSchema>> | null =
+          null;
+
+        // Primary method: use result.object (should work in v6)
+        if (resultTyped.object) {
+          try {
+            const obj = await resultTyped.object;
+            if (Array.isArray(obj)) {
+              locationsArray = obj;
+              console.log(`Got ${obj.length} locations from result.object`);
+            }
+          } catch (objError) {
+            console.warn("Error accessing result.object:", objError);
+          }
+        }
+
+        // Fallback: collect from elementStream if object is not available
+        if (!locationsArray && resultTyped.elementStream) {
+          console.log("Collecting locations from elementStream...");
+          const elements: Array<z.infer<typeof locationItemSchema>> = [];
+          for await (const element of resultTyped.elementStream) {
+            elements.push(element);
+          }
+          if (elements.length > 0) {
+            locationsArray = elements;
+            console.log(`Got ${elements.length} locations from elementStream`);
+          }
+        }
+
+        if (locationsArray && locationsArray.length > 0) {
+          // Validate the array against the schema
+          const validationResult = z
+            .array(locationItemSchema)
+            .safeParse(locationsArray);
+
+          if (validationResult.success) {
+            // Store in the format that matches Output.array() response: { elements: [...] }
+            const wrappedObject = { elements: validationResult.data };
             await kv.set(key, wrappedObject);
             await kv.expire(key, CACHE_TTL_SECONDS);
             console.log(
-              `Saved ${object.length} locations to cache with key: ${key}`,
+              `Saved ${validationResult.data.length} locations to cache with key: ${key}`,
             );
           } else {
-            console.warn("No locations to cache - array is empty or invalid");
+            console.warn(
+              "No locations to cache - validation failed:",
+              validationResult.error.issues.map((i) => i.message).join(", "),
+            );
+            console.warn(
+              "First few items for debugging:",
+              JSON.stringify(locationsArray.slice(0, 2), null, 2),
+            );
           }
-        } catch (error: unknown) {
-          console.error("Error saving to cache:", error);
+        } else {
+          console.warn(
+            "No locations to cache - array is empty or invalid",
+            locationsArray
+              ? `Received: ${typeof locationsArray}, length: ${Array.isArray(locationsArray) ? locationsArray.length : "N/A"}`
+              : "No data received from result.object or elementStream",
+          );
         }
-      },
-    });
+      } catch (error: unknown) {
+        console.error("Error saving to cache:", error);
+        if (error instanceof Error) {
+          console.error("Error details:", error.message, error.stack);
+        }
+      }
+    })();
 
     return result.toTextStreamResponse();
   } catch (error) {

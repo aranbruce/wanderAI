@@ -48,9 +48,10 @@ export default function TripContent() {
 
   // Use useObject hook for streaming object generation
   // Schema matches the server's Output.array({ element: locationItemSchema })
+  // Output.array() returns { elements: [...] }, not [...] directly
   const { object, submit, error, isLoading } = useObject({
     api: "/api/trip",
-    schema: z.array(locationItemSchema),
+    schema: z.object({ elements: z.array(locationItemSchema) }),
     onError: (error) => {
       console.error("Error in useObject onError callback:", error);
       setLocalError(toError(error));
@@ -102,15 +103,28 @@ export default function TripContent() {
   }
 
   // When using Output.array(), useObject returns { elements: Array }
-  // TypeScript doesn't infer this correctly, so we use type assertion
+  // With schema z.object({ elements: z.array(locationItemSchema) }), 
+  // object should be { elements: LocationItem[] }
   // During streaming, elements are PartialObject types, so we cast to LocationProps[]
-  type UseObjectResult = {
-    elements?: LocationItem[];
-  };
   const locations = useMemo(() => {
-    const elements = (object as unknown as UseObjectResult)?.elements || [];
-    // Cast to LocationProps[] to handle PartialObject types during streaming
-    return elements as unknown as LocationProps[];
+    if (!object) return [];
+    
+    // Try to access elements directly - the schema should ensure this structure
+    // But use type assertion for safety during streaming (PartialObject types)
+    type ObjectWithElements = { elements?: unknown[] };
+    const obj = object as unknown as ObjectWithElements;
+    
+    // Check if elements exists and is an array with at least one item
+    if (obj && 'elements' in obj && Array.isArray(obj.elements) && obj.elements.length > 0) {
+      // Filter out any undefined/null elements and ensure we have valid data
+      const validElements = obj.elements.filter(
+        (item): item is LocationItem => item != null && typeof item === 'object'
+      );
+      // Cast to LocationProps[] to handle PartialObject types during streaming
+      return validElements as unknown as LocationProps[];
+    }
+    
+    return [];
   }, [object]);
 
   // Error detection: catch cases where streaming errors occur but aren't properly propagated
@@ -140,7 +154,7 @@ export default function TripContent() {
 
       // Case 2: Timeout after 30 seconds (still loading but no data)
       if (elapsed > 30000 && locations.length === 0) {
-        console.warn("Timeout: No data received after 20 seconds");
+        console.warn("Timeout: No data received after 30 seconds");
         setLocalError(new Error(GENERIC_ERROR_MESSAGE));
         clearInterval(interval);
       }
