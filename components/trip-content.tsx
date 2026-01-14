@@ -120,9 +120,9 @@ export default function TripContent() {
   // With schema z.object({ elements: z.array(locationItemSchema) }),
   // object should be { elements: LocationItem[] }
   // During streaming, elements are PartialObject types, so we cast to LocationProps[]
-  const locations = useMemo(() => {
-    if (!object) return [];
-
+  // React Compiler will automatically memoize this computation
+  let locations: LocationProps[] = [];
+  if (object) {
     // Try to access elements directly - the schema should ensure this structure
     // But use type assertion for safety during streaming (PartialObject types)
     type ObjectWithElements = { elements?: unknown[] };
@@ -141,11 +141,9 @@ export default function TripContent() {
           item != null && typeof item === "object",
       );
       // Cast to LocationProps[] to handle PartialObject types during streaming
-      return validElements as unknown as LocationProps[];
+      locations = validElements as unknown as LocationProps[];
     }
-
-    return [];
-  }, [object]);
+  }
 
   // Error detection: catch cases where streaming errors occur but aren't properly propagated
   // Checks for: 1) Loading stopped without data after 5+ seconds, 2) Timeout after 20 seconds
