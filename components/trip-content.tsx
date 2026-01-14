@@ -87,7 +87,21 @@ export default function TripContent() {
   }, [duration]);
 
   function increaseTimeOfDay() {
-    if (currentItineraryItemIndex >= maxIndex) {
+    // Calculate the current displayed index (clamped to actual locations array)
+    const displayedIndex = Math.min(
+      currentItineraryItemIndex,
+      Math.max(0, locations.length - 1),
+    );
+
+    // Check if we're at the last location in the actual array, or at the theoretical max
+    const isAtLastLocation =
+      locations.length > 0 && displayedIndex >= locations.length - 1;
+    const isAtMaxIndex = currentItineraryItemIndex >= maxIndex;
+
+    // Show modal if:
+    // 1. We've reached the theoretical maximum (hard limit, regardless of streaming)
+    // 2. We're at the last location AND streaming is complete (to avoid showing modal prematurely)
+    if (isAtMaxIndex || (isAtLastLocation && !isLoading)) {
       setIsSignUpModalOpen(true);
     } else {
       setCurrentItineraryItemIndex((prev) => prev + 1);
@@ -103,27 +117,33 @@ export default function TripContent() {
   }
 
   // When using Output.array(), useObject returns { elements: Array }
-  // With schema z.object({ elements: z.array(locationItemSchema) }), 
+  // With schema z.object({ elements: z.array(locationItemSchema) }),
   // object should be { elements: LocationItem[] }
   // During streaming, elements are PartialObject types, so we cast to LocationProps[]
   const locations = useMemo(() => {
     if (!object) return [];
-    
+
     // Try to access elements directly - the schema should ensure this structure
     // But use type assertion for safety during streaming (PartialObject types)
     type ObjectWithElements = { elements?: unknown[] };
     const obj = object as unknown as ObjectWithElements;
-    
+
     // Check if elements exists and is an array with at least one item
-    if (obj && 'elements' in obj && Array.isArray(obj.elements) && obj.elements.length > 0) {
+    if (
+      obj &&
+      "elements" in obj &&
+      Array.isArray(obj.elements) &&
+      obj.elements.length > 0
+    ) {
       // Filter out any undefined/null elements and ensure we have valid data
       const validElements = obj.elements.filter(
-        (item): item is LocationItem => item != null && typeof item === 'object'
+        (item): item is LocationItem =>
+          item != null && typeof item === "object",
       );
       // Cast to LocationProps[] to handle PartialObject types during streaming
       return validElements as unknown as LocationProps[];
     }
-    
+
     return [];
   }, [object]);
 

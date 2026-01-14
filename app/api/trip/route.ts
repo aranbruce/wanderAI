@@ -102,10 +102,7 @@ export async function POST(request: NextRequest) {
       if (cached) {
         // Handle both old format (locations) and new format (elements)
         const locationsArray = cached.elements || cached.locations;
-        if (
-          Array.isArray(locationsArray) &&
-          locationsArray.length > 0
-        ) {
+        if (Array.isArray(locationsArray) && locationsArray.length > 0) {
           console.log(
             `Returning cached trip with ${locationsArray.length} locations`,
           );
