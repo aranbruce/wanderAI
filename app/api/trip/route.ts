@@ -1,7 +1,7 @@
 import { google } from "@ai-sdk/google";
 import { streamText, Output } from "ai";
 import { NextRequest } from "next/server";
-import { kv } from "@vercel/kv";
+import { Redis } from "@upstash/redis";
 import { tripSchema, locationItemSchema } from "./schema";
 import { z } from "zod";
 
@@ -11,6 +11,19 @@ export const maxDuration = 60;
 const CACHE_TTL_SECONDS = 60 * 60 * 24 * 7; // 7 days
 const MAX_TRIP_DURATION = 2;
 const LOCATIONS_PER_DAY = 3;
+
+function createRedisClient(): Redis | null {
+  const kvUrl = process.env.KV_REST_API_URL;
+  const kvToken = process.env.KV_REST_API_TOKEN;
+
+  if (kvUrl && kvToken) {
+    return new Redis({ url: kvUrl, token: kvToken });
+  }
+
+  return null;
+}
+
+const redis = createRedisClient();
 
 async function fetchDestinationDetails(
   destination: string,
@@ -95,20 +108,24 @@ export async function POST(request: NextRequest) {
 
     // Check cache first to avoid API calls
     try {
-      const cached = await kv.get<{
-        locations?: Array<z.infer<typeof locationItemSchema>>;
-        elements?: Array<z.infer<typeof locationItemSchema>>;
-      }>(key);
-      if (cached) {
-        // Handle both old format (locations) and new format (elements)
-        const locationsArray = cached.elements || cached.locations;
-        if (Array.isArray(locationsArray) && locationsArray.length > 0) {
-          console.log(
-            `Returning cached trip with ${locationsArray.length} locations`,
-          );
-          // Return cached data in the format expected by Output.array(): { elements: [...] }
-          return Response.json({ elements: locationsArray }, { status: 200 });
+      if (redis) {
+        const cached = await redis.get<{
+          locations?: Array<z.infer<typeof locationItemSchema>>;
+          elements?: Array<z.infer<typeof locationItemSchema>>;
+        }>(key);
+        if (cached) {
+          // Handle both old format (locations) and new format (elements)
+          const locationsArray = cached.elements || cached.locations;
+          if (Array.isArray(locationsArray) && locationsArray.length > 0) {
+            console.log(
+              `Returning cached trip with ${locationsArray.length} locations`,
+            );
+            // Return cached data in the format expected by Output.array(): { elements: [...] }
+            return Response.json({ elements: locationsArray }, { status: 200 });
+          }
         }
+      } else {
+        console.warn("Redis is not configured; skipping cache lookup.");
       }
     } catch (error) {
       console.warn("Error checking cache, proceeding with API call:", error);
@@ -222,14 +239,15 @@ Return an array of location objects with: id, coordinates {latitude, longitude},
             .array(locationItemSchema)
             .safeParse(locationsArray);
 
-          if (validationResult.success) {
+          if (validationResult.success && redis) {
             // Store in the format that matches Output.array() response: { elements: [...] }
             const wrappedObject = { elements: validationResult.data };
-            await kv.set(key, wrappedObject);
-            await kv.expire(key, CACHE_TTL_SECONDS);
+            await redis.set(key, wrappedObject, { ex: CACHE_TTL_SECONDS });
             console.log(
               `Saved ${validationResult.data.length} locations to cache with key: ${key}`,
             );
+          } else if (validationResult.success && !redis) {
+            console.warn("Redis is not configured; skipping cache write.");
           } else {
             console.warn(
               "No locations to cache - validation failed:",
