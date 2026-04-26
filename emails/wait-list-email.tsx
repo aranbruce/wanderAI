@@ -14,33 +14,21 @@ import {
   Text,
   Tailwind,
   Heading,
-} from "@react-email/components";
+} from "react-email";
 import * as React from "react";
+
+const emailAssetBaseUrl =
+  process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") ||
+  (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "") ||
+  "https://wanderai.co.uk";
 
 interface WaitListEmailProps {
   fullName: string;
   email: string;
 }
 
-const baseUrl = process.env.VERCEL_URL
-  ? `https://${process.env.VERCEL_URL}`
-  : "";
-
 export const WaitListEmail = ({ fullName, email }: WaitListEmailProps) => (
   <Html>
-    <Head>
-      <title>WanderAI - You&apos;re on the wait list!</title>
-      <Font
-        fontFamily="Poppins"
-        fallbackFontFamily={["Helvetica", "Arial", "sans-serif"]}
-        webFont={{
-          url: "https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap",
-          format: "woff2",
-        }}
-        fontWeight={400}
-        fontStyle="normal"
-      />
-    </Head>
     <Preview>Plan your next trip in seconds with WanderAI</Preview>
     <Tailwind
       config={{
@@ -84,14 +72,27 @@ export const WaitListEmail = ({ fullName, email }: WaitListEmailProps) => (
         },
       }}
     >
+      <Head>
+        <title>WanderAI - You&apos;re on the wait list!</title>
+        <Font
+          fontFamily="Poppins"
+          fallbackFontFamily={["Helvetica", "Arial", "sans-serif"]}
+          webFont={{
+            url: "https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap",
+            format: "woff2",
+          }}
+          fontWeight={400}
+          fontStyle="normal"
+        />
+      </Head>
       <Body className="bg-white font-sans">
         <Container className="mx-auto my-0 max-w-lg px-4">
           <Section className="pt-4">
             <Img
-              src={`${baseUrl}/assets/logo.png`}
-              width="156"
-              height="32"
-              alt="WanderAI Logo"
+              src={`${emailAssetBaseUrl}/assets/logo.png`}
+              width={156}
+              height={32}
+              alt="WanderAI"
               className="mx-auto"
             />
             <Heading className="text-center text-2xl font-semibold text-black">
