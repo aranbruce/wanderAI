@@ -56,7 +56,6 @@ export default function SearchInput({
   useEffect(() => {
     if (prevSelectedValue.current !== selectedValue) {
       prevSelectedValue.current = selectedValue;
-      // eslint-disable-next-line react-hooks/set-state-in-effect -- Syncing state with prop changes
       setQueryValue(selectedValue || "");
     }
   }, [selectedValue]);

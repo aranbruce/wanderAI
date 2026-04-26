@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type UIEvent } from "react";
 import Image from "next/image";
 
 import Backdrop from "@/components/backdrop";
@@ -23,45 +23,43 @@ export default function ImageModal({
   selectedPhotoIndex,
 }: ImageModalProps) {
   const [currentIndex, setCurrentIndex] = useState(selectedPhotoIndex);
-  const prevSelectedPhotoIndex = useRef(selectedPhotoIndex);
+  const [prevSelectedPhotoIndex, setPrevSelectedPhotoIndex] =
+    useState(selectedPhotoIndex);
+  const [useInstantScroll, setUseInstantScroll] = useState(true);
 
   const imageRefs = useRef<(HTMLDivElement | null)[]>([]);
-  const isInitialLoad = useRef(true);
   const scrollTimeout = useRef<NodeJS.Timeout | null>(null);
+
+  // Keep carousel in sync when the parent changes the selected photo (no effect:
+  // https://react.dev/learn/you-might-not-need-an-effect#adjusting-some-state-when-a-prop-changes)
+  if (selectedPhotoIndex !== prevSelectedPhotoIndex) {
+    setPrevSelectedPhotoIndex(selectedPhotoIndex);
+    setUseInstantScroll(true);
+    setCurrentIndex(selectedPhotoIndex);
+  }
 
   useEffect(() => {
     if (imageRefs.current[currentIndex]) {
       imageRefs.current[currentIndex]?.scrollIntoView({
-        behavior: isInitialLoad.current ? "auto" : "smooth",
+        behavior: useInstantScroll ? "auto" : "smooth",
         block: "nearest",
         inline: "center",
       });
-      isInitialLoad.current = false;
+      setUseInstantScroll(false);
     }
+    // useInstantScroll is intentionally read for this scroll only; resetting it must not retrigger.
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- scroll when currentIndex changes
   }, [currentIndex]);
 
-  // Sync currentIndex with selectedPhotoIndex prop changes
-  // This is necessary to keep the displayed image in sync with the selected photo
-  useEffect(() => {
-    if (prevSelectedPhotoIndex.current !== selectedPhotoIndex) {
-      isInitialLoad.current = true;
-      prevSelectedPhotoIndex.current = selectedPhotoIndex;
-      // eslint-disable-next-line react-hooks/set-state-in-effect -- Syncing state with prop changes
-      setCurrentIndex(selectedPhotoIndex);
-    }
-  }, [selectedPhotoIndex]);
-
-  const handleScroll = (event) => {
+  const handleScroll = (event: UIEvent<HTMLDivElement>) => {
     if (scrollTimeout.current) {
       clearTimeout(scrollTimeout.current);
     }
 
+    const { scrollLeft, clientWidth } = event.currentTarget;
     scrollTimeout.current = setTimeout(() => {
-      const { scrollLeft, clientWidth } = event.target;
       const newIndex = Math.round(scrollLeft / clientWidth);
-      if (newIndex !== currentIndex) {
-        setCurrentIndex(newIndex);
-      }
+      setCurrentIndex((prev) => (newIndex !== prev ? newIndex : prev));
     }, 100); // Adjust the debounce delay as needed
   };
 

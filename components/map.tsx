@@ -28,12 +28,6 @@ export default function Map({
   const [zoom, setZoom] = useState(3);
 
   useEffect(() => {
-    setLng(initialLng);
-    setLat(initialLat);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentItineraryItemIndex, tripItinerary]);
-
-  useEffect(() => {
     if (map.current) return; // initialize map only once
     map.current = new mapboxgl.Map({
       container: mapContainer.current,
