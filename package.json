@@ -23,10 +23,10 @@
     "geist": "^1.7.0",
     "mapbox-gl": "^3.22.0",
     "next": "16.2.4",
-    "posthog-js": "^1.372.1",
+    "posthog-js": "^1.372.3",
     "react": "19.2.5",
     "react-dom": "19.2.5",
-    "react-email": "^6.0.0",
+    "react-email": "^6.0.1",
     "react-error-boundary": "^6.1.1",
     "react-map-gl": "^8.1.1",
     "resend": "^6.12.2",
@@ -34,7 +34,7 @@
     "zod": "^4.3.6"
   },
   "devDependencies": {
-    "@react-email/ui": "^6.0.0",
+    "@react-email/ui": "^6.0.1",
     "@tailwindcss/postcss": "^4.2.4",
     "@types/eslint": "^9.6.1",
     "@types/node": "25.6.0",
@@ -44,7 +44,7 @@
     "eslint-config-prettier": "^10.1.8",
     "postcss": "^8.5.12",
     "prettier": "^3.8.3",
-    "prettier-plugin-tailwindcss": "^0.7.3",
+    "prettier-plugin-tailwindcss": "^0.8.0",
     "tailwindcss": "^4.2.4"
   },
   "pnpm": {
