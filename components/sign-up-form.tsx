@@ -5,6 +5,7 @@ import { useState } from "react";
 import Button from "@/components/button";
 import Input from "@/components/input";
 import ThankYou from "./thank-you";
+import CardShareReferral from "@/components/cardshare-referral";
 import SpinnerIcon from "@/images/icons/spinner-icon";
 import posthog from "posthog-js";
 
@@ -123,6 +124,9 @@ export default function SignUpForm() {
           </form>
         </div>
       )}
+      <CardShareReferral
+        location={submitted ? "sign_up_thank_you" : "sign_up_page"}
+      />
     </>
   );
 }
