@@ -1,5 +1,5 @@
 import { google } from "@ai-sdk/google";
-import { streamText, Output } from "ai";
+import { streamText, Output, toTextStream, createTextStreamResponse } from "ai";
 import { NextRequest } from "next/server";
 import { Redis } from "@upstash/redis";
 import { tripSchema, locationItemSchema } from "./schema";
@@ -191,47 +191,12 @@ Return an array of location objects with: id, coordinates {latitude, longitude},
       },
     });
 
-    // Handle caching asynchronously after response is sent
-    // In AI SDK v6, Output.array() provides elementStream, but we can also access the full array
-    // via result.object (Promise) or collect from elementStream
+    // Handle caching asynchronously after response is sent.
+    // result.output resolves to the full array once streaming completes.
     (async () => {
       try {
-        // In AI SDK v6, result.object should still be available as a Promise
-        // that resolves to the full array when streaming completes
-        type ResultWithObject = {
-          object?: Promise<Array<z.infer<typeof locationItemSchema>>>;
-          elementStream?: AsyncIterable<z.infer<typeof locationItemSchema>>;
-        };
-
-        const resultTyped = result as unknown as ResultWithObject;
-        let locationsArray: Array<z.infer<typeof locationItemSchema>> | null =
-          null;
-
-        // Primary method: use result.object (should work in v6)
-        if (resultTyped.object) {
-          try {
-            const obj = await resultTyped.object;
-            if (Array.isArray(obj)) {
-              locationsArray = obj;
-              console.log(`Got ${obj.length} locations from result.object`);
-            }
-          } catch (objError) {
-            console.warn("Error accessing result.object:", objError);
-          }
-        }
-
-        // Fallback: collect from elementStream if object is not available
-        if (!locationsArray && resultTyped.elementStream) {
-          console.log("Collecting locations from elementStream...");
-          const elements: Array<z.infer<typeof locationItemSchema>> = [];
-          for await (const element of resultTyped.elementStream) {
-            elements.push(element);
-          }
-          if (elements.length > 0) {
-            locationsArray = elements;
-            console.log(`Got ${elements.length} locations from elementStream`);
-          }
-        }
+        const locationsArray: Array<z.infer<typeof locationItemSchema>> =
+          await result.output;
 
         if (locationsArray && locationsArray.length > 0) {
           // Validate the array against the schema
@@ -263,7 +228,7 @@ Return an array of location objects with: id, coordinates {latitude, longitude},
             "No locations to cache - array is empty or invalid",
             locationsArray
               ? `Received: ${typeof locationsArray}, length: ${Array.isArray(locationsArray) ? locationsArray.length : "N/A"}`
-              : "No data received from result.object or elementStream",
+              : "No data received from result.output",
           );
         }
       } catch (error: unknown) {
@@ -274,7 +239,9 @@ Return an array of location objects with: id, coordinates {latitude, longitude},
       }
     })();
 
-    return result.toTextStreamResponse();
+    return createTextStreamResponse({
+      stream: toTextStream({ stream: result.stream }),
+    });
   } catch (error) {
     console.error("Error generating trip:", error);
     return Response.json(

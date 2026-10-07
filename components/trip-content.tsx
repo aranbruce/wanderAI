@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useRef, useMemo } from "react";
 import { useRouter } from "next/navigation";
-import { experimental_useObject as useObject } from "@ai-sdk/react";
+import { useObject } from "@ai-sdk/react";
 import { z } from "zod";
 
 import useGetNewSearchParams from "@/hooks/useGetNewSearchParams";
