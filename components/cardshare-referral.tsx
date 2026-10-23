@@ -10,7 +10,7 @@ interface CardShareReferralProps {
 export default function CardShareReferral({
   location,
 }: CardShareReferralProps) {
-  const href = `https://cardshare.ai/?utm_source=wanderai&utm_medium=referral&utm_campaign=${location}`;
+  const href = `https://www.cardshare.ai/?utm_source=wanderai&utm_medium=referral&utm_campaign=${location}`;
 
   return (
     <a
